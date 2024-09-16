@@ -1,0 +1,12 @@
+.select2-container .select2-selection,
+.select2-selection__rendered,
+.select2-selection__arrow {
+    height: 45px !important;
+    line-height: 45px !important;
+}
+
+/* Change the background color of the select box */
+.select2-container--default .select2-selection--single {
+    background-color: #ffffff; /* White background for the selected item */
+    border: 1px solid #f1f6f8; /* Light grey border */
+}

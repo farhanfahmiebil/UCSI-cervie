@@ -1,0 +1,11 @@
+.input-group-append .input-group-text, .input-group-prepend .input-group-text{
+  padding:1.0rem 0.75rem;
+}
+
+.horizontal-menu .top-navbar .navbar-brand-wrapper .navbar-brand img{
+  height:40px;
+}
+
+label{
+  color:#000000;
+}
