@@ -38,6 +38,10 @@ Route::prefix('qualification')->group(function(){
 
   /*  Update
   **************************************************************************************/
-  Route::get('/update',config('routing.application.modules.dashboard.researcher.controller').'\qualification\IndexController@update')->name(config('routing.application.modules.dashboard.researcher.name').'.qualification.update');
+  Route::post('/update',config('routing.application.modules.dashboard.researcher.controller').'\qualification\IndexController@update')->name(config('routing.application.modules.dashboard.researcher.name').'.qualification.update');
+
+  /*  View File
+  **************************************************************************************/
+  Route::get('/file/view/{id}',config('routing.application.modules.dashboard.researcher.controller').'\qualification\IndexController@viewFile')->name(config('routing.application.modules.dashboard.researcher.name').'.qualification.view_file');
 
 }); //End Qualification

@@ -6,4 +6,7 @@ $(document).ready(function() {
     width: 'resolve' // need to override the changed default
 });
 
+$('[data-toggle="tooltip"]').tooltip()
+
+
 });

@@ -144,6 +144,70 @@ class CervieResearcherAcademicQualification extends Model{
 
   }
 
+  /**************************************************************************************
+    View Selected
+  **************************************************************************************/
+  public function viewSelected($data){
+
+    //Get Count
+    $result = DB::connection($this->connection)->table($this->table)
+                                               ->select(
+                                                  $this->table.'.academic_qualification_id AS academic_qualification_id',
+                                                  $this->table.'.employee_id AS employee_id',
+                                                  $this->table.'.qualification_other AS qualification_other',
+                                                  $this->table.'.qualification_id AS qualification_id',
+                                                  $this->table.'.date_start AS date_start',
+                                                  $this->table.'.date_end AS date_end',
+                                                  $this->table.'.qualification_name AS qualification_name',
+                                                  $this->table.'.institution_name AS institution_name',
+                                                  $this->table.'.filename AS filename',
+                                                  'qualification.name AS qualification_type_name',
+
+                                                )
+                                                ->join($this->table_neighbor['general']['database'].'.'.$this->table_neighbor['general']['user'].'.qualification AS qualification','qualification.qualification_id','=',$this->table.'.qualification_id')
+                                                ->where($this->table.'.academic_qualification_id',$data['column']['id']);
+
+    //Get Count Result
+    $result = $result->first();
+
+    //Return Result
+    return $result;
+
+  }
+
+  /**************************************************************************************
+    Get Data Ajax
+  **************************************************************************************/
+  public function getDataAjax($data){
+
+    //Get Count
+    $result = DB::connection($this->connection)->table($this->table)
+                                               ->select(
+                                                  $this->table.'.academic_qualification_id AS academic_qualification_id',
+                                                  $this->table.'.employee_id AS employee_id',
+                                                  $this->table.'.qualification_other AS qualification_other',
+                                                  $this->table.'.qualification_id AS qualification_id',
+                                                  $this->table.'.date_start AS date_start',
+                                                  $this->table.'.date_end AS date_end',
+                                                  $this->table.'.qualification_name AS qualification_name',
+                                                  $this->table.'.institution_name AS institution_name',
+                                                  $this->table.'.filename AS filename',
+                                                  'qualification.name AS qualification_type_name',
+
+                                                )
+                                                ->join($this->table_neighbor['general']['database'].'.'.$this->table_neighbor['general']['user'].'.qualification AS qualification','qualification.qualification_id','=',$this->table.'.qualification_id')
+                                                ->where($this->table.'.academic_qualification_id',$data['column']['id']);
+
+    //Get Count Result
+    $result = $result->first();
+
+    //Return Result
+    return $result;
+
+  }
+
+
+
 
 
 

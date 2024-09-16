@@ -35,72 +35,76 @@ class NavigationAccess{
     // $item['module']['category']['sub'] = ((Request::segment(4) != null)?Request::segment(4):null);
 // dd($item);
     //Get Navigation Module By Company
-    $data['module']['company'] = $this->navigationAccess(
-      [
-        'category'=>'company',
-        'user'=>$user,
-        'module_category'=>$item['module']['category']['main']
-      ]
-    );
+//     $data['module']['company'] = $this->navigationAccess(
+//       [
+//         'category'=>'company',
+//         'user'=>$user,
+//         'module_category'=>$item['module']['category']['main']
+//       ]
+//     );
+//
+//     //Get Navigation By Module
+//     $data['module']['main'] = $this->navigationAccess(
+//       [
+//         'category'=>'module',
+//         'user'=>$user,
+//         'module_category'=>$item['module']['category']['main'],
+//         'employee_id'=>Auth::id(),
+//       ]
+//     );
+//
+//     //Get Navigation Module Sub
+//     $data['module']['sub']['main'] = $this->navigationAccess(
+//       [
+//         'category'=>'sub',
+//         'user'=>$user,
+//       ]
+//     );
+//
+//     //Get Navigation Module Sub Item
+//     $data['module']['sub']['item'] = $this->navigationAccess(
+//       [
+//         'category'=>'sub_item',
+//         'user'=>$user,
+//       ]
+//     );
+// // dd($data);
+//     // dd($data['module']['company']);
+// // dd($data['module']['sub']['item']);
+// // dd($data['module']['category']['main']);
+//     //Get Navigation Module Main
+//     // $data['module']['category']['sub'] = $this->navigationAccess(
+//     //   [
+//     //     'category'=>'category_sub',
+//     //     'user'=>$user,
+//     //     'module_category'=>$item['module']['category']['main'],
+//     //     'module_category_sub'=>$item['module']['category']['sub']
+//     //
+//     //   ]
+//     // );
+// // dd($data['module']['category']['sub']);
+//     //Get Navigation Module Main
+//     // $data['module']['main'] = $this->navigationAccess(
+//     //   [
+//     //     'category'=>'module',
+//     //     'user'=>$user,
+//     //   ]
+//     // );
+// // dd($data['module']['main'] );
+//     //Get Navigation Module Sub
+//     // $data['module']['sub']['main'] = $this->navigationAccess(
+//     //   [
+//     //     'category'=>'sub',
+//     //     'user'=>$user,
+//     //   ]
+//     // );
+//
+//
+// // dd($data['module']['sub'] );
 
-    //Get Navigation By Module
-    $data['module']['main'] = $this->navigationAccess(
-      [
-        'category'=>'module',
-        'user'=>$user,
-        'module_category'=>$item['module']['category']['main'],
-        'employee_id'=>Auth::id(),
-      ]
-    );
-
-    //Get Navigation Module Sub
-    $data['module']['sub']['main'] = $this->navigationAccess(
-      [
-        'category'=>'sub',
-        'user'=>$user,
-      ]
-    );
-
-    //Get Navigation Module Sub Item
-    $data['module']['sub']['item'] = $this->navigationAccess(
-      [
-        'category'=>'sub_item',
-        'user'=>$user,
-      ]
-    );
-// dd($data);
-    // dd($data['module']['company']);
-// dd($data['module']['sub']['item']);
-// dd($data['module']['category']['main']);
-    //Get Navigation Module Main
-    // $data['module']['category']['sub'] = $this->navigationAccess(
-    //   [
-    //     'category'=>'category_sub',
-    //     'user'=>$user,
-    //     'module_category'=>$item['module']['category']['main'],
-    //     'module_category_sub'=>$item['module']['category']['sub']
-    //
-    //   ]
-    // );
-// dd($data['module']['category']['sub']);
-    //Get Navigation Module Main
-    // $data['module']['main'] = $this->navigationAccess(
-    //   [
-    //     'category'=>'module',
-    //     'user'=>$user,
-    //   ]
-    // );
-// dd($data['module']['main'] );
-    //Get Navigation Module Sub
-    // $data['module']['sub']['main'] = $this->navigationAccess(
-    //   [
-    //     'category'=>'sub',
-    //     'user'=>$user,
-    //   ]
-    // );
+$data['editable'] = Auth::user()->employee->isEditable($request->route('employee_id'));
 
 
-// dd($data['module']['sub'] );
     //Share Access
     View::share('access',$data);
 

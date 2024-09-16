@@ -14,6 +14,9 @@ use DB;
 //Get Eloquent
 use Illuminate\Database\Eloquent\Model;
 
+//Get Request
+use Illuminate\Http\Request;
+
 //Get Class
 class Employee extends Model{
 
@@ -121,6 +124,22 @@ class Employee extends Model{
 
     //Return Result
     return $result;
+
+  }
+
+  /**************************************************************************************
+    Is Editable
+  **************************************************************************************/
+  public function isEditable($employee_id){
+
+    //Get Count
+    $data = [41503, 41459, 41460, $employee_id];
+
+    $check = in_array(Auth::id(),$data);
+
+    //Return Result
+    return (($check)?true:false);
+;
 
   }
 

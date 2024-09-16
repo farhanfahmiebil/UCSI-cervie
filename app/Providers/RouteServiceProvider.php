@@ -133,8 +133,13 @@ class RouteServiceProvider extends ServiceProvider{
             **************************************************************************************/
             Route::prefix('researcher')->group(function(){
 
-                // Authorization - Employee
+                // Authorization - Researcher
                 require base_path($this->path['authorization']['researcher'].'index.php');
+
+                // Ajax - Researcher - Academic Qualification
+                require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/qualification/index.php');
+
+
 
             }); //End Employee
 
@@ -167,7 +172,7 @@ class RouteServiceProvider extends ServiceProvider{
         /**************************************************************************************
           Middleware - LDAP Researcher
         **************************************************************************************/
-        Route::middleware(['auth:ldap_employee'])->namespace($this->namespace)
+        Route::middleware(['auth:ldap_employee', 'navigation_access_researcher'])->namespace($this->namespace)
         // Route::middleware(['auth:ldap_employee','navigation_access_researcher'])->namespace($this->namespace)
         // Route::middleware(['auth:ldap_employee'])->namespace($this->namespace)
                                                  ->group(function($router){

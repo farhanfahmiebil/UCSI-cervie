@@ -72,6 +72,9 @@ class IndexController extends Controller{
     $this->hyperlink['page']['list'] = $this->route['name'].'list';
     $this->hyperlink['page']['create'] = $this->route['name'].'create';
     $this->hyperlink['page']['delete'] = $this->route['name'].'delete';
+    $this->hyperlink['page']['view_file'] = $this->route['name'].'view_file';
+    $this->hyperlink['page']['update'] = $this->route['name'].'update';
+    $this->hyperlink['page']['ajax']['academic']['qualification'] = config('routing.application.modules.dashboard.researcher.name').'.ajax.university.cervie.qualification.view';
 
 		//Set Hyperlink
     // $this->hyperlink['page']['ajax']['navigation']['access']['module']['company'] = config('routing.application.modules.dashboard.'.$this->user.'.name').'.ajax.authorization.access.module.company';
@@ -232,34 +235,6 @@ class IndexController extends Controller{
   }
 
   /**************************************************************************************
- 		View
- 	**************************************************************************************/
-	public function view(Request $request){
-
-		//Get Route Path
-		$this->routePath();
-
-		//Set Hyperlink
-		$hyperlink = $this->hyperlink;
-
-    //Set Page Sub
-    $page = $this->page;
-
-    //Set Breadcrumb Icon
-    $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
-
-    //Set Breadcrumb Title
-    $data['breadcrumb']['title'] = ['Welcome Back, '.Auth::user()->name];
-
-		//Set Breadcrumb
-		$data['title'] = array($this->header['category']);
-
-		//Return View
-		return view($this->route['view'].'view.index',compact('data','page','hyperlink'));
-
-  }
-
-  /**************************************************************************************
  		Update
  	**************************************************************************************/
 	public function update(Request $request){
@@ -270,17 +245,80 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Set Page Sub
-    $page = $this->page;
+    //Redirect
+    $redirect = [];
 
-    //Set Breadcrumb Icon
-    $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
+        //Check Request Validation
+        $validate = $request->validate(
 
-    //Set Breadcrumb Title
-    $data['breadcrumb']['title'] = ['Welcome Back, '.Auth::user()->name];
+          //Check Validation
+          [
+            'id'=>'required',
+            'qualification_id'=>'required',
+            'qualification_name'=>'required',
+            'institution_name'=>'required',
+            'date_start'=>'required',
+            'date_end'=>'required',
+            'filename'=>'mimetypes:application/pdf'
 
-		//Set Breadcrumb
-		$data['title'] = array($this->header['category']);
+          ],
+          //Error Message
+          [
+            'id.required'=>'Academic Qualification ID is Required',
+            'qualification_id.required'=>'Qualification Type is Required',
+            'qualification_name.required'=>'Qualification Name is Required',
+            'institution_name.required'=>'Institution Name is Required',
+            'date_start.required'=>'Date Start is Required',
+            'date_end.required'=>'Date End is Required',
+
+          ]
+        );
+
+        //Set Model
+        $model['cervie']['researcher']['academic']['qualification'] = new CervieResearcherAcademicQualification();
+
+        //Check Exist
+        $data['main'] = $model['cervie']['researcher']['academic']['qualification']::find($request->id);
+
+        //If Query Not found
+        if(!$data['main']){
+
+          //Return Failed
+          return back()->with('alert_type','error')
+                       ->with('message','Data Not Exist');
+
+        }
+
+        //Attachment
+        if($request->filename){
+          $attachment_extension = $request->filename->getClientOriginalExtension();
+          $attachment_name = $data['main']->academic_qualification_id . "." .$attachment_extension;
+          $data['main']->filename = $attachment_name;
+
+          File::delete(public_path('storage/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/'. $request->route('employee_id') . '/academic_qualification/' . $data['main']->filename));
+
+          //File Store Location
+          $request->filename->storeAs('public/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/' . $request->route('employee_id') . '/academic_qualification/', $attachment_name);
+
+        }
+
+        //Set Request to Model
+        $data['main']->employee_id = $request->route('employee_id');
+        $data['main']->qualification_id = $request->qualification_id;
+        $data['main']->qualification_name = $request->qualification_name;
+        $data['main']->institution_name = $request->institution_name;
+        $data['main']->qualification_other = $request->qualification_other;
+        $data['main']->date_start = $request->date_start;
+        $data['main']->date_end = $request->date_end;
+        $data['main']->updated_by = Auth::id();
+        $data['main']->updated_at = Carbon::now();
+
+        //Execute Query
+        $data['main']->save();
+
+        //Return Success
+        return back()->with('alert_type','success')
+                     ->with('message','Qualification Updated');
 
   }
 
@@ -375,6 +413,7 @@ class IndexController extends Controller{
 
     // Set Model
     $model['cervie']['researcher']['academic']['qualification'] = new CervieResearcherAcademicQualification();
+    $model['general']['qualification'] = new Qualification();
 
     //Set Data
     $data['main'] = $model['cervie']['researcher']['academic']['qualification']->viewSelected(
@@ -385,8 +424,33 @@ class IndexController extends Controller{
       ]
     );
 
+    //Get Data
+    $data['general']['qualification'] = $model['general']['qualification']->selectBox();
+
 		//Return View
-		return view($this->route['view'].'.view.index',compact('data','hyperlink'));
+		return view($this->route['view'].'view.index',compact('data','hyperlink'));
+
+  }
+
+  /**************************************************************************************
+    View File
+  **************************************************************************************/
+  public function viewFile(Request $request){
+
+    //Get Route Path
+    $this->routePath();
+
+    //Set Hyperlink
+    $hyperlink = $this->hyperlink;
+
+    // Set Model
+    $model['cervie']['researcher']['academic']['qualification'] = new CervieResearcherAcademicQualification();
+
+    //Set Data
+    $data['main'] = $model['cervie']['researcher']['academic']['qualification']::find($request->id);
+
+
+    return response()->file(storage_path('app/public/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/' . $data['main']->employee_id . '/academic_qualification/' . $data['main']->filename));
 
   }
 

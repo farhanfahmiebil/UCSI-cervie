@@ -22,15 +22,15 @@ Route::prefix('ajax')->group(function(){
 
     /* Admission
     **************************************************************************************/
-    Route::prefix('admission')->group(function(){
+    Route::prefix('cervie')->group(function(){
 
-      /* Registration
+        /* Qualification
       **************************************************************************************/
-      Route::prefix('semester_teaching')->group(function(){
+      Route::prefix('qualification')->group(function(){
 
-        /*  Semester Group
+        /*  Semester
         **************************************************************************************/
-        Route::get('/semester/group',config('routing.application.modules.dashboard.employee.controller').'\Ajax\University\Admission\SemesterTeaching\IndexController@getSemester')->name(config('routing.application.modules.dashboard.employee.name').'.ajax.university.admission.semester_teaching.get_semester');
+        Route::get('/view',config('routing.application.modules.dashboard.researcher.controller').'\Ajax\University\Cervie\Qualification\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name').'.ajax.university.cervie.qualification.view');
 
       }); //End User
 
