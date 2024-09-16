@@ -188,11 +188,14 @@ class RouteServiceProvider extends ServiceProvider{
                 //Home
                 require base_path($this->path['dashboard']['researcher'].'home/index.php');
 
-                //Home
+                //Publication
                 require base_path($this->path['dashboard']['researcher'].'publication/index.php');
 
-                //Home
+                //Qualification
                 require base_path($this->path['dashboard']['researcher'].'qualification/index.php');
+
+                //General Information
+                require base_path($this->path['dashboard']['researcher'].'general_information/index.php');
 
              }); //End Dashboard
 

@@ -34,8 +34,8 @@
 
                 {{-- @endif --}}
                 {{-- End Check Navigation Category Exist --}}
-                <button class="nav-link bg-danger text-white active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Dashboard</button>
-                <button class="nav-link text-danger" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">General Information</button>
+                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['home'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Dashboard</a>
+                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['general_information'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">General Information</a>
                 <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['qualification'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Qualifications</a>
                 <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['publication'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Publications</a>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Grants</button>

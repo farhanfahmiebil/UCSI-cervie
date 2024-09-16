@@ -10,11 +10,17 @@
       <!-- card body -->
       <div class="card-body">
 
+        <div class="alert alert-info" role="alert">
+          Click on the table row to view more details
+        </div>
+
         <div class="d-flex align-items-center justify-content-between py-4">
           <h4 class="card-title mb-2">Qualification</h4>
+          @if($access['editable'])
           <div class="dropdown">
             <a href="{{route($hyperlink['page']['new'],['employee_id' => request()->route('employee_id')])}}" class="text-success btn btn-danger text-white">New Qualification</a>
           </div>
+          @endif
         </div>
 
         <!-- table responsive -->
