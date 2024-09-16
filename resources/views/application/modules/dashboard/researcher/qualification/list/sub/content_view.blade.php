@@ -12,6 +12,9 @@
 
         <div class="d-flex align-items-center justify-content-between py-4">
           <h4 class="card-title mb-2">Qualification Details</h4>
+          <div class="dropdown">
+            <button class="close btn btn-danger">x</button>
+          </div>
         </div>
 
         <!-- row start -->
@@ -106,6 +109,14 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
+
+    /**************************************************************************************
+      Get Qualification
+    **************************************************************************************/
+    $('.close').click(function(){
+      $(".row_details").fadeOut();
+
+    });
 
 
   });

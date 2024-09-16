@@ -50,7 +50,7 @@
                     <td>{{$value->date_end}}</td>
                     <td>
                       @if($access['editable'])
-                        <a href="{{route($hyperlink['page']['view'],['id' => $value->academic_qualification_id, 'employee_id' => request()->route('employee_id')])}}" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="mdi mdi-pencil"></i> </a>
+                        <a href="{{route($hyperlink['page']['view'],['id' => $value->academic_qualification_id, 'employee_id' => request()->route('employee_id')])}}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil"></i></a>
                         <i data-toggle="tooltip" data-placement="top" title="Delete" data-id="{{$value->academic_qualification_id}}" class="delete mdi mdi-trash-can"></i>
                       @endif
                         <a data-toggle="tooltip" data-placement="top" title="View File" href="{{route($hyperlink['page']['view_file'],['id' => $value->academic_qualification_id, 'employee_id' => request()->route('employee_id')])}}"> <i class="mdi mdi-file"></i> </a>

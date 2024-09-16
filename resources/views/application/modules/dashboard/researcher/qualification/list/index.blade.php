@@ -3,7 +3,7 @@
 @section('main-content')
 
   {{-- Overall Summary --}}
-  @include($page['sub'].'.content_statistic')
+  {{-- @include($page['sub'].'.content_statistic') --}}
 
   {{-- Publication --}}
   @include($page['sub'].'.content_list')
