@@ -163,7 +163,9 @@ class Controller extends BaseController{
                 'home'=> config('routing.application.modules.dashboard.researcher.name').'.home',
                 'publication'=>config('routing.application.modules.dashboard.researcher.name').'.publication.list',
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.list',
-                'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general_information.home.list'
+                'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general_information.home.list',
+                'linkage'=>config('routing.application.modules.dashboard.researcher.name').'.linkage.list'
+
               ],
               'home'=>config('routing.application.modules.dashboard.employee.name').'.home',
             ],
