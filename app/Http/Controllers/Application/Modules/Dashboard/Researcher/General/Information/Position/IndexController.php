@@ -178,7 +178,7 @@ class IndexController extends Controller{
 
     //If Form Token Exist
 		if(!$request->has('form_token')){
-      abort(555,'Form Missing Token')
+      abort(555,'Form Missing Token');
     }
 
 		//Check Type Request

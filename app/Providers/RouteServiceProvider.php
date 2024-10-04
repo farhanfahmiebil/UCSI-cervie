@@ -139,6 +139,12 @@ class RouteServiceProvider extends ServiceProvider{
               // Ajax - Researcher - Academic Qualification
               require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/qualification/index.php');
 
+              // Ajax - Researcher - Academic Qualification
+              require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/linkage/index.php');
+
+              // Ajax - Researcher - Academic Qualification
+              require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/evidence/index.php');
+
             }); //End Employee
 
           }); //End Authorization
@@ -195,6 +201,9 @@ class RouteServiceProvider extends ServiceProvider{
 
                 //General Information
                 require base_path($this->path['dashboard']['researcher'].'general/information/index.php');
+
+                //General Information
+                require base_path($this->path['dashboard']['researcher'].'linkage/index.php');
 
              }); //End Dashboard
 
