@@ -57,7 +57,7 @@ return [
 
     'url' => env('APP_URL'),
 
-    'asset_url' => env('ASSET_URL'),
+    'asset_url' => env('ASSET_URL','http://localhost/cervie2/UCSI-cervie/public'),
 
     /*
     |--------------------------------------------------------------------------

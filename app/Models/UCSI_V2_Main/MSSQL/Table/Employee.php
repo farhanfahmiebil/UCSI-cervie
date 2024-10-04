@@ -139,6 +139,7 @@ class Employee extends Model{
 
     //Return Result
     return (($check)?true:false);
+;
 
   }
 

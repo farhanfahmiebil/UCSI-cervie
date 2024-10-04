@@ -47,7 +47,7 @@
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Intellectual Property</button>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Commercialization</button>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Community Engagement</button>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['linkage'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Linkages</a>
+                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Linkages</button>
 
               </div>
             </div>

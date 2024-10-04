@@ -46,7 +46,7 @@ class Token{
     $this->encrypter = app('Illuminate\Contracts\Encryption\Encrypter');
 
     //Create Token
-    $this->encrypt['insert'] = $this->encrypter->encrypt('insert');
+    $this->encrypt['create'] = $this->encrypter->encrypt('create');
     $this->encrypt['update'] = $this->encrypter->encrypt('update');
     $this->encrypt['revert'] = $this->encrypter->encrypt('revert');
     $this->encrypt['delete'] = $this->encrypter->encrypt('delete');

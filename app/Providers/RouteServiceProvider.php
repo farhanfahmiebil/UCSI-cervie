@@ -124,8 +124,8 @@ class RouteServiceProvider extends ServiceProvider{
             **************************************************************************************/
             Route::prefix('employee')->group(function(){
 
-                // Authorization - Employee
-                // require base_path($this->path['authorization']['employee'].'index.php');
+              // Authorization - Employee
+              // require base_path($this->path['authorization']['employee'].'index.php');
 
             }); //End Employee
 
@@ -133,17 +133,11 @@ class RouteServiceProvider extends ServiceProvider{
             **************************************************************************************/
             Route::prefix('researcher')->group(function(){
 
-                // Authorization - Researcher
-                require base_path($this->path['authorization']['researcher'].'index.php');
+              // Authorization - Researcher
+              require base_path($this->path['authorization']['researcher'].'index.php');
 
-                // Ajax - Researcher - Academic Qualification
-                require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/qualification/index.php');
-
-                // Ajax - Researcher - Linkage
-                require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/linkage/index.php');
-
-                // Ajax - Researcher - Evidence
-                require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/evidence/index.php');
+              // Ajax - Researcher - Academic Qualification
+              require base_path($this->path['ajax']['dashboard']['researcher'].'university/cervie/qualification/index.php');
 
             }); //End Employee
 
@@ -183,7 +177,8 @@ class RouteServiceProvider extends ServiceProvider{
 
            /* Employee
            **************************************************************************************/
-           Route::prefix('researcher/{employee_id?}')->group(function(){
+           // Route::prefix('researcher/{employee_id?}')->group(function(){
+           Route::prefix('researcher')->group(function(){
 
              /* Dashboard
              **************************************************************************************/
@@ -199,10 +194,7 @@ class RouteServiceProvider extends ServiceProvider{
                 require base_path($this->path['dashboard']['researcher'].'qualification/index.php');
 
                 //General Information
-                require base_path($this->path['dashboard']['researcher'].'general_information/index.php');
-
-                //Linkage
-                require base_path($this->path['dashboard']['researcher'].'linkage/index.php');
+                require base_path($this->path['dashboard']['researcher'].'general/information/index.php');
 
              }); //End Dashboard
 

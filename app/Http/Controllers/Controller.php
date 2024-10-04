@@ -163,9 +163,7 @@ class Controller extends BaseController{
                 'home'=> config('routing.application.modules.dashboard.researcher.name').'.home',
                 'publication'=>config('routing.application.modules.dashboard.researcher.name').'.publication.list',
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.list',
-                'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general_information.home.list',
-                'linkage'=>config('routing.application.modules.dashboard.researcher.name').'.linkage.list'
-
+                'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general.information.home.list'
               ],
               'home'=>config('routing.application.modules.dashboard.employee.name').'.home',
             ],
@@ -182,6 +180,14 @@ class Controller extends BaseController{
               ],
               'plugin'=>[
                 'tags_input'=>config('routing.application.modules.dashboard.employee.layout').'.plugin.tags_input.index'
+              ]
+            ],
+            'researcher'=>[
+              'modal'=>[
+                'pop_alert'=>config('routing.application.modules.dashboard.researcher.layout').'.modal.other.pop_alert'
+              ],
+              'plugin'=>[
+                'tags_input'=>config('routing.application.modules.dashboard.researcher.layout').'.plugin.tags_input.index'
               ]
             ]
           ],

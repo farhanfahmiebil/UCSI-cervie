@@ -9,3 +9,15 @@
 label{
   color:#000000;
 }
+
+*{
+  font-family: Arial;
+}
+
+.form-control, .typeahead, .tt-query, .tt-hint{
+  border:1px solid #cccccc;
+}
+
+.nav-pills .nav-link{
+  border:1px solid #cccccc;
+}

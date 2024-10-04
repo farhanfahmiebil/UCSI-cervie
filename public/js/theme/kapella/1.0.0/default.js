@@ -62,7 +62,7 @@ $(window).on('load',function(){
 	      $('.control-list').fadeIn();
 
 				//Checked All Select Box
-        $('.selectBox').each(function(){$(this).not(":disabled").prop('checked',true)});
+        $('.selectBox').each(function(){$(this).not(':disabled').prop('checked',true)});
 
       }else{
 
@@ -99,7 +99,7 @@ $(window).on('load',function(){
 			//Get Total Count Selected
 			$('#selectCount').html($('.selectBox:checked').length+' Selected');
 
-	 });
+	 });	
 
 });
 
