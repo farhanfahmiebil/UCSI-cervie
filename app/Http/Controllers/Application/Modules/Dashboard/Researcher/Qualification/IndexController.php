@@ -1,7 +1,7 @@
 <?php
 
 //Get Controller Path
-namespace App\Http\Controllers\Application\Modules\Dashboard\Researcher\Qualification;
+namespace App\Http\Controllers\Application\Modules\Dashboard\Researcher\Qualification\Professional;
 
 //Get Authorization
 use Auth;

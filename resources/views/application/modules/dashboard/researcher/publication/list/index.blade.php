@@ -2,10 +2,43 @@
 
 @section('main-content')
 
-  {{-- Overall Summary --}}
-  @include($page['sub'].'.content_statistic')
+  <!-- content -->
+  <div class="col-lg-12 col-sm-12 flex-column d-flex stretch-card">
 
-  {{-- Publication --}}
-  @include($page['sub'].'.content_list')
+    <!-- row 1 -->
+    <div class="row">
+
+      {{-- Publication --}}
+      @include($page['sub'].'.publication')
+
+    </div>
+    <!-- end row 1 -->
+
+  </div>
+  <!-- end content -->
+
+  {{-- Pop Alert --}}
+  @include($hyperlink['navigation']['layout']['dashboard']['researcher']['modal']['pop_alert'])
+
+  <script type="text/javascript">
+
+    /**************************************************************************************
+      Document On Load
+    **************************************************************************************/
+    $(document).ready(function($){
+
+      /**************************************************************************************
+        Session
+      **************************************************************************************/
+      @if(Session('message'))
+        Swal.fire({
+          title: '{{ ucwords(Session::get('alert_type')) }}',
+          text: '{{ ucwords(Session::get('message')) }}',
+          icon: '{{ strtolower(Session::get('alert_type')) }}'
+        });
+      @endif
+
+    });
+  </script>
 
 @endsection

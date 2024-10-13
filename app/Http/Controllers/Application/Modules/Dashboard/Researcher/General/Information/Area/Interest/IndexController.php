@@ -15,13 +15,19 @@ use Carbon\Carbon;
 //Get Controller Helper
 use App\Http\Controllers\Controller;
 
-//Model
-use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherAreaInterest AS CervieResearcherAreaInterestView;
-
+//Model Procedure
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherAreaInterest AS CervieResearcherAreaInterestProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
+
+//Get Storage
+use Storage;
+
+//Get Validator
+use Validator;
 
 //Get Class
 class IndexController extends Controller{
@@ -74,10 +80,8 @@ class IndexController extends Controller{
     $this->hyperlink['page']['update'] = $this->route['name'].'update';
     $this->hyperlink['page']['view'] = $this->route['name'].'view';
     $this->hyperlink['page']['new'] = $this->route['name'].'new';
-    // $this->hyperlink['page']['delete'] = $this->route['name'].'.delete';
-
-		//Set Hyperlink
-    // $this->hyperlink['page']['ajax']['navigation']['access']['module']['company'] = config('routing.application.modules.dashboard.'.$this->user.'.name').'.ajax.authorization.access.module.company';
+    $this->hyperlink['page']['delete']['main'] = $this->route['name'].'delete';
+    $this->hyperlink['page']['delete']['evidence'] = $this->route['name'].'evidence.delete';
 
 	}
 
@@ -99,10 +103,38 @@ class IndexController extends Controller{
     $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
 
     //Set Breadcrumb Title
-    $data['breadcrumb']['title'] = ['Welcome Back, '.Auth::user()->name];
+    $data['breadcrumb']['title'] = [];
 
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category'],$this->header['module']);
+
+    //Set Model
+    $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
+
+    //Get Table Control
+    $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
+      [
+        'column'=>[
+          'table_control_id'=>'cervie_researcher_area_interest'
+        ]
+      ]
+    );
+
+    //Defined Column
+    $data['table']['column']['cervie']['researcher']['evidence'] = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' File',
+      ],
+      2=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
+      ]
+    ];
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -123,45 +155,132 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Check Request Validation
-    $validate = $request->validate(
+    //Define validation rules
+    $rules = [
+      'name'=>['required'],
+      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
+      'document_name.*'=>['required'], // Validate that each file has an associated name
+    ];
 
-      // Check Validation
-      [
-        'name' => ['required']
-      ],
-      // Error Message
-      [
-        'name.required' => 'Name Required'
-      ]
-    );
+    //Custom validation messages
+    $messages = [
+      'name.required'=>'Name is required',
+    ];
+
+    //If Document Name Exist
+    if($request->has('document_name')){
+
+      //Get Document Name
+      foreach($request->document_name as $key=>$value){
+        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
+        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
+        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
+        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
+      }
+
+    }
+
+    //Create A Validator Instance
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    //Run The Validation
+    $validator->validate();
 
     //If Form Token Exist
-		if($request->has('form_token')){
+		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
 
-			//Check Type Request
-			switch($this->encrypter->decrypt($request->form_token)){
+		//Check Type Request
+		switch($this->encrypter->decrypt($request->form_token)){
 
-        //Create
-        case 'create':
+      //Create
+      case 'create':
 
-          //Set Model
-          $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestStoredProcedure();
+        //Set Model
+        $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
 
-          //Set Main
-          $data['main'] = $model['cervie']['researcher']['area']['interest']->createRecord(
-            [
-              'column'=>[
-                'employee_id'=>Auth::id(),
-                'name'=>$request->name,
-                'created_by'=>Auth::id()
-              ]
+        //Create Main
+        $result['main']['create'] = $model['cervie']['researcher']['area']['interest']->createRecord(
+          [
+            'column'=>[
+              'employee_id'=>Auth::id(),
+              'name'=>$request->name,
+              'remark'=>(($request->remark)?$request->remark:null),
+              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'created_by'=>Auth::id()
             ]
-          );
+          ]
+        );
 
-        break;
+        //If Files Exist
+        if($request->has('document')){
 
-      }
+          //Get File Loop
+          foreach($request->file('document') as $key=>$value){
+
+            //Set File Name With Extension
+            $file['name']['raw']['with']['extension'] = $value->getClientOriginalName();
+
+            //Set file name With Extension
+            $file['name']['raw']['without']['extension'] = pathinfo($file['name']['raw']['with']['extension'], PATHINFO_FILENAME);
+
+            //Get File Extension
+            $file['extension'] = $value->getClientOriginalExtension();
+
+            //Set Path Folder
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$result['main']['create']->last_insert_id.'/';
+
+            //Set Modified File Name Without Extension (Using last_insert_id)
+            $file['name']['modified']['without']['extension'] = ($key+1);
+
+            //Set Modified File Name With Extension
+            $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'].'.'.$file['extension'];
+
+            //Set The Full Upload Path
+            $path['upload'] = $path['folder'].$file['name']['modified']['with']['extension'];
+
+            //Check If The File Already Exists In Storage
+            $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
+
+            //If File Exists, Delete It
+            if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
+
+            //Store File
+            Storage::disk()->put($path['upload'], fopen($value,'r+'));
+
+            //Set Model Evidence
+            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+            //Create Evidence
+            $result['evidence']['create'] = $model['cervie']['researcher']['evidence']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'file_id'=>$file['name']['modified']['without']['extension'],
+                  'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
+                  'file_raw_name'=>$file['name']['raw']['without']['extension'],
+                  'file_extension'=>$file['extension'],
+                  'table_name'=>'cervie_researcher_area_interest',
+                  'table_id'=>$result['main']['create']->last_insert_id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
+        }
+
+      break;
+
+      //Default
+      default:
+
+        //Abort
+        abort(555,'Form Token Missing');
+
+      break;
 
     }
 
@@ -184,30 +303,62 @@ class IndexController extends Controller{
 		$hyperlink = $this->hyperlink;
 
     //If Form Token Exist
-		if($request->has('form_token')){
+		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
 
-			//Check Type Request
-			switch($this->encrypter->decrypt($request->form_token)){
+		//Check Type Request
+		switch($this->encrypter->decrypt($request->form_token)){
 
-        //Create
-        case 'delete':
+      //Create
+      case 'delete':
 
-          //Set Model
-          $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestStoredProcedure();
+        //Set Model
+        $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
 
-          //Set Main
-          $data['main'] = $model['cervie']['researcher']['area']['interest']->deleteRecord(
-            [
-              'column'=>[
-                'area_interest_id'=>$request->id,
-                'employee_id'=>Auth::id()
-              ]
+        //Delete Main
+        $result['main']['delete'] = $model['cervie']['researcher']['area']['interest']->deleteRecord(
+          [
+            'column'=>[
+              'area_interest_id'=>$request->id,
+              'employee_id'=>Auth::id()
             ]
-          );
+          ]
+        );
 
-        break;
+        //Set Path Folder
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$request->id.'/';
 
-      }
+        //Check If The Folder Already Exists In Storage
+        $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
+
+        //If Folder Exists, Delete It
+        if($check['exist']['storage']){Storage::disk()->deleteDirectory($path['folder']);}
+
+        //Set Model Evidence
+        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+        //Delete Evidence
+        $result['evidence']['delete'] = $model['cervie']['researcher']['evidence']->deleteRecordByResearcherTable(
+          [
+            'column'=>[
+              'employee_id'=>Auth::id(),
+              'table_name'=>'cervie_researcher_area_interest',
+              'table_id'=>$request->id
+            ]
+          ]
+        );
+
+        //Set Main Verification
+        $data['main']['verification'] = $model['cervie']['researcher']['area']['interest']->needVerification(
+          [
+            'column'=>[
+              'area_interest_id'=>$request->id,
+              'employee_id'=>Auth::id(),
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+      break;
 
     }
 
@@ -215,6 +366,93 @@ class IndexController extends Controller{
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
                      ->with('message','Area Interest Deleted');
+
+  }
+
+  /**************************************************************************************
+ 		Delete
+ 	**************************************************************************************/
+	public function deleteEvidence(Request $request){
+
+		//Get Route Path
+		$this->routePath();
+
+		//Set Hyperlink
+		$hyperlink = $this->hyperlink;
+
+    //If Form Token Exist
+		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
+
+		//Check Type Request
+		switch($this->encrypter->decrypt($request->form_token)){
+
+      //Create
+      case 'delete':
+
+        //Set Model
+        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+        //Read Evidence Current
+        $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecord(
+          [
+            'column'=>[
+              'evidence_id'=>$request->evidence_id,
+              'employee_id'=>Auth::id(),
+              'created_by'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Set Path Folder
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$data['evidence']->table_id.'/';
+
+        //Set Modified File Name Without Extension (Using last_insert_id)
+        $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
+
+        //Set Modified File Name With Extension
+        $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'].'.'.$data['evidence']->file_extension;
+
+        //Set The Full Upload Path
+        $path['upload'] = $path['folder'] . $file['name']['modified']['with']['extension'];
+
+        //Check If The File Already Exists In Storage
+        $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
+
+        //If The File Exists, Delete It
+        if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
+
+        //Delete Evidence
+        $result['evidence']['delete'] = $model['cervie']['researcher']['evidence']->deleteRecord(
+          [
+            'column'=>[
+              'evidence_id'=>$data['evidence']->evidence_id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Set Model
+        $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
+
+        //Set Main Verification
+        $data['main']['verification'] = $model['cervie']['researcher']['area']['interest']->needVerification(
+          [
+            'column'=>[
+              'area_interest_id'=>$data['evidence']->table_id,
+              'employee_id'=>Auth::id(),
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+      break;
+
+    }
+
+    //Return to Selected Tab Category Route
+    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+                     ->with('alert_type','success')
+                     ->with('message','Evidence Deleted');
 
   }
 
@@ -230,23 +468,72 @@ class IndexController extends Controller{
 		$hyperlink = $this->hyperlink;
 
     //Set Model
-    $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestView();
+    $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
-    //Set Main
-    $data['main'] = $model['cervie']['researcher']['area']['interest']->viewSelected(
+    //Get Table Control
+    $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'employee_id'=>Auth::id(),
-          'area_interest_id'=>$request->id
+          'table_control_id'=>'cervie_researcher_area_interest'
         ]
       ]
     );
+
+    //Set Model
+    $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
+
+    //Set Main
+    $data['main'] = $model['cervie']['researcher']['area']['interest']->readRecord(
+      [
+        'column'=>[
+          'area_interest_id'=>$request->id,
+          'employee_id'=>Auth::id(),
+        ]
+      ]
+    );
+
+    //Set Model
+    $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+    //Read Evidence
+    $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecordByResearcherTable(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id(),
+          'table_name'=>'cervie_researcher_area_interest',
+          'table_id'=>$request->id
+        ]
+      ]
+    );
+
+    //Defined Column
+    $data['table']['column']['cervie']['researcher']['evidence'] = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'class'=>'col-8',
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' File',
+      ],
+      2=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
+      ]
+    ];
+
+    //Set Asset
+    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$request->id.'/';
+
+    //Set Document
+    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$request->id.'/';
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
 
     //Return View
-		return view($this->route['view'].'view.index',compact('data','form_token','hyperlink'));
+		return view($this->route['view'].'view.index',compact('data','asset','form_token','hyperlink'));
 
   }
 
@@ -261,52 +548,147 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Check Request Validation
-    $validate = $request->validate(
+    //Define validation rules
+    $rules = [
+      'name'=>['required'],
+      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
+      'document_name.*'=>['required'], // Validate that each file has an associated name
+    ];
 
-      // Check Validation
-    [
-        'name' => ['required']
-    ],
+    //Custom validation messages
+    $messages = [
+      'name.required'=>'Name is required',
+    ];
 
-    // Error Message
-    [
-        'name.required' => 'Name Required'
-    ]
-    );
+    //If Document Name Exist
+    if($request->has('document_name')){
 
-    //If Form Token Exist
-		if($request->has('form_token')){
-
-			//Check Type Request
-			switch($this->encrypter->decrypt($request->form_token)){
-
-        //Create
-        case 'update':
-
-          //Set Model
-          $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestStoredProcedure();
-
-          //Set Main
-          $data['main'] = $model['cervie']['researcher']['area']['interest']->updateRecord(
-            [
-              'column'=>[
-                'area_interest_id'=>$request->area_interest_id,
-                'employee_id'=>Auth::id(),
-                'name'=>$request->name,
-                'updated_by'=>Auth::id()
-              ]
-            ]
-          );
-
-        break;
-
+      //Get Document Name
+      foreach($request->document_name as $key=>$value){
+        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
+        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
+        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
+        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
       }
 
     }
 
+    //Create A Validator Instance
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    //Run The Validation
+    $validator->validate();
+
+    //If Form Token Exist
+		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
+
+		//Check Type Request
+		switch($this->encrypter->decrypt($request->form_token)){
+
+      //Create
+      case 'update':
+
+        //Set Model
+        $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
+
+        //Update Main
+        $result['main']['update'] = $model['cervie']['researcher']['area']['interest']->updateRecord(
+          [
+            'column'=>[
+              'area_interest_id'=>$request->id,
+              'employee_id'=>Auth::id(),
+              'name'=>$request->name,
+              'remark'=>(($request->remark)?$request->remark:null),
+              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+        //If Files Exist
+        if($request->has('document')){
+
+          //Get File Loop
+          foreach($request->file('document') as $key=>$value){
+
+            //Set Model
+            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+            //Read Evidence Current
+            $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecordByResearcherTable(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'table_name'=>'cervie_researcher_area_interest',
+                  'table_id'=>$request->id
+                ]
+              ]
+            );
+
+            //Set Counter
+            $counter = ((count($data['evidence']) == $key)?$key:count($data['evidence']));
+
+            //Set file name with extension
+            $file['name']['raw']['with']['extension'] = $value->getClientOriginalName();
+
+            //Set file name without extension
+            $file['name']['raw']['without']['extension'] = pathinfo($file['name']['raw']['with']['extension'], PATHINFO_FILENAME);
+
+            //Get file extension
+            $file['extension'] = $value->getClientOriginalExtension();
+
+            //Set path folder
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$request->id.'/';
+
+            //Set modified file name without extension (using last_insert_id)
+            $file['name']['modified']['without']['extension'] = ($counter+1);
+
+            //Set modified file name with extension
+            $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'].'.'.$file['extension'];
+
+            //Set the full upload path
+            $path['upload'] = $path['folder'].$file['name']['modified']['with']['extension'];
+
+            //Check if the file already exists in storage
+            $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
+
+            //If the file exists, delete it
+            if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
+
+            //Store the file in storage (you may use `fopen` if needed for specific storages)
+            Storage::disk()->put($path['upload'],fopen($value,'r+'));
+
+            //Set the model and create a new record in the database
+            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+            //Create Evidence Upload
+            $data['evidence']['upload'] = $model['cervie']['researcher']['evidence']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'file_id'=>$file['name']['modified']['without']['extension'],
+                  'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
+                  'file_raw_name'=>$file['name']['raw']['without']['extension'],
+                  'file_extension'=>$file['extension'],
+                  'table_name'=>'cervie_researcher_area_interest',
+                  'table_id'=>$request->id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
+        }
+
+      break;
+
+    }
+
     //Return to Selected Tab Category Route
-    return redirect()->route($hyperlink['page']['view'],['id'=>$request->area_interest_id])
+    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
                      ->with('message','Area Interest Saved');
 

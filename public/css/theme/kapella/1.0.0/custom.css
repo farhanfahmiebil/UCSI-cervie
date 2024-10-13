@@ -15,9 +15,50 @@ label{
 }
 
 .form-control, .typeahead, .tt-query, .tt-hint{
-  border:1px solid #cccccc;
+  border-color:#cccccc;
 }
 
-.nav-pills .nav-link{
+.table > :not(:last-child) > :last-child > *, .jsgrid .jsgrid-table > :not(:last-child) > :last-child > *{
+  border-color:#cccccc;
+}
+
+i.mdi {
+  vertical-align:middle;
+}
+
+.table.table-bordered thead > *{
+    background-color:#cc3333;
+    color:#ffffff;
+}
+
+.table.table-bordered tr,
+.table.table-bordered td,
+.table.table-bordered th{
   border:1px solid #cccccc;
+}
+.table.table-bordered > :not(:last-child) > :last-child > *,
+.jsgrid .jsgrid-table > :not(:last-child) > :last-child > *{
+  border-bottom:1px solid #cccccc;
+}
+
+.table-sm-custom th, .table-sm-custom td{
+  font-size: 1vw;
+}
+
+.content-navigation-right .nav-pills .nav-link{
+  padding:1.5rem 1.75rem;
+  margin-bottom:10px;
+  border:1px solid #cccccc;
+  width:10vw;
+  width:100%;
+  font-size: 1vw;
+
+  background-color: #ffff; /* Initial background color */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Transition for the background color */
+}
+
+.content-navigation-right .nav-pills .nav-link:hover{
+  background:#cc6666;
+  color:#ffffff !important;
 }

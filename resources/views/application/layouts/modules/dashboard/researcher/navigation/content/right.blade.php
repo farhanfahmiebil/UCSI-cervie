@@ -1,5 +1,5 @@
 <!-- content - right -->
-<div class="col-lg-2 col-sm-12 flex-column d-flex stretch-card">
+<div class="col-lg-2 col-sm-12 flex-column d-flex stretch-card content-navigation-right">
 
   <!-- row -->
   <div class="row flex-grow">
@@ -13,12 +13,6 @@
         <!-- card body -->
         <div class="card-body">
 
-          <style media="screen">
-            .nav-pills .nav-link{
-              padding:1.5rem 1.75rem;
-              text-align:left;
-            }
-          </style>
           <!-- row -->
           <div class="row">
             <div class="col-lg-12">
@@ -35,9 +29,9 @@
                 {{-- @endif --}}
                 {{-- End Check Navigation Category Exist --}}
                 <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['home'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Dashboard</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['general_information'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">General Information</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['qualification'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Qualifications</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['publication'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Publications</a>
+                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['general_information']) }}" class="nav-link {{ ((Request::segment(3) == 'general' && Request::segment(4) == 'information')?'text-white bg-danger':'text-danger') }}">General Information</a>
+                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['qualification']) }}" class="nav-link {{ ((Request::segment(3) == 'qualification')?'text-white bg-danger':'text-danger') }}">Qualifications</a>
+                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['publication']) }}" class="nav-link {{ ((Request::segment(3) == 'publication')?'text-white bg-danger':'text-danger') }}">Publications</a>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Grants</button>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Postgraduate Supervision</button>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Awards</button>

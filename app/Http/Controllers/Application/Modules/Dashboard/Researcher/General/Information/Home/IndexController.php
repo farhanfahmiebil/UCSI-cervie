@@ -15,10 +15,12 @@ use Carbon\Carbon;
 //Get Controller Helper
 use App\Http\Controllers\Controller;
 
-//Model
+//Model View
+use App\Models\UCSI_V2_General\MSSQL\View\ProfessionalMembershipLevel;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherPosition;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherAreaInterest;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherWorkExperience;
+use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherProfessionalMembership;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -80,14 +82,12 @@ class IndexController extends Controller{
     //Work Experience
     $this->hyperlink['page']['work']['experience']['new'] = $this->route['link'].'work.experience.new';
     $this->hyperlink['page']['work']['experience']['view'] = $this->route['link'].'work.experience.view';
-    // $this->hyperlink['page']['new'] = $this->route['name'].'.new';
-    // $this->hyperlink['page']['create'] = $this->route['name'].'.create';
-    // $this->hyperlink['page']['delete'] = $this->route['name'].'.delete';
+    $this->hyperlink['page']['work']['experience']['delete'] = $this->route['link'].'work.experience.delete';
 
-		//Set Hyperlink
-    // $this->hyperlink['page']['ajax']['navigation']['access']['module']['company'] = config('routing.application.modules.dashboard.'.$this->user.'.name').'.ajax.authorization.access.module.company';
-// application.modules.dashboard.researcher.general.information.work.experience.new
-// application.modules.dashboard.researcher.general.information.work.experience.new
+    //Work Experience
+    $this->hyperlink['page']['professional']['membership']['new'] = $this->route['link'].'professional.membership.new';
+    $this->hyperlink['page']['professional']['membership']['view'] = $this->route['link'].'professional.membership.view';
+    $this->hyperlink['page']['professional']['membership']['delete'] = $this->route['link'].'professional.membership.delete';
 	}
 
 	/**************************************************************************************
@@ -156,6 +156,7 @@ class IndexController extends Controller{
     //Set Main Data Researcher Position
     $data['main']['cervie']['researcher']['position'] = $this->getData(
       [
+        'eloquent'=>'pagination',
         'category'=>'position'
       ]
     );
@@ -173,6 +174,7 @@ class IndexController extends Controller{
     //Set Main Data Researcher Area Interest
     $data['main']['cervie']['researcher']['area']['interest'] = $this->getData(
       [
+        'eloquent'=>'pagination',
         'category'=>'area_interest'
       ]
     );
@@ -190,16 +192,42 @@ class IndexController extends Controller{
     //Set Main Data Researcher Area Interest
     $data['main']['cervie']['researcher']['work']['experience'] = $this->getData(
       [
+        'eloquent'=>'pagination',
         'category'=>'work_experience'
       ]
     );
-// dd($data['main']['cervie']['researcher']['position']);
-// foreach($data['main']['cervie']['researcher']['position'] as $key=>$value){
-//   dd($value);
-// }
 
+    /*  Researcher Professional Membership
+    **************************************************************************************/
 
+    //Set Table Researcher Professional Membership
+    $data['table']['column']['cervie']['researcher']['professional']['membership'] = $this->getDataTable(
+      [
+        'category'=>'professional_membership'
+      ]
+    );
 
+    //Set Model Professional Membership Level
+    $model['general']['professional']['membership']['level'] = new ProfessionalMembershipLevel();
+    $data['general']['professional']['membership']['level'] = $model['general']['professional']['membership']['level']->selectBox();
+
+    //Get General Professional Membership Level
+    foreach($data['general']['professional']['membership']['level'] as $key=>$value){
+
+      //Set Main Data Researcher Professional Membership
+      $data['main']['cervie']['researcher']['professional']['membership'][$value->professional_membership_level_id] = $this->getData(
+        [
+          'eloquent'=>'pagination',
+          'category'=>'professional_membership',
+          'column'=>[
+            'professional_membership_level_id'=>$value->professional_membership_level_id
+          ]
+        ]
+      );
+
+    }
+    // dd($data['main']['cervie']['researcher']['professional']['membership']);
+// dd($data['main']['cervie']['researcher']['professional']['membership'][1]);
     // dd(count($data['main']['cervie']['researcher']['position']));
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -209,13 +237,15 @@ class IndexController extends Controller{
 
   }
 
+  /**************************************************************************************
+ 		Get Data Table
+ 	**************************************************************************************/
   public function getDataTable($data){
 
     //Check Data Category Exist
-    if(!isset($data['category'])){
-      abort(404);
-    }
+    if(!isset($data['category'])){abort(404);}
 
+    //Get Data Category
     switch($data['category']){
 
       //Position
@@ -228,20 +258,22 @@ class IndexController extends Controller{
             'name'=>'No',
           ],
           1=>[
-            'class'=>'col-md-2',
             'icon'=>'<i class="mdi mdi-account-card-details"></i>',
             'name'=>' Position',
           ],
           2=>[
-            'class'=>'col-md-4',
             'icon'=>'<i class="mdi mdi-city"></i>',
             'name'=>' Faculty/Industry/Department',
           ],
           3=>[
-            'icon'=>'<i class="mdi mdi-flag"></i>',
-            'name'=>' Status',
+            'icon'=>'<i class="mdi mdi-settings"></i>',
+            'name'=>' Period',
           ],
-          4=>[
+          5=>[
+            'icon'=>'<i class="mdi mdi-shield-check"></i>',
+            'name'=>' Verification',
+          ],
+          6=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
             'name'=>' Control',
           ]
@@ -256,13 +288,17 @@ class IndexController extends Controller{
         $table = [
 
           0=>[
-            'class'=>'<i class="mdi mdi-numeric"></i>',
+            'icon'=>'<i class="mdi mdi-numeric"></i>',
             'name'=>'No',
           ],
           1=>[
             'class'=>'col-md-8',
             'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Field of Research',
+            'name'=>' Area Interest',
+          ],
+          3=>[
+            'icon'=>'<i class="mdi mdi-shield-check"></i>',
+            'name'=>' Verification',
           ],
           2=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
@@ -291,6 +327,49 @@ class IndexController extends Controller{
             'name'=>' Period',
           ],
           3=>[
+            'icon'=>'<i class="mdi mdi-shield-check"></i>',
+            'name'=>' Verification',
+          ],
+          4=>[
+            'icon'=>'<i class="mdi mdi-settings"></i>',
+            'name'=>' Control',
+          ]
+        ];
+
+      break;
+
+      //Professional Membership
+      case 'professional_membership':
+
+        //Defined Column
+        $table = [
+          0=>[
+            'icon'=>'<i class="mdi mdi-numeric"></i>',
+            'name'=>'No',
+          ],
+          1=>[
+            'class'=>'col-*',
+            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
+            'name'=>' Name',
+          ],
+          2=>[
+            'class'=>'col-*',
+            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
+            'name'=>' Role',
+          ],
+          3=>[
+            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
+            'name'=>' Level',
+          ],
+          4=>[
+            'icon'=>'<i class="mdi mdi-settings"></i>',
+            'name'=>' Period',
+          ],
+          5=>[
+            'icon'=>'<i class="mdi mdi-shield-check"></i>',
+            'name'=>' Verification',
+          ],
+          6=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
             'name'=>' Control',
           ]
@@ -303,17 +382,20 @@ class IndexController extends Controller{
       break;
     }
 
+    //Return Table
     return $table;
 
   }
 
+  /**************************************************************************************
+ 		Get Data
+ 	**************************************************************************************/
   public function getData($data){
 
     //Check Data Category Exist
-    if(!isset($data['category'])){
-      abort(404);
-    }
+    if(!isset($data['category'])){abort(555,'Category Not Set');}
 
+    //Get Category
     switch($data['category']){
 
       //Position
@@ -325,8 +407,9 @@ class IndexController extends Controller{
         //Set Data
         $data = $model['cervie']['researcher']['position']->getList(
           [
+            'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
             'column'=>[
-              'employee_id'=>((Auth::id())?Auth::id():Auth::id())
+              'employee_id'=>Auth::id()
             ]
           ]
         );
@@ -342,8 +425,9 @@ class IndexController extends Controller{
         //Set Data
         $data = $model['cervie']['researcher']['area']['interest']->getList(
           [
+            'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
             'column'=>[
-              'employee_id'=>((Auth::id())?Auth::id():Auth::id())
+              'employee_id'=>Auth::id()
             ]
           ]
         );
@@ -359,8 +443,28 @@ class IndexController extends Controller{
         //Set Data
         $data = $model['cervie']['researcher']['work']['experience']->getList(
           [
+            'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
             'column'=>[
-              'employee_id'=>((Auth::id())?Auth::id():Auth::id())
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+      break;
+
+      //Professional membership
+      case 'professional_membership':
+
+        //Set Model
+        $model['cervie']['researcher']['professional']['membership'] = new CervieResearcherProfessionalMembership();
+
+        //Set Data
+        $data = $model['cervie']['researcher']['professional']['membership']->getList(
+          [
+            'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
+            'column'=>[
+              'employee_id'=>Auth::id(),
+              'professional_membership_level_id'=>$data['column']['professional_membership_level_id']
             ]
           ]
         );
@@ -370,6 +474,7 @@ class IndexController extends Controller{
       default:
         // code...
       break;
+
     }
 
     return $data;

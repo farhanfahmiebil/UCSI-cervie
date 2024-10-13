@@ -30,7 +30,7 @@
       <div class="table-responsive pt-5">
 
         <!-- table -->
-        <table class="table">
+        <table class="table table-bordered">
 
           <!-- thead -->
           <thead>
@@ -116,23 +116,15 @@
                   <td>{{ ($key+1) }}</td>
                   <td>{{ $value->name }}</td>
                   <td>{{ $value->organization_name }}</td>
-                  <td>
-                    <label class="badge badge-{{
-                      (
-                        ($value->status_name == 'active')?'success':(
-                          ($value->status_name == 'inactive')?'warning':'danger'
-                        )
-                      )
-                    }}">{{ ucwords($value->status_name) }}
-                    </label>
-                  </td>
+                  <td>{{ \Carbon\Carbon::parse($value->date_start)->format('d F Y') }} - {{ \Carbon\Carbon::parse($value->date_end)->format('d F Y') }}</td>
+                  <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
                   <td>
 
-                    <a href="{{ route($hyperlink['page']['position']['view'],['id'=>$value->position_id]) }}" class="btn btn-secondary">
+                    <a href="{{ route($hyperlink['page']['position']['view'],['id'=>$value->position_id]) }}" class="btn btn-sm btn-secondary">
                       <i class="mdi mdi-pencil"></i>
                     </a>
 
-                    <a data-href="{{ route($hyperlink['page']['position']['delete']) }}" class="modal-delete-position btn btn-danger">
+                    <a data-href="{{ route($hyperlink['page']['position']['delete']) }}" class="modal-delete-position btn btn-sm btn-danger">
                       <i class="mdi mdi-trash-can text-white"></i>
                     </a>
 
@@ -156,6 +148,22 @@
 
         </table>
         <!-- end table -->
+
+        <!-- pagination -->
+        <div class="col-12 pt-3">
+
+          {{-- Check Main Data Exist --}}
+          @if(count($data['main']['cervie']['researcher']['position']) >= 1)
+
+            <!-- paginate -->
+            {{ $data['main']['cervie']['researcher']['position']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+            <!-- end paginate -->
+
+          @endif
+          {{-- End Check Main Data Exist --}}
+
+        </div>
+        <!-- end pagination -->
 
       </div>
       <!-- end table responsive -->

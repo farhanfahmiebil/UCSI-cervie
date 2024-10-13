@@ -1,4 +1,4 @@
-@extends(Config::get('routing.application.modules.dashboard.employee.layout').'.structure.authorization')
+@extends(Config::get('routing.application.modules.dashboard.researcher.layout').'.structure.authorization')
 
 @section('main-content')
 

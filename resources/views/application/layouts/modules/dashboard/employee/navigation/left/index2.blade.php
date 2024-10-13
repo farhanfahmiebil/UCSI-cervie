@@ -63,6 +63,7 @@
                 $navigation['module'] = true;
               @endphp
 
+
             @endif
 
             @if($navigation['module'])
@@ -120,7 +121,7 @@
                         @if($value->module_id == $v->module_id)
 
                           <li>
-                            <a href="{{ url('/').'/'.$v->module_sub_hyperlink }}"><i class="{{ $v->module_sub_icon }}"></i>{{ $v->module_sub_name }}</a>
+                            <a href="{{ url('/').'/'.$v->module_sub_hyperlink }}"><i class="bi bi-card-list"></i>{{ $v->module_sub_name }}</a>
                           </li>
 
                         @endif
@@ -200,6 +201,27 @@
         <!-- end security -->
 
         @endif
+
+
+        <!-- user -->
+        <li class="sidebar-dropdown">
+          <a href="#">
+            <i class="bi bi-person-square"></i>
+            <span class="menu-text">Users</span>
+          </a>
+          <div class="sidebar-submenu" style="display: none;">
+            <ul>
+
+              <!-- employee -->
+              <li>
+                <a href="{{route(config('routing.application.modules.dashboard.employee.name').'.users.employee.list')}}">Employee</a>
+              </li>
+              <!-- end employee -->
+
+            </ul>
+          </div>
+        </li>
+        <!-- end user -->
 
 
         <!-- <li class="sidebar-dropdown">

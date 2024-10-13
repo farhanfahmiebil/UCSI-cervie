@@ -1,0 +1,386 @@
+.sidebar-wrapper{
+  /* height:100% !important;*/
+  position: absolute !important;
+}
+.sidebarMenuScroll,.sidebar-menu ul{
+height:100vh !important;
+}
+.sidebar-wrapper .brand{
+  justify-content: center;
+}
+
+#bg-vanta{
+
+margin: 0px;
+height: 100%;
+}
+
+.page-wrapper.fullscreen.virtual-card .content-wrapper{
+  height:100%;
+}
+
+
+.no-scroll{
+  overflow: hidden;
+}
+
+
+.sidebar-menu .sidebar-dropdown.main .sidebar-submenu {
+  display: none;
+}
+.sidebar-menu .sidebar-dropdown.main .sidebar-submenu ul {
+  padding: 0;
+}
+.sidebar-menu .sidebar-dropdown.main .sidebar-submenu ul li {
+  margin: 0;
+}
+.sidebar-menu .sidebar-dropdown.main .sidebar-submenu ul li a {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 15px 7px 15px 60px;
+  margin: 0;
+}
+.sidebar-menu .sidebar-dropdown.main .sidebar-submenu ul li a:hover {
+  color: #ffffff;
+}
+.sidebar-menu .sidebar-dropdown.main.active > a:after {
+  -webkit-transform: rotate(-0deg);
+  transform: rotate(-0deg);
+  right: 15px;
+}
+
+.sidebar-menu .sidebar-dropdown.sub_1 .sidebar-submenu {
+  display: none;
+}
+.sidebar-menu .sidebar-dropdown.sub_1 .sidebar-submenu ul {
+  padding: 0;
+}
+.sidebar-menu .sidebar-dropdown.sub_1 .sidebar-submenu ul li {
+  margin: 0;
+}
+.sidebar-menu .sidebar-dropdown.sub_1 .sidebar-submenu ul li a {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 15px 7px 15px 60px;
+  margin: 0;
+}
+.sidebar-menu .sidebar-dropdown.sub_1 .sidebar-submenu ul li a:hover {
+  color: #ffffff;
+}
+.sidebar-menu .sidebar-dropdown.sub_1.active > a:after {
+  -webkit-transform: rotate(-180deg);
+  transform: rotate(-180deg);
+  right: 15px;
+}
+/*******************************************************************************
+  Icon Module
+*******************************************************************************/
+.stats-tile img{
+  width:100%;
+}
+
+@media (max-width: 767px) {
+    .table-responsive .dropdown-menu {
+        position: static !important;
+    }
+}
+@media (min-width: 768px) {
+    .table-responsive {
+        overflow: inherit;
+    }
+}
+
+/*******************************************************************************
+  Select2
+*******************************************************************************/
+.select2-container--default .select2-selection--single {
+  border:1px solid #c8d0da !important;
+  border-radius:0.375rem !important;
+  padding:.375rem .75rem !important;
+  height:calc(1.55em + 0.75rem + 2px) !important;
+  line-height:1.5rem !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  width: 100% !important;
+  /* color:#4A4444 !important; */
+
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b{
+  top:80% !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered{
+  padding-left:0px !important;
+}
+
+.select2{
+  /* width:100% !important; */
+}
+
+.select2-container{
+  /* width:100% !important; */
+}
+
+
+.select2-dropdown.select2-dropdown--below{
+  z-index:99999;
+}
+
+.qr-image{
+  width:50%;
+}
+
+.virtual-card .img-fluid{
+  /* width:20%; */
+  width:250px;
+  max-width: 100%;
+}
+
+.virtual-card .button-wrapping{
+  padding:0 0;
+}
+
+.virtual-card .button-wrapping .inner{
+  padding:0 0;
+}
+
+.virtual-card .button-wrapping .inner a{
+  width:100% !important;
+}
+
+.img-15xx{
+  height:15.5rem;
+  width:15.5rem;
+}
+
+/*******************************************************************************
+  Toggle Sidebar
+*******************************************************************************/
+.page-header .toggle-sidebar{
+  background:#e93443 !important;
+}
+
+.sidebar-menu .sidebar-dropdown .sidebar-dropdown > a:after{
+  top:25px;
+}
+/*******************************************************************************
+  Nav Link
+*******************************************************************************/
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+  background:#cf2b39;
+}
+
+
+/*******************************************************************************
+  Tags Input
+*******************************************************************************/
+.bootstrap-tagsinput{
+  width:100% !important;
+  border:1px solid #dee2e6 !important;
+  border-radius:2px !important;
+
+}
+
+.bootstrap-tagsinput .tag{
+  padding:4px !important;
+  border-radius:8px !important;
+  margin:2px !important;
+  border-width:1px !important;
+  border-style:solid !important;
+
+}
+
+.bootstrap-tagsinput .tag.label.label-info{
+  background:#e93443 !important;
+}
+
+.twitter-typeahead{
+  width:200px !important;
+}
+
+.twitter-typeahead .tt-menu{
+  width:300px !important;
+}
+
+.twitter-typeahead pre{
+  display:none !important;
+}
+
+.bootstrap-tagsinput .tag [data-role="remove"]{
+  margin-left:7px !important;
+  font-weight:bold;
+  border-radius:8px;
+  font-size: 12px;
+
+}
+
+.bootstrap-tagsinput .tag [data-role="remove"]:after{
+  font-size: 16px;
+}
+
+.bootstrap-tagsinput .tag [data-role="remove"]:hover{
+  background:#ffffff;
+  color:#000000;
+}
+/*
+.twitter-typeahead,
+.tt-hint, .tt-input, .tt-menu { width:100% !important; }*/
+
+.tt-hint{
+  line-height:20px !important;
+  margin:-7px 0px !important;
+  padding:-25px 5px !important;
+  font-size:14px;
+  display:none !important;
+}
+
+
+.twitter-typeahead .tt-menu.tt-open{
+  background:#ffffff;
+}
+
+.tt-dataset.tt-dataset-salutation{
+  border:1px solid #c8d0da;
+
+}
+.tt-suggestion.tt-selectable{
+  cursor:pointer;
+  padding:0px 8px;
+}
+
+.tt-suggestion.tt-selectable:hover{
+    background:#767676;
+    color:#ffffff;
+}
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, textarea:-webkit-autofill, textarea:-webkit-autofill:hover, textarea:-webkit-autofill:focus, select:-webkit-autofill, select:-webkit-autofill:hover, select:-webkit-autofill:focus{
+  box-shadow: 0 0 0px 100px rgba(0, 0, 0, 0.2) inset
+}
+.table-responsive .table .form-check{
+  min-height:0px !important;
+  margin-bottom:0 !important;
+}
+
+.filter-info{
+  /* display:flex;
+  flex-direction: row;
+  align-items: stretch; */
+  /* flex-wrap: wrap; */
+  /* align-content: space-between; */
+  /* align-items:stretch; */
+  /* align-self: stretch; */
+}
+
+.filter-info .card{
+  /* flex: auto; */
+}
+
+.filter-info .card-body{
+    border:1px solid #cccccc;
+    border-radius:5px;
+}
+
+.btn-custom{
+  background-color:#cf2b39;
+  color:#ffffff;
+}
+
+.btn-custom:hover{
+  background-color:#cf2b35;
+  color:#000000;
+}
+
+.btn-custom:focus{
+  background-color:#cf2b35;
+  color:#ffffff;
+}
+
+.dropdown.custom{
+  display:flex;
+}
+/* .control-center .btn{
+  padding:1px 2.5px;
+}
+
+
+.control-center .btn-custom i{
+  font-size:20px;
+} */
+
+/* .control-center .btn-custom i.bi-search{
+  font-size:20px;
+} */
+.module{
+  transition: width 0.5s ease
+}
+
+.cursor-pointer{
+  cursor:pointer;
+
+}
+/*******************************************************************************
+  Tab Content
+*******************************************************************************/
+
+.tab-content.full-width{
+  width:100%;
+}
+
+.img-fluid.company{
+  height:50px;
+}
+
+/*******************************************************************************
+  Image Checkboxand Radio Box
+*******************************************************************************/
+input[type="checkbox"][id^="box_"] {
+  display: none;
+}
+
+label {
+  border: 1px solid #fff;
+  display: block;
+  position: relative;
+  cursor: pointer;
+  width:100%;
+}
+
+label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 1px solid grey;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+label img {
+  height:50px;
+  width: auto;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+:checked + label:before {
+  content: '✓';
+  background-color: #e93443;
+  border-color:#e93443;
+  transform: scale(1);
+}
+
+:checked + label img {
+  transform: scale(0.9);
+  z-index: -1;
+}

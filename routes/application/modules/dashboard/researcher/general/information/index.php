@@ -40,6 +40,10 @@ Route::prefix('general')->group(function(){
       **************************************************************************************/
       Route::get('/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Position\IndexController@delete')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.position.delete');
 
+      /*  Delete Evidence
+      **************************************************************************************/
+      Route::get('/evidence/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Position\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.position.evidence.delete');
+
       /*  View
       **************************************************************************************/
       Route::get('/view/{id}',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Position\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.position.view');
@@ -69,6 +73,10 @@ Route::prefix('general')->group(function(){
         /*  Delete
         **************************************************************************************/
         Route::get('/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Area\Interest\IndexController@delete')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.area.interest.delete');
+
+        /*  Delete Evidence
+        **************************************************************************************/
+        Route::get('/evidence/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Area\Interest\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.area.interest.evidence.delete');
 
         /*  View
         **************************************************************************************/
@@ -102,6 +110,10 @@ Route::prefix('general')->group(function(){
         **************************************************************************************/
         Route::get('/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Work\Experience\IndexController@delete')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.work.experience.delete');
 
+        /*  Delete Evidence
+        **************************************************************************************/
+        Route::get('/evidence/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Work\Experience\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.work.experience.evidence.delete');
+
         /*  View
         **************************************************************************************/
         Route::get('/view/{id}',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Work\Experience\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.work.experience.view');
@@ -110,13 +122,45 @@ Route::prefix('general')->group(function(){
         **************************************************************************************/
         Route::post('/update',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Work\Experience\IndexController@update')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.work.experience.update');
 
-        /*  Reupload
-        **************************************************************************************/
-        Route::post('/reupload',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Work\Experience\IndexController@reupload')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.work.experience.reupload');
-
       }); //End Experience
 
     }); //End Work
+
+    /* Professional
+    **************************************************************************************/
+    Route::prefix('professional')->group(function(){
+
+      /* Membership
+      **************************************************************************************/
+      Route::prefix('membership')->group(function(){
+
+        /*  New
+        **************************************************************************************/
+        Route::get('/new',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Professional\Membership\IndexController@new')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.professional.membership.new');
+
+        /*  Create
+        **************************************************************************************/
+        Route::post('/create',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Professional\Membership\IndexController@create')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.professional.membership.create');
+
+        /*  Delete
+        **************************************************************************************/
+        Route::get('/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Professional\Membership\IndexController@delete')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.professional.membership.delete');
+
+        /*  Delete Evidence
+        **************************************************************************************/
+        Route::get('/evidence/delete',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Professional\Membership\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.professional.membership.evidence.delete');
+
+        /*  View
+        **************************************************************************************/
+        Route::get('/view/{id}',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Professional\Membership\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.professional.membership.view');
+
+        /*  Update
+        **************************************************************************************/
+        Route::post('/update',config('routing.application.modules.dashboard.researcher.controller').'\General\Information\Professional\Membership\IndexController@update')->name(config('routing.application.modules.dashboard.researcher.name').'.general.information.professional.membership.update');
+
+      }); //End Membership
+
+    }); //End Professional
 
   }); //End Information
 

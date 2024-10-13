@@ -18,11 +18,11 @@ Route::prefix('publication')->group(function(){
 
   /*  New
   **************************************************************************************/
-  Route::get('/new',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@new')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.new');
+  Route::get('/new/{publication_type_id?}',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@new')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.new');
 
   /*  Create
   **************************************************************************************/
-  Route::get('/create',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@create')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.create');
+  Route::post('/create',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@create')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.create');
 
   /*  List
   **************************************************************************************/
@@ -32,12 +32,16 @@ Route::prefix('publication')->group(function(){
   **************************************************************************************/
   Route::get('/delete',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@delete')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.delete');
 
+  /*  Delete Evidence
+  **************************************************************************************/
+  Route::get('/evidence/delete',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.evidence.delete');
+
   /*  View
   **************************************************************************************/
   Route::get('/view/{id}',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.view');
 
   /*  Update
   **************************************************************************************/
-  Route::get('/update',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@update')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.update');
+  Route::post('/update',config('routing.application.modules.dashboard.researcher.controller').'\Publication\IndexController@update')->name(config('routing.application.modules.dashboard.researcher.name').'.publication.update');
 
 }); //End Publication

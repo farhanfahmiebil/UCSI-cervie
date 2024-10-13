@@ -24,18 +24,25 @@
     <!-- body -->
     <body>
 
-    <!-- container scroller -->
-    <div class="container-scroller">
+    <!-- page wrapper -->
+		<div class="page-wrapper">
 
       {{-- Navigation - Header --}}
       @include(Config::get('routing.application.modules.dashboard.employee.layout').'.navigation.header.index')
 
-      <!-- container fluid -->
-  		<div class="container-fluid page-body-wrapper">
+			<!-- main container -->
+			<div class="main-container">
 
-        <!-- main panel -->
-  			<div class="main-panel">
-          <!-- content wrapper -->
+        {{-- Navigation - Left --}}
+        @include(Config::get('routing.application.modules.dashboard.employee.layout').'.navigation.left.index')
+
+				<!-- content wrapper scroll -->
+				<div class="content-wrapper-scroll">
+
+          {{-- Breadcrumb --}}
+					@include(Config::get('routing.application.modules.dashboard.employee.layout').'.navigation.content.breadcrumb')
+
+					<!-- content wrapper -->
 					<div class="content-wrapper">
 
             {{-- Main Content --}}
@@ -43,18 +50,21 @@
 
 					</div>
 					<!-- end content wrapper -->
-          
-          {{-- Footer --}}
-          @include(Config::get('routing.application.modules.dashboard.employee.layout').'.footer.content.index')
 
-  			</div>
-  			<!-- end main panel -->
+				</div>
+				<!-- end content wrapper scroll -->
 
-  		</div>
-  		<!-- end container fluid -->
+        {{-- Footer --}}
+        @include(Config::get('routing.application.modules.dashboard.employee.layout').'.footer.content.index')
 
-    </div>
-		<!-- end container scroller -->
+			</div>
+			<!-- end main container -->
+
+		</div>
+		<!-- end page wrapper -->
+
+    {{-- Script --}}
+    @include(Config::get('routing.application.modules.dashboard.employee.layout').'.footer.script.index')
 
     </body>
     <!-- end body -->

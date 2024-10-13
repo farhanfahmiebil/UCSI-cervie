@@ -1,5 +1,5 @@
 <!-- col -->
-<div class="col-sm-6 grid-margin d-flex stretch-card">
+<div class="col-sm-12 grid-margin d-flex stretch-card">
 
   <!-- card -->
   <div class="card">
@@ -30,7 +30,7 @@
       <div class="table-responsive pt-5">
 
         <!-- table -->
-        <table class="table">
+        <table class="table table-bordered">
 
           <!-- thead -->
           <thead>
@@ -98,50 +98,67 @@
               {{-- Get Researcher Area Interest Data --}}
               @foreach($data['main']['cervie']['researcher']['area']['interest'] as $key=>$value)
 
-                  <tr id="{{ $value->area_interest_id }}">
+                <tr id="{{ $value->area_interest_id }}">
 
-                    {{-- Check if Checkbox Status True --}}
-                    @if($checkbox['status'])
-                      <td>
-                        <div class="form-check-label">
-                          <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->area_interest_id }}"/>
-    										</div>
-                      </td>
-                    @endif
-                    {{-- End Check if Checkbox Status True --}}
-
-                    <td>{{ ($key+1) }}</td>
-                    <td>{{ $value->name }}</td>
+                  {{-- Check if Checkbox Status True --}}
+                  @if($checkbox['status'])
                     <td>
-
-                      <a href="{{ route($hyperlink['page']['area']['interest']['view'],['id'=>$value->area_interest_id]) }}" class="btn btn-secondary">
-                        <i class="mdi mdi-pencil"></i>
-                      </a>
-
-                      <a data-href="{{ route($hyperlink['page']['area']['interest']['delete']) }}" class="modal-delete-area-interest btn btn-danger">
-                        <i class="mdi mdi-trash-can text-white"></i>
-                      </a>
-
+                      <div class="form-check-label">
+                        <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->area_interest_id }}"/>
+  										</div>
                     </td>
-                  </tr>
+                  @endif
+                  {{-- End Check if Checkbox Status True --}}
 
-                @endforeach
-                {{-- End Get Researcher Area Interest Data --}}
+                  <td>{{ ($key+1) }}</td>
+                  <td>{{ $value->name }}</td>
+                  <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
+                  <td>
 
-              @else
+                    <a href="{{ route($hyperlink['page']['area']['interest']['view'],['id'=>$value->area_interest_id]) }}" class="btn btn-sm btn-secondary">
+                      <i class="mdi mdi-pencil"></i>
+                    </a>
 
-                <tr>
-                  <td colspan="{{ count($data['table']['column']['cervie']['researcher']['area']['interest']) }}">No Data</td>
+                    <a data-href="{{ route($hyperlink['page']['area']['interest']['delete']) }}" class="btn-delete-area-interest btn-sm btn btn-danger">
+                      <i class="mdi mdi-trash-can text-white"></i>
+                    </a>
+
+                  </td>
                 </tr>
 
-              @endif
-              {{-- End Check Researcher Area Interest Exist --}}
+              @endforeach
+              {{-- End Get Researcher Area Interest Data --}}
 
-            </tbody>
-            <!-- end tbody -->
+            @else
 
-          </table>
-          <!-- end table -->
+              <tr class="text-center">
+                <td colspan="{{ count($data['table']['column']['cervie']['researcher']['area']['interest']) }}">No Data</td>
+              </tr>
+
+            @endif
+            {{-- End Check Researcher Area Interest Exist --}}
+
+          </tbody>
+          <!-- end tbody -->
+
+        </table>
+        <!-- end table -->
+
+        <!-- pagination -->
+        <div class="col-12 pt-3">
+
+          {{-- Check Main Data Exist --}}
+          @if(count($data['main']['cervie']['researcher']['area']['interest']) >= 1)
+
+            <!-- paginate -->
+            {{ $data['main']['cervie']['researcher']['area']['interest']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+            <!-- end paginate -->
+
+          @endif
+          {{-- End Check Main Data Exist --}}
+
+        </div>
+        <!-- end pagination -->
 
       </div>
       <!-- end table responsive -->
@@ -165,7 +182,7 @@
     /**************************************************************************************
       Modal Delete
     **************************************************************************************/
-    $('[class*="modal-delete-area-interest"]').on('click',function(event){
+    $('[class*="btn-delete-area-interest"]').on('click',function(event){
 
       //Set Parent Row
       var parent_row = $(this).closest('tr').attr('id');

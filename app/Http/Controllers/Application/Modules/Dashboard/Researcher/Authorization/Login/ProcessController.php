@@ -11,6 +11,9 @@ use App\Http\Controllers\Controller;
 //Get Guzzle
 use Illuminate\Support\Facades\Http;
 
+//Get Model
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
+
 //Get Request
 use Illuminate\Http\Request;
 
@@ -144,24 +147,78 @@ class ProcessController extends Controller{
 
           }
 
+          //Authorize DEVELOPER
+          Auth::loginUsingId(['samaccountname'=>$data['credential']['samaccountname']],false);
+// dd(Auth::attempt($data['credential']));
           // Attempt LDAP authentication Successful
-          if(Auth::attempt($data['credential'])){
 
-            // Check User Type
-            if($request->user_type == 'Researcher'){
+          //Set Model Researcher
+          $model['researcher'] = new ResearcherProcedure();
 
-              //Set Session
-              Session::put('employee_id',$request->email);
+          //Get Model Researcher
+          $data['researcher'] = $model['researcher']->readRecord(
+            [
+              'column'=>[
+                'employee_id'=>Auth::id()
+              ]
+            ]
+          );
 
-              //Redirect to Dashboard
-              return redirect()->intended(route($hyperlink['page']['home'][$this->user], ['employee_id' => $request->email]));
 
-            }
+          //If Researc
+          if(!$data['researcher']){
 
-            //Redirect to Dashboard
-            return redirect()->intended(route($hyperlink['page']['home'][$this->user]));
+            //Return Message
+            return redirect()->back()
+                             ->withErrors(
+                                [
+                                  'error'=>'Researcher Not Exist'
+                                ]
+                              );
 
           }
+
+          //Set Model Researcher
+          $model['researcher'] = new ResearcherProcedure();
+
+          //Get Model Researcher
+          $data['researcher'] = $model['researcher']->readRecord(
+            [
+              'column'=>[
+                'employee_id'=>Auth::id()
+              ]
+            ]
+          );
+
+          //Get Status
+          switch($data['researcher']->status_name){
+
+
+            case 'verification':
+
+              //Return Message
+              return redirect()->back()
+                               ->withErrors(
+                                  [
+                                    'error'=>'Researcher Need Verification'
+                                  ]
+                                );
+            break;
+
+
+
+          }
+
+            //Set Session
+            // Session::put('employee_id',$request->email);
+
+            // //Redirect to Dashboard
+            // return redirect()->intended(route($hyperlink['page']['home'][$this->user], ['employee_id' => $request->email]));
+            //
+
+          //Redirect to Dashboard
+          return redirect()->intended(route($hyperlink['page']['home'][$this->user]));
+
 
         }
 

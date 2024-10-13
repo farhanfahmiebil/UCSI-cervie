@@ -5,19 +5,19 @@
     <head>
 
       {{-- Favicon --}}
-      @include(Config::get('routing.application.modules.dashboard.employee.layout').'.header.favicon.authorization')
+      @include(Config::get('routing.application.modules.dashboard.researcher.layout').'.header.favicon.authorization')
 
       {{-- Title --}}
-      @include(Config::get('routing.application.modules.dashboard.employee.layout').'.header.title.authorization')
+      @include(Config::get('routing.application.modules.dashboard.researcher.layout').'.header.title.authorization')
 
       {{-- Meta --}}
-      @include(Config::get('routing.application.modules.dashboard.employee.layout').'.header.meta.authorization')
+      @include(Config::get('routing.application.modules.dashboard.researcher.layout').'.header.meta.authorization')
 
       {{-- Style --}}
-      @include(Config::get('routing.application.modules.dashboard.employee.layout').'.header.style.authorization')
+      @include(Config::get('routing.application.modules.dashboard.researcher.layout').'.header.style.authorization')
 
       {{-- Script --}}
-      @include(Config::get('routing.application.modules.dashboard.employee.layout').'.header.script.authorization')
+      @include(Config::get('routing.application.modules.dashboard.researcher.layout').'.header.script.authorization')
 
     </head>
 

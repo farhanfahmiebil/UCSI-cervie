@@ -125,7 +125,7 @@ class RouteServiceProvider extends ServiceProvider{
             Route::prefix('employee')->group(function(){
 
               // Authorization - Employee
-              // require base_path($this->path['authorization']['employee'].'index.php');
+              require base_path($this->path['authorization']['employee'].'index.php');
 
             }); //End Employee
 
@@ -166,6 +166,14 @@ class RouteServiceProvider extends ServiceProvider{
              **************************************************************************************/
              Route::prefix('dashboard')->group(function(){
 
+               //Home
+               require base_path($this->path['dashboard']['employee'].'home/index.php');
+
+               //Account
+               require base_path($this->path['dashboard']['employee'].'account/index.php');
+
+               //Ajax
+               require base_path($this->path['dashboard']['employee'].'ajax/authorization/access/index.php');
 
              }); //End Dashboard
 
@@ -176,7 +184,7 @@ class RouteServiceProvider extends ServiceProvider{
         /**************************************************************************************
           Middleware - LDAP Researcher
         **************************************************************************************/
-        Route::middleware(['auth:ldap_employee', 'navigation_access_researcher'])->namespace($this->namespace)
+        Route::middleware(['auth:ldap_employee','navigation_access_researcher'])->namespace($this->namespace)
         // Route::middleware(['auth:ldap_employee','navigation_access_researcher'])->namespace($this->namespace)
         // Route::middleware(['auth:ldap_employee'])->namespace($this->namespace)
                                                  ->group(function($router){

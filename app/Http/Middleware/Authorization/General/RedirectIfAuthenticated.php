@@ -96,7 +96,7 @@ class RedirectIfAuthenticated{
 // dd($data->segments()[1]);
     switch($data->segments()[1]){
       case 'employee':
-        dd(1);
+        // dd(\Auth::guard('ldap_employee')->check());
         //Employee Not Authorize
         if(\Auth::guard('ldap_employee')->check()){
 

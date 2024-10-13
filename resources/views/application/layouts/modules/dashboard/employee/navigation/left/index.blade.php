@@ -4,18 +4,18 @@
   <!-- sidebar brand -->
   <div class="brand">
     <a href="index.html" class="logo">
-      <img src="{{ asset('images/logo/ucsi_group/logo_bg_transparent_with_text_white.png') }}" class="d-none d-md-block me-4" alt="USCI Hotel" />
-      <img src="{{ asset('images/logo/ucsi_group/logo_bg_transparent_with_text_white.png') }}" class="d-block d-md-none me-4" alt="USCI Hotel" />
+      <img src="{{ asset('images/logo/ucsi_education/logo_with_text_color_white.png') }}" class="d-none d-md-block me-4" alt="USCI Hotel" />
+      <img src="{{ asset('images/logo/ucsi_education/logo_with_text_color_white.png') }}" class="d-block d-md-none me-4" alt="USCI Hotel" />
     </a>
   </div>
   <!-- end sidebar brand -->
 
   <!-- sidebar quicklinks -->
-  <div class="sidebar-quick-links">
-    <h6 class="fw-light mt-5 mb-3 text-center text-white">
+  <!-- <div class="sidebar-quick-links"> -->
+    <!-- <h6 class="fw-light mt-5 mb-3 text-center text-white">
       Quick Links
-    </h6>
-    <div class="quick-links">
+    </h6> -->
+    <!-- <div class="quick-links">
       <a href="{{ route($hyperlink['navigation']['authorization']['employee']['sidebar']['quick_link']['account']['profile']) }}" class="shade-dark" data-bs-toggle="tooltip" data-bs-title="Profile"
         data-bs-custom-class="custom-tooltip-red">
         <i class="bi bi-person-fill"></i>
@@ -28,8 +28,8 @@
         data-bs-custom-class="custom-tooltip-red">
         <i class="bi bi-calendar4"></i>
       </a>
-    </div>
-  </div>
+    </div> -->
+  <!-- </div> -->
   <!-- end sidebar quicklinks -->
 
   <!-- sidebar menu -->
@@ -50,6 +50,7 @@
 
         @php
           $navigation['module'] = false;
+          $dropdown_item = null;
         @endphp
 
         {{-- Check Module Company Exist --}}
@@ -76,103 +77,118 @@
                 {{-- Check Module Company ID Matched --}}
                 @if($navigation['module']['main']->module_company_id == $navigation['access']['company']['main']->module_company_id)
 
+                  @php
+
+                    $dropdown_item['main'] = collect($access['module']['sub']['main'])
+                        ->where('module_company_id', $navigation['module']['main']->module_company_id)
+                        ->count();
+
+                  @endphp
+
                   <!-- module -->
-                  <li class="{{ ((count($access['module']['sub']) >=1 )?'sidebar-dropdown':'') }}">
+                  <li class="{{ (($dropdown_item['main'] )?'sidebar-dropdown main':'') }}">
                     <a href="#">
                       <i class="{{ $navigation['module']['main']->module_icon }}"></i>
-                      <span class="menu-text">{{ $navigation['module']['main']->module_name }}</span>
+                      <span class="menu-text">{{ $navigation['module']['main']->module_name }} {{$dropdown_item['main'] }}</span>
                     </a>
 
-                    <!-- module sub -->
-                    <div class="sidebar-submenu">
+                    {{-- Check Module Sub Exist --}}
+                    @if($dropdown_item['main'] >= 1)
 
-                      <ul class="pt-0 ms-0">
-                        @php
-                        $dropdown_item = null;
-                        @endphp
-                        {{-- Check Module Sub Exist --}}
-                        @if(count($access['module']['sub']) >= 1)
+                      {{-- Get Module Sub --}}
+                      @foreach($access['module']['sub']['main'] as $navigation['module']['sub']['main'])
 
-                          {{-- Get Module Sub --}}
-                          @foreach($access['module']['sub']['main'] as $navigation['module']['sub']['main'])
+                        <!-- module sub -->
+                        <div class="sidebar-submenu main">
 
-                            {{-- Check Module ID Matched --}}
-                            @if($navigation['module']['main']->module_company_id == $navigation['module']['sub']['main']->module_company_id && $navigation['module']['main']->module_id == $navigation['module']['sub']['main']->module_id)
+                          <ul class="pt-0 ms-0">
 
-                              {{-- Check Module Sub Item Exist --}}
-                              @if(count($access['module']['sub']['item']) >= 1)
+                              {{-- Check Module Company ID Matched --}}
+                              @if($navigation['module']['main']->module_company_id == $navigation['module']['sub']['main']->module_company_id)
 
-                              @php
+                                @php
 
+                                  $dropdown_item['sub'] = collect($access['module']['sub']['item'])
+                                      ->where('module_sub_id', $navigation['module']['sub']['main']->module_sub_id)
+                                      ->count();
 
-                                $dropdown_item = collect($access['module']['sub']['item'])
-                                    ->where('module_sub_id', $navigation['module']['sub']['main']->module_sub_id)
-                                    ->count();
-
-                              @endphp
-
-                              @endif
-                              {{-- End Check Module Sub Item Exist --}}
-
-                              <!-- module sub -->
-                              <li class="{{ (($dropdown_item )?'sidebar-dropdown':'') }}">
-                                <a class="ps-5" href="{{ (($dropdown_item)?'#':url($navigation['module']['sub']['main']->module_sub_hyperlink)) }}">
-                                  <i class="{{ $navigation['module']['sub']['main']->module_sub_icon }}"></i>
-                                  <span class="menu-text">{{ $navigation['module']['sub']['main']->module_sub_name }}</span>
-                                </a>
-
-                                {{-- Check Module Sub Item Exist --}}
-                                @if(count($access['module']['sub']['item']) >= 1)
+                                @endphp
 
                                 <!-- module sub -->
-                                <div class="sidebar-submenu">
+                                <li class="{{ (($dropdown_item['sub'] )?'sidebar-dropdown sub_1':'') }}">
+                                  <a class="ps-5" href="{{ (($dropdown_item['sub'])?'#':url($navigation['module']['sub']['main']->module_sub_hyperlink)) }}">
+                                    <i class="{{ $navigation['module']['sub']['main']->module_sub_icon }}"></i>
+                                    <span class="menu-text">{{ $navigation['module']['sub']['main']->module_sub_name }}</span>
+                                  </a>
 
-                                  <ul>
-                                    {{-- Get Module Sub Item --}}
-                                    @foreach($access['module']['sub']['item'] as $navigation['module']['sub']['item'])
+                                  {{-- Check Module ID Matched --}}
+                                  @if($navigation['module']['main']->module_id == $navigation['module']['sub']['main']->module_id)
 
-                                      {{-- Check Module ID Item Matched --}}
-                                      @if($navigation['module']['sub']['main']->module_sub_id == $navigation['module']['sub']['item']->module_sub_id)
+                                    <!-- module sub -->
+                                    <li class="{{ (($dropdown_item['sub'] )?'sidebar-dropdown sub_1':'') }}">
+                                      <a class="ps-5" href="{{ (($dropdown_item['sub'])?'#':url($navigation['module']['sub']['main']->module_sub_hyperlink)) }}">
+                                        <i class="{{ $navigation['module']['sub']['main']->module_sub_icon }}"></i>
+                                        <span class="menu-text">{{ $navigation['module']['sub']['main']->module_sub_name }}</span>
+                                      </a>
 
-                                      <li class="">
-                                        <a class="ps-5" href="{{ (($navigation['module']['sub']['item']->module_sub_item_hyperlink)?url($navigation['module']['sub']['item']->module_sub_item_hyperlink):'#') }}">
-                                          <i class="{{ $navigation['module']['sub']['item']->module_sub_item_icon }} ms-3"></i>
-                                          <small class="menu-text">{{ $navigation['module']['sub']['item']->module_sub_item_name }}</small>
-                                        </a>
-                                      </li>
+                                      {{-- Check Module Sub Item Exist --}}
+                                      @if(count($access['module']['sub']['item']) >= 1)
+
+                                        <!-- module sub -->
+                                        <div class="sidebar-submenu sub_1">
+
+                                          <ul>
+
+                                            {{-- Get Module Sub Item --}}
+                                            @foreach($access['module']['sub']['item'] as $navigation['module']['sub']['item'])
+
+                                              {{-- Check Module ID Item Matched --}}
+                                              @if($navigation['module']['sub']['main']->module_sub_id == $navigation['module']['sub']['item']->module_sub_id)
+
+                                                <li>
+                                                  <a class="ps-5 py-0" href="{{ (($navigation['module']['sub']['item']->module_sub_item_hyperlink)?url($navigation['module']['sub']['item']->module_sub_item_hyperlink):'#') }}">
+                                                    <i class="{{ $navigation['module']['sub']['item']->module_sub_item_icon }} ms-3"></i>
+                                                    <small class="menu-text">{{ $navigation['module']['sub']['item']->module_sub_item_name }}</small>
+                                                  </a>
+                                                </li>
+
+                                              @endif
+                                              {{-- End Check Module ID Item Matched --}}
+
+                                            @endforeach
+                                            {{-- End Get Module Sub Item --}}
+
+                                          </ul>
+
+                                        </div>
+                                        <!-- end module sub -->
 
                                       @endif
-                                      {{-- End Check Module ID Item Matched --}}
+                                      {{-- End Check Module Sub Item Exist --}}
 
-                                    @endforeach
-                                    {{-- End Get Module Sub Item --}}
+                                    </li>
+                                    <!-- end module sub -->
 
+                                  @endif
+                                  {{-- End Check Module ID Matched --}}
 
-
-                                  </ul>
-
-                                </div>
-                                <!-- end module sub -->
-
-                                @endif
-                                {{-- End Check Module Sub Item Exist --}}
+                              @endif
+                              {{-- End Check Module Sub Exist --}}
 
                               </li>
-                              <!-- end module sub -->
 
-                            @endif
-                            {{-- End Check Module ID Matched --}}
+                          </ul>
 
-                          @endforeach
-                          {{-- End Get Module Sub --}}
+                        </div>
+                        <!-- end module sub -->
 
-                        @endif
-                        {{-- End Check Module Sub Exist --}}
+                      @endforeach
+                      {{-- End Get Module Sub --}}
 
-                      </ul>
+                    @endif
+                    {{-- End Check Module Sub Exist --}}
 
-                    </div>
-                    <!-- end module sub -->
+
 
                   </li>
                   <!-- end module -->
@@ -191,6 +207,7 @@
 
         @endif
         {{-- End Check Module Company Exist --}}
+
 
         @if(!$navigation['module'])
         @if(in_array(Auth::id(),array('414591','41503','40459','41576','41460','DEVELOPER')))
@@ -311,39 +328,8 @@
 				</li> -->
         @endif
 
-        <!-- module company -->
-        <li class="pt-3 border-bottom">
-          <a href="#">
-            <i class="bi bi-app-indicator"></i>
-            <span class="menu-text">MAIN</span>
-          </a>
-        </li>
-        <!-- end module company -->
-
-        <!-- user -->
-        <li class="sidebar-dropdown">
-          <a href="#">
-            <i class="bi bi-person-square"></i>
-            <span class="menu-text">Users</span>
-          </a>
-          <div class="sidebar-submenu" style="display: none;">
-            <ul>
-
-              <!-- employee -->
-              <li>
-                <a href="{{route(config('routing.application.modules.dashboard.employee.name').'.users.manage.employee.list')}}">
-                  <i class="bi bi-person"></i>
-                  <span class="menu-text">Employee</span>
-                </a>
-              </li>
-              <!-- end employee -->
-
-            </ul>
-          </div>
-        </li>
-        <!-- end user -->
-
       </ul>
+
     </div>
     <!-- end sidebar menu scroll -->
 

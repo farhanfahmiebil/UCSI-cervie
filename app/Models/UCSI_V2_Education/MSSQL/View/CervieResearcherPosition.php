@@ -8,6 +8,9 @@ use DB;
 //Get Model
 use Illuminate\Database\Eloquent\Model;
 
+//Get Model Setting
+use App\Models\UCSI_V2_General\MSSQL\View\Setting;
+
 //Get Class
 class CervieResearcherPosition extends Model{
 
@@ -25,6 +28,28 @@ class CervieResearcherPosition extends Model{
    */
   protected $table = '';
 
+  //Set Default
+  public $default = [
+    'pagination'=>[
+      'size'=>5
+    ]
+  ];
+
+  /**************************************************************************************
+    Get Pagination
+  **************************************************************************************/
+  public function getPagination($data = null){
+
+    $model['setting'] = new Setting();
+
+    if(isset($data['manual']) && $data['manual'] != false){
+      return $this->default['pagination']['size'];
+    }
+
+    return $model['setting']->getPagination();
+
+  }
+
   /**************************************************************************************
     Get List
   **************************************************************************************/
@@ -37,29 +62,23 @@ class CervieResearcherPosition extends Model{
     $result = DB::connection($this->connection)->table($this->table)
                                                ->where($this->table.'.employee_id',$data['column']['employee_id']);
 
-    //Get Result
-    $result = $result->get();
+    //Check Type For Soft and Hard Delete
+    if(isset($data['eloquent']) != null && $data['eloquent'] == 'pagination'){
 
-    //Return Result
-    return $result;
+      //Get Result
+      $result = $result->paginate(
+        $perPage = $this->getPagination(),
+        $columns = ['*'],
+        $pageName = 'position'
+      );
 
-  }
 
-  /**************************************************************************************
-    View Selected
-  **************************************************************************************/
-  public function viewSelected($data){
+    }else{
 
-    //Set Table
-    $this->table = 'view_cervie_researcher_position';
+      //Get Result
+      $result = $result->get();
 
-    //Get Query
-    $result = DB::connection($this->connection)->table($this->table)
-                                               ->where($this->table.'.employee_id',$data['column']['employee_id'])
-                                               ->where($this->table.'.position_id',$data['column']['position_id']);
-
-    //Get Result
-    $result = $result->first();
+    }
 
     //Return Result
     return $result;

@@ -8,5 +8,5 @@
 /* Change the background color of the select box */
 .select2-container--default .select2-selection--single {
     background-color: #ffffff; /* White background for the selected item */
-    border: 1px solid #f1f6f8; /* Light grey border */
+    border: 1px solid #cccccc; /* Light grey border */
 }

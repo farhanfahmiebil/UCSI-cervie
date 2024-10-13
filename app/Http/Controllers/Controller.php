@@ -162,7 +162,7 @@ class Controller extends BaseController{
               'right'=>[
                 'home'=> config('routing.application.modules.dashboard.researcher.name').'.home',
                 'publication'=>config('routing.application.modules.dashboard.researcher.name').'.publication.list',
-                'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.list',
+                'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.home.list',
                 'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general.information.home.list'
               ],
               'home'=>config('routing.application.modules.dashboard.employee.name').'.home',

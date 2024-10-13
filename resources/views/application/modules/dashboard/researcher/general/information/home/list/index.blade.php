@@ -20,11 +20,26 @@
       {{-- Area Interest --}}
       @include($page['sub'].'.area_interest')
 
+    </div>
+    <!-- end row 2 -->
+
+    <!-- row 3 -->
+    <div class="row">
+
       {{-- Work Experience --}}
       @include($page['sub'].'.work_experience')
 
     </div>
-    <!-- end row 2 -->
+    <!-- end row 3 -->
+
+    <!-- row 4 -->
+    <div class="row">
+
+      {{-- Work Experience --}}
+      @include($page['sub'].'.professional_membership')
+
+    </div>
+    <!-- end row 4 -->
 
   </div>
   <!-- end content -->

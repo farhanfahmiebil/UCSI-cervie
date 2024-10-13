@@ -1,5 +1,5 @@
 <!-- col -->
-<div class="col-sm-6 grid-margin d-flex stretch-card">
+<div class="col-sm-12 grid-margin d-flex stretch-card">
 
   <!-- card -->
   <div class="card">
@@ -30,7 +30,7 @@
       <div class="table-responsive pt-5">
 
         <!-- table -->
-        <table class="table">
+        <table class="table table-bordered">
 
           <!-- thead -->
           <thead>
@@ -87,18 +87,21 @@
                 <tr id="{{ $value->work_experience_id }}">
                   <td>{{ ($key+1) }}</td>
                   <td>
-                    <span>{{ $value->company_name }}</span>
-                    <br>
-                    <span>{{ $value->designation }}</span>
+                    <small>
+                      <span>{{ $value->company_name }}</span>
+                      <br>
+                      <span>({{ $value->designation }})</span>
+                    </small>
                   </td>
-                  <td>{{ $value->year_start }} - {{ (($value->is_working_here)?'Current':$value->year_end)  }}</td>
+                  <td>{{ $value->year_start }} - {{ (($value->is_working_here)?'Current':$value->year_end) }}</td>
+                  <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
                   <td>
 
-                    <a href="{{ route($hyperlink['page']['work']['experience']['view'],['id'=>$value->work_experience_id]) }}" class="btn btn-secondary">
+                    <a href="{{ route($hyperlink['page']['work']['experience']['view'],['id'=>$value->work_experience_id]) }}" class="btn btn-sm btn-secondary">
                       <i class="mdi mdi-pencil"></i>
                     </a>
 
-                    <a href="#" class="btn btn-danger">
+                    <a data-href="{{ route($hyperlink['page']['work']['experience']['delete']) }}" class="btn-delete-area-interest btn-sm btn btn-danger">
                       <i class="mdi mdi-trash-can text-white"></i>
                     </a>
 
@@ -110,7 +113,7 @@
 
             @else
 
-              <tr>
+              <tr class="row-center">
                 <td colspan="{{ count($data['table']['column']['cervie']['researcher']['work']['experience']) }}">No Data</td>
               </tr>
 
@@ -123,6 +126,22 @@
         </table>
         <!-- end table -->
 
+        <!-- pagination -->
+        <div class="col-12 pt-3">
+
+          {{-- Check Main Data Exist --}}
+          @if(count($data['main']['cervie']['researcher']['work']['experience']) >= 1)
+
+            <!-- paginate -->
+            {{ $data['main']['cervie']['researcher']['work']['experience']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+            <!-- end paginate -->
+
+          @endif
+          {{-- End Check Main Data Exist --}}
+
+        </div>
+        <!-- end pagination -->
+
       </div>
       <!-- end table responsive -->
 
@@ -134,3 +153,56 @@
 
 </div>
 <!-- end col -->
+
+<script type="text/javascript">
+
+  /**************************************************************************************
+    Document On Load
+  **************************************************************************************/
+  $(document).ready(function($){
+
+    /**************************************************************************************
+      Modal Delete
+    **************************************************************************************/
+    $('[class*="btn-delete-work-experience"]').on('click',function(event){
+
+      //Set Parent Row
+      var parent_row = $(this).closest('tr').attr('id');
+
+      //Set Form Token
+      var form_token = '{{ $form_token["delete"] }}';
+
+      //Set Hyperlink
+      var hyperlink  = $(this).data('href');
+          hyperlink += '?id='+parent_row;
+          hyperlink += '&form_token='+form_token;
+
+      //Set Alert
+      Swal.fire({
+        title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+        showDenyButton:true,
+        confirmButtonText:'Yes',
+        denyButtonText:'Cancel',
+        icon:'error'
+      }).then((result) => {
+
+        //If Confirmed
+        if(result.isConfirmed){
+
+          //Redirect
+          window.location.href = hyperlink;
+
+        }else
+
+        //If Denied
+        if(result.isDenied){
+
+          //Alert Message
+          Swal.fire('Cancel','','');
+        }
+
+      });
+    });
+
+  });
+</script>
