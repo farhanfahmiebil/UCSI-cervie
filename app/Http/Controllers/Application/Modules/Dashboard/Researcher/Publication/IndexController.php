@@ -454,7 +454,11 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set Path Folder
+<<<<<<< Updated upstream
             $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$result['main']['create']->last_insert_id.'/';
+=======
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/publication/'.$result['main']['create']->last_insert_id.'/';
+>>>>>>> Stashed changes
 
             //Set Modified File Name Without Extension (Using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($key+1);
@@ -486,7 +490,11 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
+<<<<<<< Updated upstream
                   'table_name'=>'cervie_researcher_area_interest',
+=======
+                  'table_name'=>'cervie_researcher_publication',
+>>>>>>> Stashed changes
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -673,7 +681,11 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
+<<<<<<< Updated upstream
                      ->with('message','Research Publication Deleted');
+=======
+                     ->with('message','Publication Deleted');
+>>>>>>> Stashed changes
 
   }
 

@@ -8,41 +8,17 @@
     <!-- row 1 -->
     <div class="row">
 
-      {{-- Position --}}
-      @include($page['sub'].'.researcher_position')
+      {{-- Recognition --}}
+      @include($page['sub'].'.recognition')
 
     </div>
     <!-- end row 1 -->
 
-    <!-- row 2 -->
-    <div class="row">
-
-      {{-- Area Interest --}}
-      @include($page['sub'].'.area_interest')
-
-    </div>
-    <!-- end row 2 -->
-
-    <!-- row 3 -->
-    <div class="row">
-
-      {{-- Work Experience --}}
-      @include($page['sub'].'.work_experience')
-
-    </div>
-    <!-- end row 3 -->
-
-    <!-- row 4 -->
-    <div class="row">
-
-      {{-- Work Experience --}}
-      @include($page['sub'].'.professional_membership')
-
-    </div>
-    <!-- end row 4 -->
-
   </div>
   <!-- end content -->
+
+  {{-- Pop Alert --}}
+  @include($hyperlink['navigation']['layout']['dashboard']['researcher']['modal']['pop_alert'])
 
   <script type="text/javascript">
 
