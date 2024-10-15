@@ -259,7 +259,7 @@
                               @if(Storage::exists($asset['document'].$value->file_id.'.'.$value->file_extension))
 
                                 <!-- hyperlink -->
-                                <a href="{{ $hyperlink['document'].$value->file_id.'.'.$value->file_extension }}" class="btn btn-primary">
+                                <a href="{{ $hyperlink['document'].$value->file_id.'.'.$value->file_extension }}" class="btn btn-primary" target="_blank">
                                   <i class="mdi mdi-link"></i>
                                 </a>
                                 <!-- end hyperlink -->
@@ -286,7 +286,7 @@
                         <td class="row-number">1</td>
                         <td>
                           <div class="form-group">
-                            <label for="file_name">File Name for Evidence</label>
+                            <label for="document_name">File Name for Evidence</label>
                             <input type="text" class="form-control" name="document_name[]">
                           </div>
                           <div class="form-group">
@@ -338,7 +338,7 @@
                           new_row += '<td class="row-number"></td>';
                           new_row += '<td>';
                           new_row += '<div class="form-group">';
-                          new_row += '<label for="file_name">File Name for Evidence</label>';
+                          new_row += '<label for="document_name">File Name for Evidence</label>';
                           new_row += '<input type="text" class="form-control" name="document_name[]">';
                           new_row += '</div>';
                           new_row += '<div class="form-group">';

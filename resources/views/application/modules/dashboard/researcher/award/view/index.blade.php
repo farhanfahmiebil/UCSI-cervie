@@ -191,7 +191,7 @@
                               @if(Storage::exists($asset['document'].$value->file_id.'.'.$value->file_extension))
 
                                 <!-- hyperlink -->
-                                <a href="{{ $hyperlink['document'].$value->file_id.'.'.$value->file_extension }}" class="btn btn-primary">
+                                <a href="{{ $hyperlink['document'].$value->file_id.'.'.$value->file_extension }}" class="btn btn-primary" target="_blank">
                                   <i class="mdi mdi-link"></i>
                                 </a>
                                 <!-- end hyperlink -->

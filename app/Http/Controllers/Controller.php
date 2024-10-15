@@ -164,14 +164,11 @@ class Controller extends BaseController{
                 'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general.information.home.list',
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.home.list',
                 'publication'=>config('routing.application.modules.dashboard.researcher.name').'.publication.list',
-<<<<<<< Updated upstream
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.home.list',
-                'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general.information.home.list'
-=======
+                'intellectual_property'=>config('routing.application.modules.dashboard.researcher.name').'.intellectual.property.home.list',
                 'award'=>config('routing.application.modules.dashboard.researcher.name').'.award.list',
                 'stewardship'=>config('routing.application.modules.dashboard.researcher.name').'.stewardship.list',
                 'recognition'=>config('routing.application.modules.dashboard.researcher.name').'.recognition.list',
->>>>>>> Stashed changes
               ],
               'home'=>config('routing.application.modules.dashboard.employee.name').'.home',
             ],

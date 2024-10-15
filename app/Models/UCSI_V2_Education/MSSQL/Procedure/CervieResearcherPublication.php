@@ -42,7 +42,8 @@ class CervieResearcherPublication extends Model{
                                         ?,?,?,?,?,
                                         ?,?,?,?,?,
                                         ?,?,?,?,?,
-                                        ?,?,?,?,?, @id OUTPUT;
+                                        ?,?,?,?,?,
+                                        ?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -62,6 +63,7 @@ class CervieResearcherPublication extends Model{
         $data['column']['doi'],
         $data['column']['quartile_id'],
         $data['column']['academic_indexing_body_id'],
+        $data['column']['academic_indexing_body_other'],
         $data['column']['isbn'],
         $data['column']['issn'],
         $data['column']['eissn'],
@@ -168,7 +170,7 @@ class CervieResearcherPublication extends Model{
                                     ?,?,?,?,?,
                                     ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?';
+                                    ?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -188,6 +190,7 @@ class CervieResearcherPublication extends Model{
         $data['column']['doi'],
         $data['column']['quartile_id'],
         $data['column']['academic_indexing_body_id'],
+        $data['column']['academic_indexing_body_other'],
         $data['column']['isbn'],
         $data['column']['issn'],
         $data['column']['eissn'],

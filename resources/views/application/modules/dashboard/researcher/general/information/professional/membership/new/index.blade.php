@@ -137,7 +137,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="date_start">Date Start</label>
-                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ ((!empty($data['main']->date_start))?(\Carbon\Carbon::parse(old('date_start'))->format('Y-m-d')):'') }}" placeholder="YYYY">
+                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ ((!empty(old('date_start')))?(\Carbon\Carbon::parse(old('date_start'))->format('Y-m-d')):'') }}" placeholder="YYYY">
                   </div>
                 </div>
                 <!-- end year start -->
@@ -158,7 +158,7 @@
                       </div>
                     </div>
 
-                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ ((!empty($data['main']->date_end))?(\Carbon\Carbon::parse(old('date_end'))->format('Y-m-d')):'') }}" placeholder="YYYY">
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ ((!empty(old('date_end')))?(\Carbon\Carbon::parse(old('date_end'))->format('Y-m-d')):'') }}" placeholder="YYYY">
                   </div>
                 </div>
                 <!-- end year end -->
@@ -249,7 +249,7 @@
                           <td class="row-number">1</td>
                           <td>
                             <div class="form-group">
-                              <label for="file_name">File Name for Evidence</label>
+                              <label for="document_name">File Name for Evidence</label>
                               <input type="text" class="form-control" name="document_name[]">
                             </div>
                             <div class="form-group">
@@ -302,7 +302,7 @@
                           new_row += '<td class="row-number"></td>';
                           new_row += '<td>';
                           new_row += '<div class="form-group">';
-                          new_row += '<label for="file_name">File Name for Evidence</label>';
+                          new_row += '<label for="document_name">File Name for Evidence</label>';
                           new_row += '<input type="text" class="form-control" name="document_name[]">';
                           new_row += '</div>';
                           new_row += '<div class="form-group">';

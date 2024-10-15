@@ -155,63 +155,6 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Define validation rules
-    $rules = [
-      'company_name'=>['required'],
-      'designation'=>['required'],
-      'year_start'=>['nullable', 'regex:/^\d{4}$/'], // 4-digit year (nullable)
-      'year_end'=>['nullable', 'regex:/^\d{4}$/', 'after_or_equal:year_start'], // 4-digit year (nullable)
-      'is_working_here'=>['boolean'], // Not required, but must be boolean if present
-      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
-      'document_name.*'=>['required'], // Validate that each file has an associated name
-    ];
-
-    //Custom validation messages
-    $messages = [
-      'company_name.required'=>'Company Name is required',
-      'designation.required'=>'Designation is required',
-      'year_start.regex'=>'Year Start must be a 4-digit year',
-      'year_end.regex'=>'Year End must be a 4-digit year',
-      'year_end.after'=>'Year End must be after Year Start',
-    ];
-
-    //If Document Name Exist
-    if($request->has('document_name')){
-
-      //Get Document Name
-      foreach($request->document_name as $key=>$value){
-        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
-        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
-        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
-        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
-      }
-
-    }
-
-    //Create A Validator Instance
-    $validator = Validator::make($request->all(), $rules, $messages);
-
-    //Custom rule: Either Year End Or Is Working Here Must Be Present (But Not Both)
-    $validator->after(function ($validator) use ($request) {
-
-      $year_end = $request->input('year_end');
-      $is_working_here = $request->input('is_working_here');
-
-      //Check If Both Year End And Is Working Here Are Empty
-      if(empty($year_end) && empty($is_working_here)){
-        $validator->errors()->add('year_or_work', 'Either Year End or Is Working Here must be provided.');
-      }
-
-      //Check If Both Fields Are Filled
-      if(!empty($year_end) && !empty($is_working_here)){
-        $validator->errors()->add('year_or_work', 'Only one of Year End or Is Working Here should be provided.');
-      }
-
-    });
-
-    //Run The Validation
-    $validator->validate();
-
     //If Form Token Exist
 		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
 
@@ -220,6 +163,9 @@ class IndexController extends Controller{
 
       //Create
       case 'create':
+
+        //Get Validate Data
+        $this->getValidateData($request);
 
         //Set Model
         $model['cervie']['researcher']['work']['experience'] = new CervieResearcherWorkExperienceProcedure();
@@ -588,61 +534,8 @@ class IndexController extends Controller{
       //Create
       case 'update':
 
-        //Define validation rules
-        $rules = [
-          'company_name'=>['required'],
-          'designation'=>['required'],
-          'year_start'=>['nullable', 'regex:/^\d{4}$/'], // 4-digit year (nullable)
-          'year_end'=>['nullable','regex:/^\d{4}$/','after_or_equal:year_start'], // 4-digit year (nullable)
-          'is_working_here'=>['boolean'], // Not required, but must be boolean if present
-          'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
-          'document_name.*'=>['required'], // Validate that each file has an associated name
-        ];
-
-        //Custom validation messages
-        $messages = [
-          'company_name.required'=>'Company Name is Required',
-          'designation.required'=>'Designation is Required',
-          'year_start.regex'=>'Year Start must be a 4-digit year',
-          'year_end.regex'=>'Year End must be a 4-digit year',
-          'year_end.after'=>'Year End must be after Year Start',
-        ];
-
-        //Add dynamic error messages for each file and file_name
-        if($request->has('document_name')){
-
-          //Get Document Name
-          foreach($request->document_name as $key=>$value){
-            $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
-            $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
-            $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
-            $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
-          }
-
-        }
-
-        // Create a validator instance
-        $validator = Validator::make($request->all(),$rules,$messages);
-
-        // Custom rule: either year_end or is_working_here must be present (but not both)
-        $validator->after(function ($validator) use ($request) {
-          $year_end = $request->input('year_end');
-          $is_working_here = $request->input('is_working_here');
-
-          // Check if both year_end and is_working_here are empty
-          if(empty($year_end) && empty($is_working_here)){
-            $validator->errors()->add('year_or_work', 'Either Year End or Is Working Here must be provided.');
-          }
-
-          // Check if both fields are filled
-          if(!empty($year_end) && !empty($is_working_here)){
-            $validator->errors()->add('year_or_work', 'Only one of Year End or Is Working Here should be provided.');
-          }
-
-        });
-
-        // Run the validation
-        $validator->validate();
+        //Get Validate Data
+        $this->getValidateData($request);
 
         //Set Model
         $model['cervie']['researcher']['work']['experience'] = new CervieResearcherWorkExperienceProcedure();
@@ -751,6 +644,72 @@ class IndexController extends Controller{
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
                      ->with('message','Work Experience Saved');
+
+  }
+
+  /**************************************************************************************
+ 		Validate Data
+ 	**************************************************************************************/
+  public function getValidateData(Request $request){
+
+    //Define validation rules
+    $rules = [
+      'company_name'=>['required'],
+      'designation'=>['required'],
+      'year_start'=>['nullable', 'regex:/^\d{4}$/'], // 4-digit year (nullable)
+      'year_end'=>['nullable','regex:/^\d{4}$/','after_or_equal:year_start'], // 4-digit year (nullable)
+      'is_working_here'=>['boolean'], // Not required, but must be boolean if present
+      'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
+      'document_name.*'=>['required'], // Validate that each file has an associated name
+    ];
+
+    //Custom validation messages
+    $messages = [
+      'company_name.required'=>'Company Name is Required',
+      'designation.required'=>'Designation is Required',
+      'year_start.regex'=>'Year Start must be a 4-digit year',
+      'year_end.regex'=>'Year End must be a 4-digit year',
+      'year_end.after'=>'Year End must be after Year Start',
+    ];
+
+    //Add dynamic error messages for each file and file_name
+    if($request->has('document_name')){
+
+      //Get Document Name
+      foreach($request->document_name as $key=>$value){
+
+        $rules['document.' . $key] = ['required','mimes:pdf','max:3072'];
+
+        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
+        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
+        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
+        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
+      }
+
+    }
+
+    // Create a validator instance
+    $validator = Validator::make($request->all(),$rules,$messages);
+
+    // Custom rule: either year_end or is_working_here must be present (but not both)
+    $validator->after(function ($validator) use ($request) {
+      $year_end = $request->input('year_end');
+      $is_working_here = $request->input('is_working_here');
+
+      // Check if both year_end and is_working_here are empty
+      if(empty($year_end) && empty($is_working_here)){
+        $validator->errors()->add('year_or_work', 'Either Year End or Is Working Here must be provided.');
+      }
+
+      // Check if both fields are filled
+      if(!empty($year_end) && !empty($is_working_here)){
+        $validator->errors()->add('year_or_work', 'Only one of Year End or Is Working Here should be provided.');
+      }
+
+    });
+
+    // Run the validation
+    $validator->validate();
 
   }
 

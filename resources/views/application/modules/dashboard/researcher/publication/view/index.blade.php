@@ -43,23 +43,8 @@
                 <!-- publication type id -->
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label for="publication_type_id">Publication Type</label>
-                    <select class="form-control select2" id="publication_type_id" name="publication_type_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Publication Type Exist --}}
-                      @if(count($data['general']['publication']['type']) > 0)
-
-                        {{-- Get General Publication Type Data --}}
-                        @foreach($data['general']['publication']['type'] as $key=>$value)
-                          <option data-href="{{ route($hyperlink['page']['new'],['publication_type_id'=>$value->publication_type_id]) }}" value="{{ $value->publication_type_id }}" {{ (($data['main']->publication_type_id == $value->publication_type_id)?'selected':((request()->route('publication_type_id') == $value->publication_type_id)?'selected':'')) }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Publication Type Data --}}
-
-                      @endif
-                      {{-- End Check General Publication Type Exist --}}
-
-                    </select>
+                    <label for="publication_type_name">Publication Type</label>
+                    <input type="text" class="form-control" name="publication_type_name" value="{{ $data['main']->publication_type_name }}">
                   </div>
                 </div>
                 <!-- end publication type id -->
@@ -123,6 +108,7 @@
                 <div class="col-md-12">
                   <a href="{{ route($hyperlink['page']['list']) }}" class="btn btn-light"><i class="mdi mdi-arrow-left"></i>Back</a>
                   <input type="hidden" id="id" name="id" value="{{ $data['main']->publication_id }}">
+                  <input type="hidden" id="publication_type_id" name="publication_type_id" value="{{ $data['main']->publication_type_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>

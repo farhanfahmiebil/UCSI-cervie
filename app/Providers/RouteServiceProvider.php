@@ -219,6 +219,9 @@ class RouteServiceProvider extends ServiceProvider{
                 //Recognition
                 require base_path($this->path['dashboard']['researcher'].'recognition/index.php');
 
+                //Intellectual Property
+                require base_path($this->path['dashboard']['researcher'].'intellectual/property/index.php');
+
                 //Linkage
                 require base_path($this->path['dashboard']['researcher'].'linkage/index.php');
 
