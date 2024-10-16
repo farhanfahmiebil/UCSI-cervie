@@ -86,40 +86,54 @@
 
     $('.module_company').on('click',function(){
 
-      //Set Data ID
+      //Get ID
       var id = $(this).data('id');
 
-      $('.user_access .result div').remove();
+      //If the clicked module is already expanded, revert to the original state
+      if($(this).hasClass('expanded')){
 
-      //Toggle Col-12
-      $(this).toggleClass('col-lg-12');
+        //Toggle Class Display None
+        $('.user_access').toggleClass('d-none');
 
-      //Check Class Col-12 Exist
-      if($(this).hasClass('col-lg-12')){
+        //Remove Class Expanded
+        $(this).removeClass('expanded');  // Remove expanded state
+        $('.user_access .result div').remove();
+        // $(this).animate({width: 'auto'}, 350);  // Shrink back to original width
 
-        // If the clicked element has col-lg-12 class, expand the width to 100%
-        $(this).css('width','100%');
+        // Show all other hidden modules by sliding them back
+        $('.module_company').not(this).each(function() {
+         if (!$(this).is(':visible')) {
+           $(this).animate({width: 'show'}, 350);  // Ensure all hidden modules are shown
+         }
+        });
 
-        getModuleCompany(
-          {
-            'module_company_id':id
-          }
-        );
+        // Slide up the user access panel
+        $('.user_access').slideUp();
 
       }else{
 
-        // If the clicked element doesn't have col-lg-12 class, reset the width
-        $(this).delay(1000).css('width',''); // Reset width to default (empty string)
+        //Toggle Class Display None
+        $('.user_access').toggleClass('d-none');
 
+        //Add Class Expanded
+        $(this).addClass('expanded');
+
+        // Collapse all other modules except the clicked one
+        $('.module_company').not(this).each(function(){
+         if ($(this).is(':visible')) {
+           $(this).animate({width: 'hide'}, 350);  // Ensure other modules are hidden
+         }
+        });
+
+        // Show the user access area with slide down effect
+        $('.user_access').slideDown();
+
+        // Fetch module details
+        getModuleCompany({
+         'module_company_id': id
+        });
       }
-
-     // Toggle d-none class on other elements
-     $('.module_company').not(this).toggleClass('d-none');
-
-     $('.user_access').toggleClass('d-none');
-
     });
-
 
     function getModuleCompany(data){
 
@@ -161,7 +175,7 @@
 
              //Loop Data
              $.each(item.result,function(key,value){
-
+console.log(32);
                //Set Html Module
                $('.user_access .result').append(constructHTML(value));
 

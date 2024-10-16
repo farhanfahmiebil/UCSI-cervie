@@ -3,8 +3,22 @@
   position: absolute !important;
 }
 .sidebarMenuScroll,.sidebar-menu ul{
-height:100vh !important;
+/* height:100vh !important; */
+height: 100% !important;
 }
+
+.sidebar-wrapper {
+    width: 250px;
+    padding: 0;
+    min-height: 100vh; /* Ensures it expands with content */
+    background: #202020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    transition: left 0.3s ease, width 0.3s ease;
+}
+
 .sidebar-wrapper .brand{
   justify-content: center;
 }
