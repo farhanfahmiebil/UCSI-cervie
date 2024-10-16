@@ -165,7 +165,72 @@
                     <input type="number" class="form-control" id="quantum" name="quantum" value="{{ old('quantum') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end title -->
+                <!-- end quantum -->
+
+              </div>
+              <!-- end row 4 -->
+
+              <!-- row 5 -->
+              <div class="row">
+
+                <!-- sustainable development goal -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="sustainable_development_goal">Sustainable Development Goal</label>
+                    <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
+                      <option value="">--Please Select--</option>
+                      {{-- Check if Sustainable Development Goals exist --}}
+                      @if(count($data['general']['sustainable']['development']['goal']) > 0)
+
+                        @php
+                          // Get old values for sustainable development goals (array) if they exist
+                          $selected_sdg = old('sustainable_development_goal_id', []);
+                        @endphp
+
+                        {{-- Get Sustainable Development Goals Data --}}
+                        @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
+                          <option value="{{ $value->sustainable_development_goal_id }}"
+                            {{-- Check if this value was previously selected --}}
+                            {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
+                            {{ $value->code }} - {{ $value->name }}
+                          </option>
+                        @endforeach
+                        {{-- End Get Sustainable Development Goals Data --}}
+
+                      @endif
+                      {{-- End Check if Sustainable Development Goals exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end sustainable development goal -->
+
+              </div>
+              <!-- end row 5 -->
+
+              <!-- row 4 -->
+              <div class="row">
+
+                <!-- status  -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="status_id">Status</label>
+                    <select class="form-control select2" name="status_id">
+                      <option value="">--Please Select--</option>
+                      {{-- Check General Status Exist --}}
+                      @if(count($data['general']['status'])>0)
+
+                        {{-- Get General Status Data --}}
+                        @foreach($data['general']['status'] as $key=>$value)
+                          <option value="{{ $value->status_id }}" {{ ((old('status_id') == $value->status_id)?'selected':'') }}>{{ ucwords($value->status_name) }}</option>
+                        @endforeach
+                        {{-- End Get General Status Data --}}
+
+                      @endif
+                      {{-- End Check General Status Exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end status -->
 
               </div>
               <!-- end row 4 -->

@@ -169,6 +169,7 @@ class Controller extends BaseController{
                 'award'=>config('routing.application.modules.dashboard.researcher.name').'.award.list',
                 'stewardship'=>config('routing.application.modules.dashboard.researcher.name').'.stewardship.list',
                 'recognition'=>config('routing.application.modules.dashboard.researcher.name').'.recognition.list',
+                'grant'=>config('routing.application.modules.dashboard.researcher.name').'.grant.list',
               ],
               'home'=>config('routing.application.modules.dashboard.employee.name').'.home',
             ],

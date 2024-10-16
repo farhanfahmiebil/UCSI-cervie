@@ -22,7 +22,7 @@
             <div class="card-body">
 
               <!-- card title -->
-              <h4 class="card-title">Award Information</h4>
+              <h4 class="card-title">Grant Information</h4>
               <!-- end card title -->
 
               <!-- error -->
@@ -43,35 +43,50 @@
                 <!-- representation category id -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_category_id">Award Type</label>
-                    <select class="form-control select2" id="representation_category_id" name="representation_category_id">
+                    <label for="representation_category_id">Grant Category</label>
+                    <select class="form-control select2" id="grant_category_id" name="grant_category_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Representation Category Exist --}}
-                      @if(count($data['general']['representation']['category']) > 0)
+                      {{-- Check General Grant Category Exist --}}
+                      @if(count($data['general']['grant']['category']) > 0)
 
-                        {{-- Get General Representation Category Data --}}
-                        @foreach($data['general']['representation']['category'] as $key=>$value)
-                          <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
+                        {{-- Get General Grant Category Data --}}
+                        @foreach($data['general']['grant']['category'] as $key=>$value)
+                          <option value="{{ $value->grant_category_id }}" {{ (($data['main']->grant_category_id == $value->grant_category_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
-                        {{-- End Get General Representation Category Level Data --}}
+                        {{-- End Get General Grant Category Level Data --}}
 
                       @endif
-                      {{-- End Check General Representation Category Level Exist --}}
+                      {{-- End Check General Grant Category Level Exist --}}
 
                     </select>
                   </div>
                 </div>
-                <!-- end representation category id -->
+                <!-- end grant category id -->
 
-                <!-- date award -->
+                <!-- project role -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_award">Date Award</label>
-                    <input type="date" class="form-control" id="date_award" name="date_award" value="{{ \Carbon\Carbon::parse($data['main']->date_award)->format('Y-m-d') }}" placeholder="">
+                    <label for="project_role_id">Project Role</label>
+                    <select class="form-control select2" id="project_role_id" name="project_role_id">
+                      <option value="">-- Please Select --</option>
+
+                      {{-- Check General Grant Category Exist --}}
+                      @if(count($data['general']['project']['role']) > 0)
+
+                        {{-- Get General Grant Category Data --}}
+                        @foreach($data['general']['project']['role'] as $key=>$value)
+                          <option value="{{ $value->project_role_id }}" {{ (($data['main']->project_role_id == $value->project_role_id)?'selected':'') }}>{{ $value->name }}</option>
+                        @endforeach
+                        {{-- End Get General Project Role Data --}}
+
+                      @endif
+                      {{-- End Check General Project Role Exist --}}
+
+                    </select>
                   </div>
                 </div>
-                <!-- end date award -->
+                <!-- end project role -->
 
               </div>
               <!-- end row 1 -->
@@ -79,26 +94,148 @@
               <!-- row 2 -->
               <div class="row">
 
-                <!-- conferring body -->
+                <!-- date start -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="conferring_body">Conferring Body</label>
-                    <input type="text" class="form-control" id="conferring_body" name="conferring_body" value="{{ $data['main']->conferring_body }}" placeholder="">
+                    <label for="date_start">Date Start</label>
+                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ $data['main']->date_start }}" placeholder="">
                   </div>
                 </div>
-                <!-- end conferring body -->
+                <!-- end date start -->
 
-                <!-- title -->
+                <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="title">Award Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->title }}" placeholder="Award Title">
+                    <label for="date_end">Date End</label>
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ $data['main']->date_end }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end date end -->
+
+                </div>
+                <!-- end row 2 -->
+
+              <!-- row 3 -->
+              <div class="row">
+
+                <!-- title  -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->grant_title }}" placeholder="">
                   </div>
                 </div>
                 <!-- end title -->
 
               </div>
-              <!-- end row 2 -->
+              <!-- end row 3 -->
+
+              <!-- row 4 -->
+              <div class="row">
+
+                <!-- currency code  -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="title">Currency</label>
+                    <select class="form-control select2" id="currency_code_id" name="currency_code_id">
+                      <option value="">-- Please Select --</option>
+
+                      {{-- Check General Currency Code Exist --}}
+                      @if(count($data['general']['currency']['code']) > 0)
+
+                        {{-- Get General Currency Code Data --}}
+                        @foreach($data['general']['currency']['code'] as $key=>$value)
+                          <option value="{{ $value->currency_code_id }}" {{ (($data['main']->currency_code_id == $value->currency_code_id)?'selected':'') }}>{{ $value->name . ' (' . $value->currency_code_id . ')'}}</option>
+                        @endforeach
+                        {{-- End Get General Currency Code Data --}}
+
+                      @endif
+                      {{-- End Check General Currency Code Exist --}}
+
+                    </select>
+
+                  </div>
+                </div>
+                <!-- end currency code -->
+
+                <!-- quantum  -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="title">Quantum</label>
+                    <input type="number" class="form-control" id="quantum" name="quantum" value="{{ $data['main']->quantum }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end quantum -->
+
+              </div>
+              <!-- end row 4 -->
+
+              <!-- row 5 -->
+              <div class="row">
+
+                <!-- sustainable development goal -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="sustainable_development_goal_id">Sustainable Development Goal</label>
+                    <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
+                      <option value="">--Please Select--</option>
+
+                      {{-- Check General Sustainable Development Goal Exist --}}
+                      @if(count($data['general']['sustainable']['development']['goal']) > 0)
+
+                          @php
+                            // Explode Sustainable Development Goal from the main data (comma-separated string)
+                            $selected_sdg = explode(',',$data['main']->sustainable_development_goal);
+                          @endphp
+
+                          {{-- Get General Sustainable Development Goal Data --}}
+                          @foreach($data['general']['sustainable']['development']['goal'] as $key=>value)
+                            <option value="{{ $value->sustainable_development_goal_id }}"
+                              {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
+                              {{ $value->code }} - {{ $value->name }}
+                            </option>
+                          @endforeach
+                          {{-- End Get General Sustainable Development Goal Data --}}
+
+                      @endif
+                      {{-- End Check General Sustainable Development Goal Exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end sustainable development goal -->
+
+
+              </div>
+              <!-- end row 5 -->
+
+              <!-- row 6 -->
+              <div class="row">
+
+                <!-- status  -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="status_id">Status</label>
+                    <select class="form-control select2" name="status_id">
+                      <option value="">--Please Select--</option>
+                      {{-- Check General Status Exist --}}
+                      @if(count($data['general']['status'])>0)
+
+                        {{-- Get General Status Data --}}
+                        @foreach($data['general']['status'] as $key=>$value)
+                          <option value="{{ $value->status_id }}" {{ (($data['main']->status_id == $value->status_id)?'selected':'') }}>{{ ucwords($value->status_name) }}</option>
+                        @endforeach
+                        {{-- End Get General Status Data --}}
+
+                      @endif
+                      {{-- End Check General Status Exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end status -->
+
+              </div>
+              <!-- end row 6 -->
+
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)
@@ -197,7 +334,7 @@
                                 <!-- end hyperlink -->
 
                                 <!-- remove file -->
-                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->award_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->grant_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                                 </a>
                                 <!-- end remove file -->
@@ -351,7 +488,7 @@
 
                 <div class="col-md-12">
                   <a href="{{ route($hyperlink['page']['list']) }}" class="btn btn-light"><i class="mdi mdi-arrow-left"></i>Back</a>
-                  <input type="hidden" id="id" name="id" value="{{ $data['main']->award_id }}">
+                  <input type="hidden" id="id" name="id" value="{{ $data['main']->grant_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>

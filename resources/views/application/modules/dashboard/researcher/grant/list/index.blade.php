@@ -9,7 +9,7 @@
     <div class="row">
 
       {{-- Grant --}}
-      @include($page['sub'].'.award')
+      @include($page['sub'].'.grant')
 
     </div>
     <!-- end row 1 -->

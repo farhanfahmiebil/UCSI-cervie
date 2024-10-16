@@ -38,16 +38,14 @@ class CervieResearcherGrant extends Model{
 
     // Set Query
     $this->query = 'DECLARE @id INT;
-                    EXEC ' . $table . ' ?,?,?,?,?,
-                                        ?,?,?,?,?,
-                                        ?,?,?,?,?,
-                                        ?,?,?,?,?,
-                                        ?,?,?,?,?, @id OUTPUT;
+                    EXEC ' . $table . ' ?,?,?,?,?,?,
+                                        ?,?,?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
     $result = DB::connection($this->connection)->select($this->query, [
         $data['column']['employee_id'],
+        $data['column']['title'],
         $data['column']['grant_category_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
@@ -55,7 +53,7 @@ class CervieResearcherGrant extends Model{
         $data['column']['quantum'],
         $data['column']['project_role_id'],
         $data['column']['status_id'],
-        $data['column']['need_verification'],
+        $data['column']['sustainable_development_goal'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -124,8 +122,6 @@ class CervieResearcherGrant extends Model{
     //Get the first result
     $result = $result[0] ?? null;
 
-    // dd($result);
-
     //Return Result
     return $result;
 
@@ -167,8 +163,6 @@ class CervieResearcherGrant extends Model{
         $data['column']['currency_code_id'],
         $data['column']['quantum'],
         $data['column']['project_role_id'],
-        $data['column']['status_id'],
-        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );
