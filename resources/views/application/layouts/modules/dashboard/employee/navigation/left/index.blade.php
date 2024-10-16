@@ -60,7 +60,7 @@
           @foreach($access['module']['company'] as $navigation['access']['company']['main'])
 
             <!-- module company -->
-            <li class="pt-3 border-bottom">
+            <li class="border-bottom">
               <a href="{{ route($hyperlink['navigation']['authorization']['employee']['sidebar']['home']) }}">
                 <i class="{{ $navigation['access']['company']['main']->module_company_icon }}"></i>
                 <span class="menu-text">{{ strtoupper($navigation['access']['company']['main']->module_company_name) }}</span>
@@ -87,9 +87,9 @@
 
                   <!-- module -->
                   <li class="{{ (($dropdown_item['main'] )?'sidebar-dropdown main':'') }}">
-                    <a href="#">
+                    <a href="{{ (($dropdown_item['main'])?'#':url($navigation['module']['main']->module_hyperlink)) }}">
                       <i class="{{ $navigation['module']['main']->module_icon }}"></i>
-                      <span class="menu-text">{{ $navigation['module']['main']->module_name }} {{$dropdown_item['main'] }}</span>
+                      <span class="menu-text">{{ $navigation['module']['main']->module_name }}</span>
                     </a>
 
                     {{-- Check Module Sub Exist --}}
@@ -114,12 +114,6 @@
 
                                 @endphp
 
-                                <!-- module sub -->
-                                <li class="{{ (($dropdown_item['sub'] )?'sidebar-dropdown sub_1':'') }}">
-                                  <a class="ps-5" href="{{ (($dropdown_item['sub'])?'#':url($navigation['module']['sub']['main']->module_sub_hyperlink)) }}">
-                                    <i class="{{ $navigation['module']['sub']['main']->module_sub_icon }}"></i>
-                                    <span class="menu-text">{{ $navigation['module']['sub']['main']->module_sub_name }}</span>
-                                  </a>
 
                                   {{-- Check Module ID Matched --}}
                                   @if($navigation['module']['main']->module_id == $navigation['module']['sub']['main']->module_id)
@@ -175,7 +169,6 @@
                               @endif
                               {{-- End Check Module Sub Exist --}}
 
-                              </li>
 
                           </ul>
 

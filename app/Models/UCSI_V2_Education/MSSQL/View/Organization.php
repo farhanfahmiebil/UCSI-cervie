@@ -39,6 +39,9 @@ class Organization extends Model{
                                                ->where($this->table.'.company_id',$data['column']['company_id'])
                                                ->where($this->table.'.company_office_id',$data['column']['company_office_id']);
 
+    //Filter Query
+    if(isset($data['column']['not_in_organization_id']) && $data['column']['not_in_organization_id'] != null){$result = $result->whereNotIn($this->table.'.organization_id',$data['column']['not_in_organization_id']);}
+
     //Get Result
     $result = $result->get();
 
