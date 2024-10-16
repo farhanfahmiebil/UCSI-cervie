@@ -213,6 +213,9 @@ class RouteServiceProvider extends ServiceProvider{
                 //Award
                 require base_path($this->path['dashboard']['researcher'].'award/index.php');
 
+                //Grant
+                require base_path($this->path['dashboard']['researcher'].'grant/index.php');
+
                 //Stewardship
                 require base_path($this->path['dashboard']['researcher'].'stewardship/index.php');
 
