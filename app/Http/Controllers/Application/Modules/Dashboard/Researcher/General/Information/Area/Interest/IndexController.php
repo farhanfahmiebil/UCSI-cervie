@@ -155,37 +155,6 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Define validation rules
-    $rules = [
-      'name'=>['required'],
-      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
-      'document_name.*'=>['required'], // Validate that each file has an associated name
-    ];
-
-    //Custom validation messages
-    $messages = [
-      'name.required'=>'Name is required',
-    ];
-
-    //If Document Name Exist
-    if($request->has('document_name')){
-
-      //Get Document Name
-      foreach($request->document_name as $key=>$value){
-        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
-        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
-        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
-        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
-      }
-
-    }
-
-    //Create A Validator Instance
-    $validator = Validator::make($request->all(), $rules, $messages);
-
-    //Run The Validation
-    $validator->validate();
-
     //If Form Token Exist
 		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
 
@@ -194,6 +163,9 @@ class IndexController extends Controller{
 
       //Create
       case 'create':
+
+        //Get Validate Data
+        $this->getValidateData($request);
 
         //Set Model
         $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
@@ -548,36 +520,7 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Define validation rules
-    $rules = [
-      'name'=>['required'],
-      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
-      'document_name.*'=>['required'], // Validate that each file has an associated name
-    ];
 
-    //Custom validation messages
-    $messages = [
-      'name.required'=>'Name is required',
-    ];
-
-    //If Document Name Exist
-    if($request->has('document_name')){
-
-      //Get Document Name
-      foreach($request->document_name as $key=>$value){
-        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
-        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
-        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
-        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
-      }
-
-    }
-
-    //Create A Validator Instance
-    $validator = Validator::make($request->all(), $rules, $messages);
-
-    //Run The Validation
-    $validator->validate();
 
     //If Form Token Exist
 		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
@@ -587,6 +530,9 @@ class IndexController extends Controller{
 
       //Create
       case 'update':
+
+        //Get Validate Data
+        $this->getValidateData($request);
 
         //Set Model
         $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
@@ -691,6 +637,47 @@ class IndexController extends Controller{
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
                      ->with('message','Area Interest Saved');
+
+  }
+
+  /**************************************************************************************
+ 		Validate Data
+ 	**************************************************************************************/
+  public function getValidateData(Request $request){
+
+    //Define validation rules
+    $rules = [
+      'name'=>['required'],
+      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
+      'document_name.*'=>['required'], // Validate that each file has an associated name
+    ];
+
+    //Custom validation messages
+    $messages = [
+      'name.required'=>'Name is required',
+    ];
+
+    //If Document Name Exist
+    if($request->has('document_name')){
+
+      //Get Document Name
+      foreach($request->document_name as $key=>$value){
+
+        $rules['document.' . $key] = ['required', 'mimes:pdf', 'max:3072'];
+
+        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
+        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
+        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
+        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
+      }
+
+    }
+
+    //Create A Validator Instance
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    //Run The Validation
+    $validator->validate();
 
   }
 

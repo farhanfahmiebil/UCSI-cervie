@@ -358,6 +358,9 @@ class IndexController extends Controller{
 
         //Get Document Name
         foreach($request->document_name as $key=>$value){
+
+          $rules['document.' . $key] = ['required', 'mimes:pdf', 'max:3072'];
+
           $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
           $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
           $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
@@ -387,7 +390,7 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Get Publication Type
+    //Get Validate Data
     $this->getValidateData($request);
 
     //If Form Token Exist
@@ -424,6 +427,7 @@ class IndexController extends Controller{
               'doi'=>($request->has('doi')?$request->doi:null),
               'quartile_id'=>($request->has('quartile_id')?$request->quartile_id:null),
               'academic_indexing_body_id'=>($request->has('academic_indexing_body_id')?$request->academic_indexing_body_id:null),
+              'academic_indexing_body_other'=>($request->has('academic_indexing_body_other')?$request->academic_indexing_body_other:null),
               'isbn'=>($request->has('isbn')?$request->isbn:null),
               'issn'=>($request->has('issn')?$request->issn:null),
               'eissn'=>($request->has('eissn')?$request->eissn:null),
@@ -454,7 +458,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set Path Folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/area_interest/'.$result['main']['create']->last_insert_id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/publication/'.$result['main']['create']->last_insert_id.'/';
 
             //Set Modified File Name Without Extension (Using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($key+1);
@@ -486,7 +490,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_area_interest',
+                  'table_name'=>'cervie_researcher_publication',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -673,7 +677,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Research Publication Deleted');
+                     ->with('message','Publication Deleted');
 
   }
 
@@ -932,6 +936,7 @@ class IndexController extends Controller{
               'doi'=>($request->has('doi')?$request->doi:null),
               'quartile_id'=>($request->has('quartile_id')?$request->quartile_id:null),
               'academic_indexing_body_id'=>($request->has('academic_indexing_body_id')?$request->academic_indexing_body_id:null),
+              'academic_indexing_body_other'=>($request->has('academic_indexing_body_other')?$request->academic_indexing_body_other:null),
               'isbn'=>($request->has('isbn')?$request->isbn:null),
               'issn'=>($request->has('issn')?$request->issn:null),
               'eissn'=>($request->has('eissn')?$request->eissn:null),

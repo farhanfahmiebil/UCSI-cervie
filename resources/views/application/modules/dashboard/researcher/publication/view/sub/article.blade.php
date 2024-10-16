@@ -178,28 +178,6 @@
     </div>
     <!-- end doi -->
 
-    <!-- indexing body -->
-    <div class="col-md-4">
-      <div class="form-group">
-        <label for="academic_indexing_body_id">Indexing Body<small class="text-danger">*</small></label>
-        <select class="form-control select2" name="academic_indexing_body_id">
-          <option value="">--Please Select--</option>
-          {{-- Check General Academic_Indexing Body Exist --}}
-          @if(count($data['general']['academic']['indexing']['body'])>0)
-
-            {{-- Get General Academic_Indexing Body Data --}}
-            @foreach($data['general']['academic']['indexing']['body'] as $key=>$value)
-              <option value="{{ $value->academic_indexing_body_id }}" {{ (($data['main']->academic_indexing_body_id == $value->academic_indexing_body_id)?'selected':'') }}>{{ $value->name }}</option>
-            @endforeach
-            {{-- End Get General Academic_Indexing Body Data --}}
-
-          @endif
-          {{-- End Check General Academic_Indexing Body Exist --}}
-        </select>
-      </div>
-    </div>
-    <!-- end indexing body -->
-
     <!-- quartile -->
     <div class="col-md-4">
       <div class="form-group">
@@ -222,10 +200,47 @@
     </div>
     <!-- end quartile -->
 
+    <!-- indexing body -->
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="academic_indexing_body_id">Indexing Body<small class="text-danger">*</small></label>
+        <select class="form-control select2" id="academic_indexing_body_id" name="academic_indexing_body_id">
+          <option value="">--Please Select--</option>
+          {{-- Check General Academic_Indexing Body Exist --}}
+          @if(count($data['general']['academic']['indexing']['body'])>0)
+
+            {{-- Get General Academic_Indexing Body Data --}}
+            @foreach($data['general']['academic']['indexing']['body'] as $key=>$value)
+              <option value="{{ $value->academic_indexing_body_id }}" {{ (($data['main']->academic_indexing_body_id == $value->academic_indexing_body_id)?'selected':'') }}>{{ $value->name }}</option>
+            @endforeach
+            {{-- End Get General Academic_Indexing Body Data --}}
+
+          @endif
+          {{-- End Check General Academic_Indexing Body Exist --}}
+        </select>
+      </div>
+    </div>
+    <!-- end indexing body -->
+
   </div>
   <!-- end row 9 -->
 
   <!-- row 10 -->
+  <div id="group_academic_indexing_body_other" class="row">
+
+    <!-- academic indexing body other -->
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="academic_indexing_body_other">Other - Indexing Body (Please State)</label>
+        <input type="text" class="form-control" id="academic_indexing_body_other" name="academic_indexing_body_other" value="{{ $data['main']->academic_indexing_body_other }}" placeholder="">
+      </div>
+    </div>
+    <!-- end academic indexing body other -->
+
+  </div>
+  <!-- end row 10 -->
+
+  <!-- row 11 -->
   <div class="row">
 
     <!-- sustainable development goal -->
@@ -233,34 +248,80 @@
       <div class="form-group">
         <label for="sustainable_development_goal_id">Sustainable Development Goal</label>
         <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
-            <option value="">--Please Select--</option>
+          <option value="">--Please Select--</option>
 
-            {{-- Check General Sustainable Development Goal Exist --}}
-            @if(count($data['general']['sustainable']['development']['goal']) > 0)
+          {{-- Check General Sustainable Development Goal Exist --}}
+          @if(count($data['general']['sustainable']['development']['goal']) > 0)
 
-                @php
-                  // Explode Sustainable Development Goal from the main data (comma-separated string)
-                  $selected_sdg = explode(',', $data['main']->sustainable_development_goal);
-                @endphp
+              @php
+                // Explode Sustainable Development Goal from the main data (comma-separated string)
+                $selected_sdg = explode(',',$data['main']->sustainable_development_goal);
+              @endphp
 
-                {{-- Get General Sustainable Development Goal Data --}}
-                @foreach($data['general']['sustainable']['development']['goal'] as $goal)
-                    <option value="{{ $goal->sustainable_development_goal_id }}"
-                        {{ in_array($goal->sustainable_development_goal_id, $selected_sdg) ? 'selected' : '' }}>
-                        {{ $goal->code }} - {{ $goal->name }}
-                    </option>
-                @endforeach
-                {{-- End Get General Sustainable Development Goal Data --}}
+              {{-- Get General Sustainable Development Goal Data --}}
+              @foreach($data['general']['sustainable']['development']['goal'] as $key=>value)
+                <option value="{{ $value->sustainable_development_goal_id }}"
+                  {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
+                  {{ $value->code }} - {{ $value->name }}
+                </option>
+              @endforeach
+              {{-- End Get General Sustainable Development Goal Data --}}
 
-            @endif
-            {{-- End Check General Sustainable Development Goal Exist --}}
+          @endif
+          {{-- End Check General Sustainable Development Goal Exist --}}
         </select>
       </div>
     </div>
     <!-- end sustainable development goal -->
 
   </div>
-  <!-- end row 10 -->
+  <!-- end row 11 -->
 
 </div>
 <!-- end group publication article -->
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+    //Auto Slide Up
+    $('#group_academic_indexing_body_other').slideUp().addClass('d-none');
+
+    //Get Toggle Academic Indexing Body Other
+    toggleAcademicIndexingBodyOther();
+
+    //Academic Indexing Body On Change
+    $('#academic_indexing_body_id').on('change',function(){
+
+      //Get Toggle Academic Indexing Body Other
+      toggleAcademicIndexingBodyOther();
+
+    });
+
+    //Toggle Academic Indexing Body Other
+    function toggleAcademicIndexingBodyOther(){
+
+      //Get Selected Value
+      var selected_value = $('#academic_indexing_body_id').val();
+
+      if (selected_value === '18'){
+
+        //Slide Down
+        $('#group_academic_indexing_body_other').removeClass('d-none').slideDown();
+
+      }else{
+
+        //Slide Up
+        $('#group_academic_indexing_body_other').slideUp(500,function(){
+          $(this).addClass('d-none');
+        });
+
+        //Set Null
+        $('#academic_indexing_body_other').val('');
+      }
+
+    }
+
+  });
+
+</script>

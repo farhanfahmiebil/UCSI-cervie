@@ -178,68 +178,6 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Define validation rules
-    $rules = [
-      'name'=>['required'],
-      'professional_membership_level_id'=>['required'],
-      'professional_membership_role_id'=>['required'],
-      'professional_membership_type_id'=>['required'],
-      'date_start' => ['required','date'],
-      'date_end' => ['nullable','date','after:date_start'],
-      'is_lifetime'=>['boolean'], // Not required, but must be boolean if present
-      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
-      'document_name.*'=>['required'], // Validate that each file has an associated name
-    ];
-
-    //Custom validation messages
-    $messages = [
-      'name.required'=>'Membership Name is required',
-      'professional_membership_level_id.required'=>'Professional Membership Level is required',
-      'professional_membership_role_id.required'=>'Professional Membership Role is required',
-      'professional_membership_type_id.required'=>'Professional Membership Type is required',
-      'date_start.required'=>'Date Start is Required',
-      'date_start.date'=>'Date Start Must Be Date Format',
-      'date_end.date'=>'Date End Must Be Date Format',
-      'date_end.after'=>'Date End must be after Date Start',
-    ];
-
-    //If Document Name Exist
-    if($request->has('document_name')){
-
-      //Get Document Name
-      foreach($request->document_name as $key=>$value){
-        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
-        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
-        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
-        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
-      }
-
-    }
-
-    //Create a validator instance
-    $validator = \Validator::make($request->all(), $rules, $messages);
-
-    //Custom rule: either date end or is lifetime must be present (but not both)
-    $validator->after(function ($validator) use ($request) {
-
-      $date_end = $request->input('date_end');
-      $is_lifetime = $request->input('is_lifetime');
-
-      //Check if both date end and is life time are empty
-      if(empty($date_end) && empty($is_lifetime)){
-        $validator->errors()->add('date_or_work', 'Either Date End or Is Lifetime must be provided.');
-      }
-
-      //Check if both fields are filled
-      if(!empty($date_end) && !empty($is_lifetime)){
-        $validator->errors()->add('date_or_work', 'Only one of Date End or Is Lifetime should be provided.');
-      }
-
-    });
-
-    // Run the validation
-    $validator->validate();
-
     //If Form Token Exist
 		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
 
@@ -248,6 +186,9 @@ class IndexController extends Controller{
 
       //Create
       case 'create':
+
+        //Get Validate Data
+        $this->getValidateData($request);
 
         //Set Model
         $model['cervie']['researcher']['professional']['membership'] = new CervieResearcherProfessionalMembershipProcedure();
@@ -636,67 +577,8 @@ class IndexController extends Controller{
       //Create
       case 'update':
 
-      //Define validation rules
-      $rules = [
-        'name'=>['required'],
-        'professional_membership_level_id'=>['required'],
-        'professional_membership_role_id'=>['required'],
-        'professional_membership_type_id'=>['required'],
-        'date_start' => ['required','date'],
-        'date_end' => ['nullable','date','after:date_start'],
-        'is_lifetime'=>['boolean'], // Not required, but must be boolean if present
-        'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
-        'document_name.*'=>['required'], // Validate that each file has an associated name
-      ];
-
-      //Custom validation messages
-      $messages = [
-        'name.required'=>'Membership Name is required',
-        'professional_membership_level_id.required'=>'Professional Membership Level is required',
-        'professional_membership_role_id.required'=>'Professional Membership Role is required',
-        'professional_membership_type_id.required'=>'Professional Membership Type is required',
-        'date_start.required'=>'Date Start is Required',
-        'date_start.date'=>'Date Start Must Be Date Format',
-        'date_end.date'=>'Date End Must Be Date Format',
-        'date_end.after'=>'Date End must be after Date Start',
-      ];
-
-      //If Document Name Exist
-      if($request->has('document_name')){
-
-        //Get Document Name
-        foreach($request->document_name as $key=>$value){
-          $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
-          $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
-          $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
-          $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
-        }
-
-      }
-
-      //Create a validator instance
-      $validator = \Validator::make($request->all(), $rules, $messages);
-
-      //Custom rule: either date end or is lifetime must be present (but not both)
-      $validator->after(function ($validator) use ($request) {
-
-        $date_end = $request->input('date_end');
-        $is_lifetime = $request->input('is_lifetime');
-
-        //Check if both date end and is life time are empty
-        if(empty($date_end) && empty($is_lifetime)){
-          $validator->errors()->add('date_or_work', 'Either Date End or Is Lifetime must be provided.');
-        }
-
-        //Check if both fields are filled
-        if(!empty($date_end) && !empty($is_lifetime)){
-          $validator->errors()->add('date_or_work', 'Only one of Date End or Is Lifetime should be provided.');
-        }
-
-      });
-
-      // Run the validation
-      $validator->validate();
+        //Get Validate Data
+        $this->getValidateData($request);
 
         //Set Model
         $model['cervie']['researcher']['professional']['membership'] = new CervieResearcherProfessionalMembershipProcedure();
@@ -807,6 +689,78 @@ class IndexController extends Controller{
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
                      ->with('message','Professional Membership Saved');
+
+  }
+
+  /**************************************************************************************
+ 		Validate Data
+ 	**************************************************************************************/
+  public function getValidateData(Request $request){
+
+    //Define validation rules
+    $rules = [
+      'name'=>['required'],
+      'professional_membership_level_id'=>['required'],
+      'professional_membership_role_id'=>['required'],
+      'professional_membership_type_id'=>['required'],
+      'date_start' => ['required','date'],
+      'date_end' => ['nullable','date','after:date_start'],
+      'is_lifetime'=>['boolean'], // Not required, but must be boolean if present
+      'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
+      'document_name.*'=>['required'], // Validate that each file has an associated name
+    ];
+
+    //Custom validation messages
+    $messages = [
+      'name.required'=>'Membership Name is required',
+      'professional_membership_level_id.required'=>'Professional Membership Level is required',
+      'professional_membership_role_id.required'=>'Professional Membership Role is required',
+      'professional_membership_type_id.required'=>'Professional Membership Type is required',
+      'date_start.required'=>'Date Start is Required',
+      'date_start.date'=>'Date Start Must Be Date Format',
+      'date_end.date'=>'Date End Must Be Date Format',
+      'date_end.after'=>'Date End must be after Date Start',
+    ];
+
+    //If Document Name Exist
+    if($request->has('document_name')){
+
+      //Get Document Name
+      foreach($request->document_name as $key=>$value){
+
+        $rules['document.' . $key] = ['required', 'mimes:pdf', 'max:3072'];
+        
+        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
+        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
+        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
+        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
+      }
+
+    }
+
+    //Create a validator instance
+    $validator = \Validator::make($request->all(), $rules, $messages);
+
+    //Custom rule: either date end or is lifetime must be present (but not both)
+    $validator->after(function ($validator) use ($request) {
+
+      $date_end = $request->input('date_end');
+      $is_lifetime = $request->input('is_lifetime');
+
+      //Check if both date end and is life time are empty
+      if(empty($date_end) && empty($is_lifetime)){
+        $validator->errors()->add('date_or_work', 'Either Date End or Is Lifetime must be provided.');
+      }
+
+      //Check if both fields are filled
+      if(!empty($date_end) && !empty($is_lifetime)){
+        $validator->errors()->add('date_or_work', 'Only one of Date End or Is Lifetime should be provided.');
+      }
+
+    });
+
+    // Run the validation
+    $validator->validate();
 
   }
 

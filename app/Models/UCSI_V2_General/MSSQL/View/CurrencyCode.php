@@ -63,6 +63,7 @@ class CurrencyCode extends Model{
             ->table($table)
             ->where($table.'.status_name','active');
 
+
     $result = $result->get()
                      ->toarray();
 

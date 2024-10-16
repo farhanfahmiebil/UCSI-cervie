@@ -189,6 +189,7 @@ class IndexController extends Controller{
 
       //Get Document Name
       foreach($request->document_name as $key=>$value){
+        $rules['document.' . $key] = ['required','mimes:pdf','max:3072'];
         $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
         $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
         $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';

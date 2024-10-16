@@ -66,7 +66,7 @@ class RepresentationCategory extends Model{
     //Filter Query
     if(isset($data['column']['category']) && $data['column']['category'] != null){$result = $result->where($table.'.category',$data['column']['category']);}
 
-
+    //Get Result
     $result = $result->get()
                      ->toarray();
 
