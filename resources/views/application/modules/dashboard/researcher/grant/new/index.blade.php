@@ -44,20 +44,20 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="representation_category_id">Grant Category</label>
-                    <select class="form-control select2" id="grant_category_id" name="grant_category_id">
+                    <select class="form-control select2" id="representation_category_id" name="representation_category_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Grant Category Exist --}}
-                      @if(count($data['general']['grant']['category']) > 0)
+                      {{-- Check General Representation Category Exist --}}
+                      @if(count($data['general']['representation']['category']) > 0)
 
-                        {{-- Get General Grant Category Data --}}
-                        @foreach($data['general']['grant']['category'] as $key=>$value)
-                          <option value="{{ $value->grant_category_id }}" {{ ((old('grant_category_id') == $value->grant_category_id)?'selected':'') }}>{{ $value->name }}</option>
+                        {{-- Get General Representation Category Data --}}
+                        @foreach($data['general']['representation']['category'] as $key=>$value)
+                          <option value="{{ $value->representation_category_id }}" {{ ((old('representation_category_id') == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
-                        {{-- End Get General Grant Category Level Data --}}
+                        {{-- End Get General Representation Category Level Data --}}
 
                       @endif
-                      {{-- End Check General Grant Category Level Exist --}}
+                      {{-- End Check General Representation Category Level Exist --}}
 
                     </select>
                   </div>
@@ -207,7 +207,7 @@
               </div>
               <!-- end row 5 -->
 
-              <!-- row 4 -->
+              <!-- row 6 -->
               <div class="row">
 
                 <!-- status  -->
@@ -233,7 +233,7 @@
                 <!-- end status -->
 
               </div>
-              <!-- end row 4 -->
+              <!-- end row 6 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)

@@ -16,7 +16,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
-use App\Models\UCSI_V2_General\MSSQL\View\GrantCategory AS GrantCategoryView;
+use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
 use App\Models\UCSI_V2_General\MSSQL\View\ProjectRole AS ProjectRoleView;
 use App\Models\UCSI_V2_General\MSSQL\View\CurrencyCode AS CurrencyCodeView;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherGrant AS CervieResearcherGrantView;
@@ -117,17 +117,23 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
-    //Set Model General Grant Category
-    $model['general']['grant']['category'] = new GrantCategoryView();
-
-    //Set Model General Grant Category
+    //Set Model General Project Role
     $model['general']['project']['role'] = new ProjectRoleView();
 
-    //Set Model General Grant Category
+    //Set Model General Currency Code
     $model['general']['currency']['code'] = new CurrencyCodeView();
 
-    //Get General Grant Category
-    $data['general']['grant']['category'] = $model['general']['grant']['category']->selectBox();
+    //Set Model General Award Type
+    $model['general']['representation']['category'] = new RepresentationCategoryView();
+
+    //Get General Award Type
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
+      [
+        'column'=>[
+          'category'=>'GRANT'
+        ]
+      ]
+    );
 
     //Get General Grant Category
     $data['general']['project']['role'] = $model['general']['project']['role']->selectBox();
@@ -142,7 +148,7 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_award'
+          'table_control_id'=>'cervie_researcher_grant'
         ]
       ]
     );
@@ -197,7 +203,7 @@ class IndexController extends Controller{
     //Define Validation Rules
     $rules = [
       'project_role_id'=>['required'],
-      'grant_category_id'=>['required'],
+      'representation_category_id'=>['required'],
       'title'=>['required'],
       'date_start' => ['required','date'],
       'date_end' => ['required','date'],
@@ -211,7 +217,7 @@ class IndexController extends Controller{
     //Custom Validation Messages
     $messages = [
       'project_role_id.required'=>'Project Role is required',
-      'grant_category_id.required'=>'Grant Categeory is required',
+      'representation_category_id.required'=>'Grant Categeory is required',
       'title.required'=>'Award Title is required',
       'date_start.required'=>'Date Start is Required',
       'date_end.required'=>'Date End is Required',
@@ -281,7 +287,7 @@ class IndexController extends Controller{
               'title'=>($request->has('title')?$request->title:null),
               'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
               'quantum'=>($request->has('quantum')?$request->quantum:null),
-              'grant_category_id'=>($request->has('grant_category_id')?$request->grant_category_id:null),
+              'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
               'sustainable_development_goal'=>$sustainable_development_goal,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -338,7 +344,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_award',
+                  'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -440,20 +446,20 @@ class IndexController extends Controller{
       case 'delete':
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
 
         //Delete Main
-        $result['main']['delete'] = $model['cervie']['researcher']['award']->deleteRecord(
+        $result['main']['delete'] = $model['cervie']['researcher']['grant']->deleteRecord(
           [
             'column'=>[
-              'award_id'=>$request->id,
+              'grant_id'=>$request->id,
               'employee_id'=>Auth::id()
             ]
           ]
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
 
         //Check If The Folder Already Exists In Storage
         $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
@@ -469,20 +475,20 @@ class IndexController extends Controller{
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'table_name'=>'cervie_researcher_award',
+              'table_name'=>'cervie_researcher_grant',
               'table_id'=>$request->id
             ]
           ]
         );
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
 
         //Delete Evidence
-        $data['main']['verification'] = $model['cervie']['researcher']['award']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['grant']->needVerification(
           [
             'column'=>[
-              'award_id'=>$request->id,
+              'grant_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'updated_by'=>Auth::id()
             ]
@@ -496,7 +502,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Award Deleted');
+                     ->with('message','Grant Deleted');
 
   }
 
@@ -534,7 +540,7 @@ class IndexController extends Controller{
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$data['evidence']->table_id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$data['evidence']->table_id.'/';
 
         //Set Modified File Name Without Extension (Using last_insert_id)
         $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
@@ -562,13 +568,13 @@ class IndexController extends Controller{
         );
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
 
         //Set Main Verification
-        $data['main']['verification'] = $model['cervie']['researcher']['award']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['grant']->needVerification(
           [
             'column'=>[
-              'award_id'=>$data['evidence']->table_id,
+              'grant_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
               'updated_by'=>Auth::id()
             ]
@@ -615,17 +621,23 @@ class IndexController extends Controller{
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
-    //Set Model General Grant Category
-    $model['general']['grant']['category'] = new GrantCategoryView();
+    //Set Model General Award Type
+    $model['general']['representation']['category'] = new RepresentationCategoryView();
+
+    //Get General Award Type
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
+      [
+        'column'=>[
+          'category'=>'GRANT'
+        ]
+      ]
+    );
 
     //Set Model General Grant Category
     $model['general']['project']['role'] = new ProjectRoleView();
 
     //Set Model General Grant Category
     $model['general']['currency']['code'] = new CurrencyCodeView();
-
-    //Get General Grant Category
-    $data['general']['grant']['category'] = $model['general']['grant']['category']->selectBox();
 
     //Get General Grant Category
     $data['general']['project']['role'] = $model['general']['project']['role']->selectBox();
@@ -659,7 +671,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-    
+
     //Set Model
     $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
 
@@ -686,7 +698,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd(    $data['evidence']);
+
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
       0=>[
@@ -708,12 +720,12 @@ class IndexController extends Controller{
     $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
-// dd($hyperlink['document'] );
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
+
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
-// dd($data['main']->title);
-		//Return View
+
+  	//Return View
 		return view($this->route['view'].'view.index',compact('data','page','asset','form_token','hyperlink'));
 
   }
@@ -738,22 +750,30 @@ class IndexController extends Controller{
       //Create
       case 'update':
 
+        //Convert array to string with commas separating the values
+        $sustainable_development_goal = implode(',',$request->sustainable_development_goal_id);
+
         //Get Award Type
         $this->getValidateData($request);
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
 
         //Create Main
-        $result['main']['update'] = $model['cervie']['researcher']['award']->updateRecord(
+        $result['main']['update'] = $model['cervie']['researcher']['grant']->updateRecord(
           [
             'column'=>[
-              'award_id'=>$request->id,
+              'grant_id'=>$request->id,
               'employee_id'=>Auth::id(),
-              'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
-              'conferring_body'=>($request->has('conferring_body')?$request->conferring_body:null),
+              'project_role_id'=>($request->has('project_role_id')?$request->project_role_id:null),
+              'status_id'=>($request->has('status_id')?$request->status_id:null),
+              'date_start'=>($request->has('date_start')?$request->date_start:null),
+              'date_end'=>($request->has('date_end')?$request->date_end:null),
               'title'=>($request->has('title')?$request->title:null),
-              'date_award'=>($request->has('date_award')?$request->date_award:null),
+              'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
+              'quantum'=>($request->has('quantum')?$request->quantum:null),
+              'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
+              'sustainable_development_goal'=>$sustainable_development_goal,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -775,7 +795,7 @@ class IndexController extends Controller{
               [
                 'column'=>[
                   'employee_id'=>Auth::id(),
-                  'table_name'=>'cervie_researcher_award',
+                  'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$request->id
                 ]
               ]
@@ -794,7 +814,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set path folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
 
             //Set modified file name without extension (using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($counter+1);
@@ -826,7 +846,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_award',
+                  'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),

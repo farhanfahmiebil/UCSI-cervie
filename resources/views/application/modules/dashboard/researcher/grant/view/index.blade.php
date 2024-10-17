@@ -44,15 +44,15 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="representation_category_id">Grant Category</label>
-                    <select class="form-control select2" id="grant_category_id" name="grant_category_id">
+                    <select class="form-control select2" id="representation_category_id" name="representation_category_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Grant Category Exist --}}
-                      @if(count($data['general']['grant']['category']) > 0)
+                      {{-- Check General Representation Category Exist --}}
+                      @if(count($data['general']['representation']['category']) > 0)
 
                         {{-- Get General Grant Category Data --}}
-                        @foreach($data['general']['grant']['category'] as $key=>$value)
-                          <option value="{{ $value->grant_category_id }}" {{ (($data['main']->grant_category_id == $value->grant_category_id)?'selected':'') }}>{{ $value->name }}</option>
+                        @foreach($data['general']['representation']['category'] as $key=>$value)
+                          <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
                         {{-- End Get General Grant Category Level Data --}}
 
@@ -98,7 +98,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="date_start">Date Start</label>
-                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ $data['main']->date_start }}" placeholder="">
+                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ \Carbon\Carbon::parse($data['main']->date_start)->format('Y-m-d') }}" placeholder="">
                   </div>
                 </div>
                 <!-- end date start -->
@@ -107,7 +107,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="date_end">Date End</label>
-                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ $data['main']->date_end }}" placeholder="">
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ \Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d') }}" placeholder="">
                   </div>
                 </div>
                 <!-- end date end -->
@@ -189,7 +189,7 @@
                           @endphp
 
                           {{-- Get General Sustainable Development Goal Data --}}
-                          @foreach($data['general']['sustainable']['development']['goal'] as $key=>value)
+                          @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
                             <option value="{{ $value->sustainable_development_goal_id }}"
                               {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
                               {{ $value->code }} - {{ $value->name }}
@@ -328,7 +328,7 @@
                               @if(Storage::exists($asset['document'].$value->file_id.'.'.$value->file_extension))
 
                                 <!-- hyperlink -->
-                                <a href="{{ $hyperlink['document'].$value->file_id.'.'.$value->file_extension }}" class="btn btn-primary">
+                                <a href="{{ $hyperlink['document'].$value->file_id.'.'.$value->file_extension }}" class="btn btn-primary" target="_blank">
                                   <i class="mdi mdi-link"></i>
                                 </a>
                                 <!-- end hyperlink -->
@@ -503,61 +503,61 @@
           </div>
           <!-- end card -->
 
-        </div>
-        <!-- end col -->
+          </div>
+          <!-- end col -->
 
-      </div>
-      <!-- end row -->
+          </div>
+          <!-- end row -->
 
-    </div>
-    <!-- end content -->
+          </div>
+          <!-- end content -->
 
-  </form>
-  <!-- end form -->
+          </form>
+          <!-- end form -->
 
-  <!-- Script for dynamic row numbering and file operations -->
-  <script type="text/javascript">
+          <!-- Script for dynamic row numbering and file operations -->
+          <script type="text/javascript">
 
-    /**************************************************************************************
-      Document On Load
-    **************************************************************************************/
-    $(document).ready(function(){
+          /**************************************************************************************
+          Document On Load
+          **************************************************************************************/
+          $(document).ready(function(){
 
-      /**************************************************************************************
-        Session
-      **************************************************************************************/
-      @if(Session('message'))
-        Swal.fire({
+          /**************************************************************************************
+          Session
+          **************************************************************************************/
+          @if(Session('message'))
+          Swal.fire({
           title: '{{ ucwords(Session::get('alert_type')) }}',
           text: '{{ ucwords(Session::get('message')) }}',
           icon: '{{ strtolower(Session::get('alert_type')) }}'
-        });
-      @endif
+          });
+          @endif
 
-      /**************************************************************************************
-        Modal Delete
-      **************************************************************************************/
-      $('[class*="btn-delete-main"]').on('click',function(event){
+          /**************************************************************************************
+          Modal Delete
+          **************************************************************************************/
+          $('[class*="btn-delete-main"]').on('click',function(event){
 
-        //Set Parent Row
-        var id = $('#id').val();
-// console.log(id)
-        //Set Form Token
-        var form_token = '{{ $form_token["delete"] }}';
+          //Set Parent Row
+          var id = $('#id').val();
+          // console.log(id)
+          //Set Form Token
+          var form_token = '{{ $form_token["delete"] }}';
 
-        //Set Hyperlink
-        var hyperlink  = $(this).data('href');
+          //Set Hyperlink
+          var hyperlink  = $(this).data('href');
             hyperlink += '?id='+id;
             hyperlink += '&form_token='+form_token;
 
-        //Set Alert
-        Swal.fire({
+          //Set Alert
+          Swal.fire({
           title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
           showDenyButton:true,
           confirmButtonText:'Yes',
           denyButtonText:'Cancel',
           icon:'error'
-        }).then((result) => {
+          }).then((result) => {
 
           //If Confirmed
           if(result.isConfirmed){
@@ -574,25 +574,25 @@
             Swal.fire('Cancel','','');
           }
 
-        });
-      });
+          });
+          });
 
-      /**************************************************************************************
-        Modal Delete
-      **************************************************************************************/
-      $('[class*="btn-delete-evidence"]').on('click',function(event){
+          /**************************************************************************************
+          Modal Delete
+          **************************************************************************************/
+          $('[class*="btn-delete-evidence"]').on('click',function(event){
 
-        //Set Parent Row
-        var parent_row = $(this).closest('tr').attr('id');
+          //Set Parent Row
+          var parent_row = $(this).closest('tr').attr('id');
 
-        //Set Alert
-        Swal.fire({
+          //Set Alert
+          Swal.fire({
           title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
           showDenyButton:true,
           confirmButtonText:'Yes',
           denyButtonText:'Cancel',
           icon:'error'
-        }).then((result) => {
+          }).then((result) => {
 
           //If Confirmed
           if(result.isConfirmed){
@@ -609,10 +609,10 @@
             Swal.fire('Cancel','','');
           }
 
-        });
-      });
+          });
+          });
 
-    });
-  </script>
+          });
+          </script>
 
-@endsection
+          @endsection

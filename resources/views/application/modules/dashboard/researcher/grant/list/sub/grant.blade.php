@@ -111,7 +111,7 @@
                   {{-- End Check if Checkbox Status True --}}
 
                   <td>{{ ($key+1) }}</td>
-                  <td>{{ $value->grant_category_name }}</td>
+                  <td>{{ $value->representation_category_name }}</td>
                   <td>{{ $value->grant_title }}</td>
                   <td>{{ $value->project_role_name }}</td>
                   <td>{{ $value->quantum }}</td>
