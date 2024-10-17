@@ -26,208 +26,143 @@
 			</div>
       <!-- end header -->
 
-      {{-- Check Representation Category Exist --}}
-      @if(count($data['general']['representation']['category']) > 0)
+      <!-- table responsive -->
+      <div class="table-responsive pt-5">
 
-        @php
+        <!-- table -->
+        <table class="table table-bordered">
 
-          //Set Category Status
-          $check['category'] = false;
-
-        @endphp
-
-
-        {{-- Get Representation Category Data --}}
-        @foreach($data['general']['representation']['category'] as $key=>$value)
-
-          {{-- Check Researcher Award Representation Category Exist --}}
-          @if(count($data['main']['cervie']['researcher']['award'][$value->representation_category_id]) > 0)
+          <!-- thead -->
+          <thead>
 
             @php
 
-              //Set Category Status
-              $check['category'] = true;
+              //Set Checkbox Status
+              $checkbox['status'] = false;
 
             @endphp
 
-            {{-- Get Researcher Award Data --}}
-            @foreach($data['main']['cervie']['researcher']['award'][$value->representation_category_id] as $k=>$v)
+            {{-- Check Table Column Exist --}}
+            @if(isset($data['table']['column']['cervie']['researcher']['linkage']) && count($data['table']['column']['cervie']['researcher']['linkage']) >= 1)
 
-              {{-- Check General Researcher Representation Category Matched With Researcher Award Representation Category --}}
-              @if($value->representation_category_id == $v->representation_category_id)
+              {{-- Get Table Column Data --}}
+              @foreach($data['table']['column']['cervie']['researcher']['linkage'] as $key => $value)
 
-                <!-- header sub title -->
-                <div class="row pt-5 pb-1">
+                  {{-- Check if the column is of category 'checkbox' --}}
+                  @if(isset($value['category']) && $value['category'] == 'checkbox')
 
-                  <!-- title -->
-                  <h4 class="card-title mb-2">{{ $value->name }}</h4>
-                  <!-- end title -->
+                    @php
 
-                </div>
-                <!-- end header sub title -->
+                      //Set Checkbox Status
+                      $checkbox['status'] = true;
 
-                <hr>
+                    @endphp
 
-                <!-- table responsive -->
-                <div class="table-responsive">
+                    <td>{!! $value['checkbox'] !!}</td>
 
-                  <!-- table -->
-                  <table class="table table-bordered">
+                  @else
 
-                    <!-- thead -->
-                    <thead>
+                    {{-- Check if 'class' is set and apply it --}}
+                    @if(isset($value['class']) && !empty($value['class']))
+                      <td class="{{ $value['class'] }}">
+                    @else
+                      <td>
+                    @endif
 
-                      @php
+                      {{-- Output the icon and name --}}
+                      {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                      {{ isset($value['name']) ? $value['name'] : '' }}
 
-                        //Set Checkbox Status
-                        $checkbox['status'] = false;
+                    </td>
 
-                      @endphp
+                  @endif
+                  {{-- End Check if the column is of category 'checkbox' --}}
 
-                      {{-- Check Table Column Exist --}}
-                      @if(isset($data['table']['column']['cervie']['researcher']['award'][$value->representation_category_id]) && count($data['table']['column']['cervie']['researcher']['award'][$value->representation_category_id]) >= 1)
+              @endforeach
+              {{-- End Get Table Column Data --}}
 
-                        {{-- Get Table Column Data --}}
-                        @foreach($data['table']['column']['cervie']['researcher']['award'][$value->representation_category_id] as $k=>$v)
+            @else
+              <th>Column Not Defined</th>
+            @endif
+            {{-- End Check Table Column Data Exist --}}
 
-                            {{-- Check if the column is of category 'checkbox' --}}
-                            @if(isset($v['category']) && $v['category'] == 'checkbox')
+          </thead>
+          <!-- end thead -->
 
-                              @php
+          <!-- tbody -->
+          <tbody>
 
-                                //Set Checkbox Status
-                                $checkbox['status'] = true;
+            {{-- Check Researcher Patent Exist --}}
+            @if(count($data['main']['cervie']['researcher']['linkage'])>0)
 
-                              @endphp
+              {{-- Get Researcher Patent Data --}}
+              @foreach($data['main']['cervie']['researcher']['linkage'] as $key=>$value)
 
-                              <td>{!! $v['checkbox'] !!}</td>
+                <tr id="{{ $value->linkage_id }}">
 
-                            @else
+                  {{-- Check if Checkbox Status True --}}
+                  @if($checkbox['status'])
+                    <td>
+                      <div class="form-check-label">
+                        <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->linkage_id }}"/>
+  										</div>
+                    </td>
+                  @endif
+                  {{-- End Check if Checkbox Status True --}}
 
-                              {{-- Check if 'class' is set and apply it --}}
-                              @if(isset($v['class']) && !empty($v['class']))
-                                <td class="{{ $v['class'] }}">
-                              @else
-                                <td>
-                              @endif
+                  <td>{{ ($key+1) }}</td>
+                  <td>{{ $value->organization }}</td>
+                  <td>{{ $value->title }}</td>
+                  <td>{{ $value->date_start }}</td>
+                  <td>{{ $value->date_end }}</td>
+                  <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
+                  <td>
 
-                                {{-- Output the icon and name --}}
-                                {!! isset($v['icon']) ? $v['icon'] : '' !!}
-                                {{ isset($v['name']) ? $v['name'] : '' }}
+                    <a href="{{ route($hyperlink['page']['view'],['id'=>$value->linkage_id]) }}" class="btn btn-sm btn-secondary">
+                      <i class="mdi mdi-pencil"></i>
+                    </a>
 
-                              </td>
 
-                            @endif
-                            {{-- End Check if the column is of category 'checkbox' --}}
 
-                        @endforeach
-                        {{-- End Get Table Column Data --}}
+                  </td>
+                </tr>
 
-                      @else
-                        <th>Column Not Defined</th>
-                      @endif
-                      {{-- End Check Table Column Data Exist --}}
+              @endforeach
+              {{-- End Get Researcher Patent Data --}}
 
-                    </thead>
-                    <!-- end thead -->
+            @else
 
-                    <!-- tbody -->
-                    <tbody>
+              <tr class="text-center">
+                <td colspan="{{ count($data['table']['column']['cervie']['researcher']['linkage']) }}">No Data</td>
+              </tr>
 
-                      {{-- Check Researcher Award Exist --}}
-                      @if(count($data['main']['cervie']['researcher']['award'][$value->representation_category_id]) > 0)
+            @endif
+            {{-- End Check Researcher Patent Exist --}}
 
-                        {{-- Get Researcher Award Data --}}
-                        @foreach($data['main']['cervie']['researcher']['award'][$value->representation_category_id] as $k=>$v)
+          </tbody>
+          <!-- end tbody -->
 
-                        {{-- If Representation Category Matched --}}
-                          @if($value->representation_category_id == $v->representation_category_id)
+        </table>
+        <!-- end table -->
 
-                            @php
-                              $counter = 0
-                            @endphp
-                            <tr id="{{ $v->award_id }}">
+        <!-- pagination -->
+        <div class="col-12 pt-3">
 
-                              {{-- Check if Checkbox Status True --}}
-                              @if($checkbox['status'])
-                                <td>
-                                  <div class="form-check-label">
-                                    <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $v->award_id }}"/>
-              										</div>
-                                </td>
-                              @endif
-                              {{-- End Check if Checkbox Status True --}}
+          {{-- Check Main Data Exist --}}
+          @if(count($data['main']['cervie']['researcher']['linkage']) >= 1)
 
-                              <td>{{ ($k+1) }}</td>
-                              <td>{{ $v->title }}</td>
-                              <td>{{ $v->conferring_body }}</td>
-                              <td>{{ \Carbon\Carbon::parse($v->date_award)->format('d F Y') }}</td>
-                              <td><span class="badge bg-{{ (($v->need_verification)?'warning':'success') }}">{{ (($v->need_verification)?'Pending':'Verified') }}</span></td>
-                              <td>
-
-                                <a href="{{ route($hyperlink['page']['view'],['id'=>$v->award_id]) }}" class="btn btn-sm btn-secondary">
-                                  <i class="mdi mdi-pencil"></i>
-                                </a>
-
-                                <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-award btn-sm btn btn-danger">
-                                  <i class="mdi mdi-trash-can text-white"></i>
-                                </a>
-
-                              </td>
-                            </tr>
-                          @endif
-                          {{-- End If Representation Category Matched --}}
-
-                        @endforeach
-                        {{-- End Get Researcher Award Data --}}
-
-                      @else
-
-                        <tr class="text-center">
-                          <td colspan="{{ count($data['table']['column']['cervie']['researcher']['award'][$v->representation_category_id]) }}">No Data</td>
-                        </tr>
-
-                      @endif
-                      {{-- End Check Researcher Award Exist --}}
-
-                    </tbody>
-                    <!-- end tbody -->
-
-                  </table>
-                  <!-- end table -->
-
-                </div>
-                <!-- end table responsive -->
-                @break
-              @endif
-              {{-- End Check General Representation Category Matched With Researcher Award Representation Category --}}
-
-            @endforeach
-            {{-- End Get Researcher Award Data --}}
+            <!-- paginate -->
+            {{ $data['main']['cervie']['researcher']['linkage']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+            <!-- end paginate -->
 
           @endif
-          {{-- End Check Researcher Award Exist --}}
-
-        @endforeach
-        {{-- End Get Representation Category Data --}}
-
-        @if(!$check['category'])
-
-        <!-- header sub title -->
-        <div class="row pt-5 text-center">
-
-          <!-- title -->
-          <h4 class="card-title mb-2">There is No Record Added, You may Add by Clicking New Award Above</h4>
-          <!-- end title -->
+          {{-- End Check Main Data Exist --}}
 
         </div>
-        <!-- end header sub title -->
+        <!-- end pagination -->
 
-        @endif
-
-      @endif
-      {{-- End Check Representation Category Exist --}}
-
+      </div>
+      <!-- end table responsive -->
 
     </div>
     <!-- end card body -->
@@ -246,20 +181,9 @@
   $(document).ready(function($){
 
     /**************************************************************************************
-      Session
-    **************************************************************************************/
-    @if(Session('message'))
-      Swal.fire({
-        title: '{{ ucwords(Session::get('alert_type')) }}',
-        text: '{{ ucwords(Session::get('message')) }}',
-        icon: '{{ strtolower(Session::get('alert_type')) }}'
-      });
-    @endif
-
-    /**************************************************************************************
       Modal Delete
     **************************************************************************************/
-    $('[class*="btn-delete-award"]').on('click',function(event){
+    $('[class*="btn-delete-patent"]').on('click',function(event){
 
       //Set Parent Row
       var parent_row = $(this).closest('tr').attr('id');

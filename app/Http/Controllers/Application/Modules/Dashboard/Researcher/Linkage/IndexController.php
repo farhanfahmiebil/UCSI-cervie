@@ -16,7 +16,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
-use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
+use App\Models\UCSI_V2_General\MSSQL\View\LinkageCategory AS LinkageCategoryView;
 use App\Models\UCSI_V2_General\MSSQL\View\AgreementLevel AS AgreementLevelView;
 use App\Models\UCSI_V2_General\MSSQL\View\AgreementType AS AgreementTypeView;
 use App\Models\UCSI_V2_General\MSSQL\View\Country AS CountryView;
@@ -116,8 +116,8 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
-    //Set Model Agreement Level
-    $model['general']['representation']['category'] = new RepresentationCategoryView();
+    //Set Model Linkage Category
+    $model['general']['linkage']['category'] = new LinkageCategoryView();
 
     //Set Model Agreement Type
     $model['general']['agreement']['type'] = new AgreementTypeView();
@@ -128,14 +128,8 @@ class IndexController extends Controller{
     //Set Model Country
     $model['general']['country'] = new CountryView();
 
-    //Get General Award Type
-    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
-      [
-        'column'=>[
-          'category'=>'LINKAGE'
-        ]
-      ]
-    );
+    //Get General Linkage Category
+    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
 
     //Get Agreement Type
     $data['general']['agreement']['type'] = $model['general']['agreement']['type']->selectBox();
@@ -194,7 +188,7 @@ class IndexController extends Controller{
       'agreement_type_id'=>['required'],
       'agreement_level_id'=>['required'],
       'amount'=>['required'],
-      'representation_category_id'=>['required'],
+      'linkage_category_id'=>['required'],
       'country_id'=>['required'],
       'date_start' => ['required','date'],
       'date_end' => ['required','date'],
@@ -209,7 +203,7 @@ class IndexController extends Controller{
       'agreement_level_id.required'=>'Agreement Level is required',
       'agreement_type_id.required'=>'Agreement Type is required',
       'amount.required'=>'Amount is required',
-      'representation_category_id.required'=>'Category is required',
+      'linkage_category_id.required'=>'Category is required',
       'country_id.required'=>'Country is required',
       'date_start.required'=>'Date Start is Required',
       'date_end.required'=>'Date End is Required',
@@ -259,26 +253,23 @@ class IndexController extends Controller{
       //Create
       case 'create':
 
-      //Convert array to string with commas separating the values
-      $sustainable_development_goal = implode(',',$request->sustainable_development_goal_id);
-
         //Set Model
-        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
+        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
 
         //Create Main
-        $result['main']['create'] = $model['cervie']['researcher']['grant']->createRecord(
+        $result['main']['create'] = $model['cervie']['researcher']['linkage']->createRecord(
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'project_role_id'=>($request->has('project_role_id')?$request->project_role_id:null),
-              'status_id'=>($request->has('status_id')?$request->status_id:null),
+              'organization'=>($request->has('organization')?$request->organization:null),
+              'title'=>($request->has('title')?$request->title:null),
+              'agreement_level_id'=>($request->has('agreement_level_id')?$request->agreement_level_id:null),
+              'agreement_type_id'=>($request->has('agreement_type_id')?$request->agreement_type_id:null),
+              'amount'=>($request->has('amount')?$request->amount:null),
+              'linkage_category_id'=>($request->has('linkage_category_id')?$request->linkage_category_id:null),
+              'country_id'=>($request->has('country_id')?$request->country_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
-              'title'=>($request->has('title')?$request->title:null),
-              'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
-              'quantum'=>($request->has('quantum')?$request->quantum:null),
-              'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
-              'sustainable_development_goal'=>$sustainable_development_goal,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -302,7 +293,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set Path Folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$result['main']['create']->last_insert_id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$result['main']['create']->last_insert_id.'/';
 
             //Set Modified File Name Without Extension (Using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($key+1);
@@ -334,7 +325,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_grant',
+                  'table_name'=>'cervie_researcher_linkage',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -362,7 +353,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Grant Added');
+                     ->with('message','Linkage Added');
 
   }
 
@@ -888,14 +879,10 @@ class IndexController extends Controller{
         'name'=>' Quantum',
       ],
       5=>[
-        'icon'=>'<i class="mdi mdi-google-earth"></i>',
-        'name'=>' SDG',
+        'icon'=>'<i class="mdi mdi-shield-check"></i>',
+        'name'=>' Verification',
       ],
       6=>[
-        'icon'=>'<i class="mdi mdi-shield-check"></i>',
-        'name'=>' Verfication',
-      ],
-      7=>[
         'icon'=>'<i class="mdi mdi-settings"></i>',
         'name'=>' Control',
       ]
