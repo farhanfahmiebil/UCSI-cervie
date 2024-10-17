@@ -51,9 +51,9 @@ class Organization extends Model{
   }
 
   /**************************************************************************************
-    List
+    Get List
   **************************************************************************************/
-  public function list($data){
+  public function getList($data){
 
     //Set Table
     $this->table = 'list_organization';

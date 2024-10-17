@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Models\UCSI_V2_Education\MSSQL\Procedure;
+namespace app\Models\UCSI_V2_Main\MSSQL\Procedure;
 
 //Get Database
 use DB;
@@ -8,22 +8,27 @@ use DB;
 //Get Model
 use Illuminate\Database\Eloquent\Model;
 
+//Get Model Log
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
+
 //Get Class
-class Researcher extends Model{
+class EmployeeProfile extends Model{
 
   /**
    * The database connection that should be used by the model.
    *
    * @var string
    */
-  protected $connection = 'sqlsrv_ucsi_v2_education';
+  protected $connection = 'sqlsrv_ucsi_v2_main';
 
   /**
    * The table associated with the model.
    *
    * @var string
    */
-  protected $table = '';
+  protected $table = 'employee_profile';
+
+
 
   /**************************************************************************************
     Read
@@ -31,10 +36,11 @@ class Researcher extends Model{
   public function readRecord($data){
 
     //Set Table
-    $table = 'read_researcher';
+    $table = 'read_employee_profile';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?;';
+
     //Get Result
     $result = DB::connection($this->connection)->select($this->query,[
         $data['column']['employee_id'],
@@ -48,7 +54,6 @@ class Researcher extends Model{
 
     //Return Result
     return $result;
-
 
   }
 

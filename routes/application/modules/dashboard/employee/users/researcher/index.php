@@ -67,7 +67,7 @@ Route::prefix('users')->group(function(){
       **************************************************************************************/
       // Route::get('/view/{id}',config('routing.application.modules.dashboard.employee.controller').'\Users\Student@view')->name(config('routing.application.modules.dashboard.employee.name').'.users.researcher.view');
 
-      /* ID
+      /* View
       **************************************************************************************/
       Route::prefix('view')->group(function(){
 

@@ -86,7 +86,7 @@
                   @endphp
 
                   <!-- module -->
-                  <li class="{{ (($dropdown_item['main'] )?'sidebar-dropdown main':'') }}">
+                  <li class="{{ (($dropdown_item['main'] )?'sidebar-dropdown main':'') }} pb-3">
                     <a href="{{ (($dropdown_item['main'])?'#':url($navigation['module']['main']->module_hyperlink)) }}">
                       <i class="{{ $navigation['module']['main']->module_icon }}"></i>
                       <span class="menu-text">{{ $navigation['module']['main']->module_name }}</span>

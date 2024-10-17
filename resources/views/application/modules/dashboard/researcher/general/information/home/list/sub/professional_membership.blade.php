@@ -46,10 +46,10 @@
           <div class="table-responsive">
 
             <!-- table -->
-            <table class="table table-bordered">
+            <table class="table table-striped">
 
               <!-- thead -->
-              <thead>
+              <thead class="bg-danger text-white mx-3">
 
                 @php
 
