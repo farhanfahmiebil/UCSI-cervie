@@ -1,21 +1,23 @@
-<!-- position -->
-<div class="stats-tile d-flex align-items-center tile-red">
-  <div class="sale-icon icon-box xl rounded-5 me-3">
-    <i class="bi bi-boxes font-2x text-red"></i>
-  </div>
-  <div class="sale-details text-white">
-    <h5>Position</h5>
-  </div>
-</div>
-<!-- end position -->
+{{-- Get Navigation Category Sub --}}
+@foreach($data['navigation']['category']['sub'] as $key=>$value)
 
-<!-- area interest -->
-<div class="stats-tile d-flex align-items-center border">
-  <div class="sale-icon icon-box xl rounded-5 me-3">
-    <i class="bi bi-joystick font-2x text-red"></i>
+  <!-- stats tile -->
+  <div class="stats-tile d-flex align-items-center {{ ((strtolower($value->navigation_category_sub_code) == request()->route('tab_category_sub'))?'tile-red':'')}}">
+
+    <!-- icon -->
+    <div class="sale-icon icon-box md rounded-5 me-3">
+      <i class="bi bi-boxes font-2x text-red"></i>
+    </div>
+    <!-- end icon -->
+
+    <!-- title -->
+    <div class="sale-details text-white">
+      <h5>{{ $value->navigation_category_sub_name }}</h5>
+    </div>
+    <!-- end title -->
+
   </div>
-  <div class="sale-details text-secondary">
-    <h5>Area Interest</h5>
-  </div>
-</div>
-<!-- end area interest -->
+  <!-- End stats tile -->
+
+@endforeach
+{{-- End Get Navigation Category Sub --}}

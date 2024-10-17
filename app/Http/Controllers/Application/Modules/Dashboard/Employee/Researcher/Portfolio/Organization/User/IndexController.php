@@ -158,7 +158,15 @@ class IndexController extends Controller{
     if(empty($request->tab_category)){
 
       //Return to Default Route
-      return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'tab'=>'tab','id'=>$request->id,'tab'=>'tab','tab_category'=>'personal']);
+      return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'tab'=>'tab','id'=>$request->id,'tab'=>'tab','tab_category'=>'personal','tab_category_sub'=>'position']);
+
+    }
+
+    //Check If Not Empty
+    if(empty($request->tab_category_sub)){
+
+      //Return to Default Route
+      return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'tab'=>'tab','id'=>$request->id,'tab'=>'tab','tab_category'=>'general_information','tab_category_sub'=>'position']);
 
     }
 

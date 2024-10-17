@@ -58,7 +58,7 @@ Route::prefix('researcher')->group(function(){
 
                   /* Tab Sub Category
                   **************************************************************************************/
-                  Route::prefix('{tab_sub_category?}')->group(function(){
+                  Route::prefix('{tab_category_sub?}')->group(function(){
 
                     /*  Index
                     **************************************************************************************/

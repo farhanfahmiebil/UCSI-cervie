@@ -35,23 +35,20 @@
                   </div>
                   <!-- end content -->
 
+                  {{-- If Navigation Category Sub Exist --}}
                   @if(count($data['navigation']['category']['sub'])>1)
-                  <!-- content navigation right -->
-                  <div class="col-sm-3 col-12 order-sm-2 order-1">
 
+                    <!-- content navigation right -->
+                    <div class="col-sm-3 col-12 order-sm-2 order-1">
 
-                    {{-- Get Navigation Category --}}
-                    @foreach($data['navigation']['category']['main'] as $key=>$value)
-                    @endforeach
-                    {{-- Sub Navigation Tab Main --}}
-                    @include($hyperlink['page']['navigation']['main'].'.tab.content.navigation.right.general_information')
+                      {{-- Sub Navigation Tab Main --}}
+                      @include($hyperlink['page']['navigation']['main'].'.tab.content.navigation.right.index')
 
+                    </div>
+                    <!-- end content navigation right -->
 
-
-
-                  </div>
-                  <!-- end content navigation right -->
                   @endif
+                  {{-- End If Navigation Category Sub Exist --}}
 
                 </div>
                 <!-- end row -->
