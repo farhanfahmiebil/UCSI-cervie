@@ -41,7 +41,7 @@
                 <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['intellectual_property']) }}" class="nav-link {{ ((Request::segment(3) == 'intellectual' && Request::segment(4) == 'property')?'text-white bg-danger':'text-danger') }}">Intellectual Property</a>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Commercialization</button>
                 <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Community Engagement</button>
-                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Linkages</button>
+                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['linkage']) }}" class="nav-link {{ ((Request::segment(3) == 'linkage' && Request::segment(4) == 'linkage')?'text-white bg-danger':'text-danger') }}">Linkages</a>
 
               </div>
             </div>

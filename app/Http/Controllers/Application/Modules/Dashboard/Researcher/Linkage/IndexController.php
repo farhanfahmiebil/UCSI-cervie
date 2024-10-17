@@ -15,19 +15,26 @@ use Carbon\Carbon;
 //Get Controller Helper
 use App\Http\Controllers\Controller;
 
-//Model
-use App\Models\UCSI_V2_General\MSSQL\Table\AgreementType;
-use App\Models\UCSI_V2_General\MSSQL\Table\AgreementLevel;
-use App\Models\UCSI_V2_General\MSSQL\Table\LinkageCategory;
-use App\Models\UCSI_V2_General\MSSQL\Table\Country;
-use App\Models\UCSI_V2_Education\MSSQL\Table\CervieResearcherLinkage;
-use App\Models\UCSI_V2_Education\MSSQL\Table\CervieResearcherEvidence;
+//Model View
+use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
+use App\Models\UCSI_V2_General\MSSQL\View\AgreementLevel AS AgreementLevelView;
+use App\Models\UCSI_V2_General\MSSQL\View\AgreementType AS AgreementTypeView;
+use App\Models\UCSI_V2_General\MSSQL\View\Country AS CountryView;
+use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherLinkage AS CervieResearcherLinkageView;
+
+//Model Procedure
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLinkage AS CervieResearcherLinkageProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
 
-//Get Request
-use File;
+//Get Storage
+use Storage;
+
+//Get Validator
+use Validator;
 
 //Get Class
 class IndexController extends Controller{
@@ -67,22 +74,19 @@ class IndexController extends Controller{
     $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.linkage.';
 
     //Set Navigation
+		$this->hyperlink['navigation'] = $this->navigation['hyperlink'];
+
+    //Set Navigation
 		$this->page['sub'] = $this->route['view'];
 
     //Set Navigation
-		$this->hyperlink['navigation'] = $this->navigation['hyperlink'];
-    $this->hyperlink['page']['view'] = $this->route['name'].'view';
     $this->hyperlink['page']['new'] = $this->route['name'].'new';
-    $this->hyperlink['page']['list'] = $this->route['name'].'list';
     $this->hyperlink['page']['create'] = $this->route['name'].'create';
-    $this->hyperlink['page']['delete'] = $this->route['name'].'delete';
-    $this->hyperlink['page']['view_file'] = $this->route['name'].'view_file';
+		$this->hyperlink['page']['list'] = $this->route['name'].'list';
+    $this->hyperlink['page']['delete']['main'] = $this->route['name'].'delete';
+    $this->hyperlink['page']['delete']['evidence'] = $this->route['name'].'evidence.delete';
+    $this->hyperlink['page']['view'] = $this->route['name'].'view';
     $this->hyperlink['page']['update'] = $this->route['name'].'update';
-    $this->hyperlink['page']['ajax']['linkage'] = config('routing.application.modules.dashboard.researcher.name').'.ajax.university.cervie.linkage.view';
-    $this->hyperlink['page']['ajax']['evidence'] = config('routing.application.modules.dashboard.researcher.name').'.ajax.university.cervie.evidence.view';
-
-		//Set Hyperlink
-    // $this->hyperlink['page']['ajax']['navigation']['access']['module']['company'] = config('routing.application.modules.dashboard.'.$this->user.'.name').'.ajax.authorization.access.module.company';
 
 	}
 
@@ -100,6 +104,9 @@ class IndexController extends Controller{
     //Set Page Sub
     $page = $this->page;
 
+    //Set Page Sub
+    $page['sub'] .= 'new.sub';
+
     //Set Breadcrumb Icon
     $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
 
@@ -109,138 +116,255 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
-    //Set Model
-    $model['general']['agreement']['level'] = new AgreementLevel();
-    $model['general']['agreement']['type'] = new AgreementType();
-    $model['general']['linkage']['category'] = new LinkageCategory();
-    $model['general']['country'] = new Country();
+    //Set Model Agreement Level
+    $model['general']['representation']['category'] = new RepresentationCategoryView();
 
-    //Get Data
-    $data['general']['agreement']['level'] = $model['general']['agreement']['level']->selectBox();
+    //Set Model Agreement Type
+    $model['general']['agreement']['type'] = new AgreementTypeView();
+
+    //Set Model Agreement Level
+    $model['general']['agreement']['level'] = new AgreementLevelView();
+
+    //Set Model Country
+    $model['general']['country'] = new CountryView();
+
+    //Get General Award Type
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
+      [
+        'column'=>[
+          'category'=>'LINKAGE'
+        ]
+      ]
+    );
+
+    //Get Agreement Type
     $data['general']['agreement']['type'] = $model['general']['agreement']['type']->selectBox();
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
+
+    //Get Agreement Level
+    $data['general']['agreement']['level'] = $model['general']['agreement']['level']->selectBox();
+
+    //Get General Country
     $data['general']['country'] = $model['general']['country']->selectBox();
 
+    //Set Model
+    $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
+
+    //Get Table Control
+    $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
+      [
+        'column'=>[
+          'table_control_id'=>'cervie_researcher_linkage'
+        ]
+      ]
+    );
+
+    //Defined Column
+    $data['table']['column']['cervie']['researcher']['evidence'] = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' File',
+      ],
+      2=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
+      ]
+    ];
+
+    //Get Form Token
+		$form_token = $this->encrypt_token_form;
+
 		//Return View
-		return view($this->route['view'].'new.index',compact('data','page','hyperlink'));
+		return view($this->route['view'].'new.index',compact('data','form_token','page','hyperlink'));
 
   }
 
   /**************************************************************************************
-    Create
-  **************************************************************************************/
-  public function create(Request $request){
+ 		Validate Data
+ 	**************************************************************************************/
+  public function getValidateData(Request $request){
 
-    //Get Route Path
-    $this->routePath();
+    //Define Validation Rules
+    $rules = [
+      'organization'=>['required'],
+      'title'=>['required'],
+      'agreement_type_id'=>['required'],
+      'agreement_level_id'=>['required'],
+      'amount'=>['required'],
+      'representation_category_id'=>['required'],
+      'country_id'=>['required'],
+      'date_start' => ['required','date'],
+      'date_end' => ['required','date'],
+      'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
+      'document_name.*'=>['required'], // Validate that each file has an associated name
+    ];
 
-    //Set Hyperlink
-    $hyperlink = $this->hyperlink;
+    //Custom Validation Messages
+    $messages = [
+      'organization.required'=>'Organization is required',
+      'title.required'=>'Title is required',
+      'agreement_level_id.required'=>'Agreement Level is required',
+      'agreement_type_id.required'=>'Agreement Type is required',
+      'amount.required'=>'Amount is required',
+      'representation_category_id.required'=>'Category is required',
+      'country_id.required'=>'Country is required',
+      'date_start.required'=>'Date Start is Required',
+      'date_end.required'=>'Date End is Required',
+    ];
 
-    //Check Request Validation
-    $validate = $request->validate(
-      //Check Validation
-      [
-        'title'=>'required',
-        'organization'=>'required',
-        'linkage_category_id'=>'required',
-        'agreement_level_id'=>'required',
-        'agreement_type_id'=>'required',
-        'amount'=>'required',
-        'country_id'=>'required',
-        'date_start'=>'required',
-        'date_end'=>'required',
+    //If Document Name Exist
+    if($request->has('document_name')){
 
-      ],
-      //Error Message
-      [
-        'title.required'=>'Qualification Type is Required',
-        'organization.required'=>'Organization is Required',
-        'linkage_category_id.required'=>'Category is Required',
-        'agreement_level_id.required'=>'Agreement Level is Required',
-        'agreement_type_id.required'=>'Agreement Type is Required',
-        'amount.required'=>'Amount is Required',
-        'country_id.required'=>'Country is Required',
-        'date_start.required'=>'Date Start is Required',
-        'date_end.required'=>'Date End is Required',
-
-      ]
-    );
-
-    //Set Model
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkage();
-
-    //Get Last ID
-    $last_id = (($model['cervie']['researcher']['linkage']->getLastID())?$model['cervie']['researcher']['linkage']->getLastID()->linkage_id+1:1);
-// dd($request);
-    //Get Last ID
-    $model['cervie']['researcher']['linkage']->linkage_id = $last_id;
-
-    //Set Request to Model
-    $model['cervie']['researcher']['linkage']->employee_id = $request->route('employee_id');
-    $model['cervie']['researcher']['linkage']->organization = $request->organization;
-    $model['cervie']['researcher']['linkage']->title = $request->title;
-    $model['cervie']['researcher']['linkage']->agreement_level_id = $request->agreement_level_id;
-    $model['cervie']['researcher']['linkage']->agreement_type_id = $request->agreement_type_id;
-    $model['cervie']['researcher']['linkage']->amount = $request->amount;
-    $model['cervie']['researcher']['linkage']->country_id = $request->country_id;
-    $model['cervie']['researcher']['linkage']->linkage_category_id = $request->linkage_category_id;
-    $model['cervie']['researcher']['linkage']->date_start = $request->date_start;
-    $model['cervie']['researcher']['linkage']->date_end = $request->date_end;
-
-    $model['cervie']['researcher']['linkage']->created_by = Auth::id();
-    $model['cervie']['researcher']['linkage']->created_at = Carbon::now();
-
-    //Execute Query
-    $model['cervie']['researcher']['linkage']->save();
-
-    if($request->has('file')){
-
-      foreach($request->file as $key => $value){
-
-        //Set Model
-        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidence();
-
-
-        //Get Last ID
-        $last_evidence_id = (($model['cervie']['researcher']['evidence']->getLastID())?$model['cervie']['researcher']['evidence']->getLastID()->evidence_id+1:1);
-
-        //Attachment
-        $attachment_extension = $value->getClientOriginalExtension();
-        $attachment_name = $last_id;
-        $attachment_original_name = $value->getClientOriginalName();
-
-        $model['cervie']['researcher']['evidence']->evidence_id = $last_evidence_id;
-        $model['cervie']['researcher']['evidence']->employee_id = $request->route('employee_id');
-        $model['cervie']['researcher']['evidence']->researcher_category_id = $last_id;
-        $model['cervie']['researcher']['evidence']->file_raw_name = $attachment_original_name;
-        $model['cervie']['researcher']['evidence']->file_name = $attachment_name;
-        $model['cervie']['researcher']['evidence']->file_extension = $attachment_extension;
-        $model['cervie']['researcher']['evidence']->description = $request->description[$key];
-        $model['cervie']['researcher']['evidence']->category = 'cervie_researcher_linkage';
-        $model['cervie']['researcher']['evidence']->created_by = Auth::id();
-        $model['cervie']['researcher']['evidence']->created_at = Carbon::now();
-        //Execute Query
-        $model['cervie']['researcher']['evidence']->save();
-
-        //File Store Location
-        $value->storeAs('public/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/' . $request->route('employee_id') . '/linkage/' .  $last_id, $attachment_name . "." .$attachment_extension);
-
+      //Get Document Name
+      foreach($request->document_name as $key=>$value){
+        $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
+        $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
+        $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';
+        $messages['document_name.'.$key.'.required'] = 'Evidence item '.($key + 1).': File name is required';
       }
 
     }
 
+    //Create A Validator Instance
+    $validator = Validator::make($request->all(), $rules, $messages);
 
-
-    //Return Success
-    return redirect()->route($hyperlink['page']['list'],['employee_id' => $request->route('employee_id')])->with('alert_type','success')
-                       ->with('message','Create Linkage Success');
-
-    //Return View
-    return view($this->route['view'].'.index',compact('data','hyperlink'));
+    //Run The Validation
+    $validator->validate();
 
   }
 
+  /**************************************************************************************
+ 		Create
+ 	**************************************************************************************/
+	public function create(Request $request){
+
+		//Get Route Path
+		$this->routePath();
+
+		//Set Hyperlink
+		$hyperlink = $this->hyperlink;
+
+    //Get Award Type
+    $this->getValidateData($request);
+
+    //If Form Token Exist
+		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
+
+		//Check Type Request
+		switch($this->encrypter->decrypt($request->form_token)){
+
+      //Create
+      case 'create':
+
+      //Convert array to string with commas separating the values
+      $sustainable_development_goal = implode(',',$request->sustainable_development_goal_id);
+
+        //Set Model
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
+
+        //Create Main
+        $result['main']['create'] = $model['cervie']['researcher']['grant']->createRecord(
+          [
+            'column'=>[
+              'employee_id'=>Auth::id(),
+              'project_role_id'=>($request->has('project_role_id')?$request->project_role_id:null),
+              'status_id'=>($request->has('status_id')?$request->status_id:null),
+              'date_start'=>($request->has('date_start')?$request->date_start:null),
+              'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'title'=>($request->has('title')?$request->title:null),
+              'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
+              'quantum'=>($request->has('quantum')?$request->quantum:null),
+              'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
+              'sustainable_development_goal'=>$sustainable_development_goal,
+              'remark'=>(($request->remark)?$request->remark:null),
+              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'created_by'=>Auth::id()
+            ]
+          ]
+        );
+
+        //If Files Exist
+        if($request->has('document')){
+
+          //Get File Loop
+          foreach($request->file('document') as $key=>$value){
+
+            //Set File Name With Extension
+            $file['name']['raw']['with']['extension'] = $value->getClientOriginalName();
+
+            //Set file name With Extension
+            $file['name']['raw']['without']['extension'] = pathinfo($file['name']['raw']['with']['extension'], PATHINFO_FILENAME);
+
+            //Get File Extension
+            $file['extension'] = $value->getClientOriginalExtension();
+
+            //Set Path Folder
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$result['main']['create']->last_insert_id.'/';
+
+            //Set Modified File Name Without Extension (Using last_insert_id)
+            $file['name']['modified']['without']['extension'] = ($key+1);
+
+            //Set Modified File Name With Extension
+            $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'].'.'.$file['extension'];
+
+            //Set The Full Upload Path
+            $path['upload'] = $path['folder'].$file['name']['modified']['with']['extension'];
+
+            //Check If The File Already Exists In Storage
+            $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
+
+            //If File Exists, Delete It
+            if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
+
+            //Store File
+            Storage::disk()->put($path['upload'], fopen($value,'r+'));
+
+            //Set Model Evidence
+            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+            //Create Evidence
+            $result['evidence']['create'] = $model['cervie']['researcher']['evidence']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'file_id'=>$file['name']['modified']['without']['extension'],
+                  'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
+                  'file_raw_name'=>$file['name']['raw']['without']['extension'],
+                  'file_extension'=>$file['extension'],
+                  'table_name'=>'cervie_researcher_grant',
+                  'table_id'=>$result['main']['create']->last_insert_id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
+        }
+
+      break;
+
+      //Default
+      default:
+
+        //Abort
+        abort(555,'Form Token Missing');
+
+      break;
+
+    }
+
+    //Return to Selected Tab Category Route
+    return redirect()->route($hyperlink['page']['list'])
+                     ->with('alert_type','success')
+                     ->with('message','Grant Added');
+
+  }
 
   /**************************************************************************************
  		List
@@ -256,7 +380,225 @@ class IndexController extends Controller{
     //Set Page Sub
     $page = $this->page;
 
+    //Set Page Sub
     $page['sub'] .= 'list.sub';
+
+    //Set Breadcrumb Icon
+    $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
+
+    //Set Breadcrumb Title
+    $data['breadcrumb']['title'] = ['Welcome Back, '.Auth::user()->name];
+
+		//Set Breadcrumb
+		$data['title'] = array($this->header['category']);
+    //Set Model Award
+    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageView();
+
+    //Set Main Data Researcher Publication
+    $data['main']['cervie']['researcher']['linkage'] = $model['cervie']['researcher']['linkage']->getList(
+      [
+        'eloquent'=>'pagination',
+        'column'=>[
+          'employee_id'=>Auth::id(),
+        ]
+      ]
+    );
+
+    //Set Table Researcher Publication
+    $data['table']['column']['cervie']['researcher']['linkage'] = $this->getDataTable();
+
+    //Get Form Token
+		$form_token = $this->encrypt_token_form;
+
+		//Return View
+		return view($this->route['view'].'list.index',compact('data','form_token','page','hyperlink'));
+
+  }
+
+  /**************************************************************************************
+ 		Delete
+ 	**************************************************************************************/
+	public function delete(Request $request){
+
+		//Get Route Path
+		$this->routePath();
+
+		//Set Hyperlink
+		$hyperlink = $this->hyperlink;
+
+    //If Form Token Exist
+		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
+
+		//Check Type Request
+		switch($this->encrypter->decrypt($request->form_token)){
+
+      //Create
+      case 'delete':
+
+        //Set Model
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
+
+        //Delete Main
+        $result['main']['delete'] = $model['cervie']['researcher']['grant']->deleteRecord(
+          [
+            'column'=>[
+              'grant_id'=>$request->id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Set Path Folder
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
+
+        //Check If The Folder Already Exists In Storage
+        $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
+
+        //If Folder Exists, Delete It
+        if($check['exist']['storage']){Storage::disk()->deleteDirectory($path['folder']);}
+
+        //Set Model Evidence
+        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+        //Delete Evidence Record
+        $result['evidence']['delete'] = $model['cervie']['researcher']['evidence']->deleteRecordByResearcherTable(
+          [
+            'column'=>[
+              'employee_id'=>Auth::id(),
+              'table_name'=>'cervie_researcher_grant',
+              'table_id'=>$request->id
+            ]
+          ]
+        );
+
+        //Set Model
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
+
+        //Delete Evidence
+        $data['main']['verification'] = $model['cervie']['researcher']['grant']->needVerification(
+          [
+            'column'=>[
+              'grant_id'=>$request->id,
+              'employee_id'=>Auth::id(),
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+      break;
+
+    }
+
+    //Return to Selected Tab Category Route
+    return redirect()->route($hyperlink['page']['list'])
+                     ->with('alert_type','success')
+                     ->with('message','Grant Deleted');
+
+  }
+
+  /**************************************************************************************
+ 		Delete
+ 	**************************************************************************************/
+	public function deleteEvidence(Request $request){
+
+		//Get Route Path
+		$this->routePath();
+
+		//Set Hyperlink
+		$hyperlink = $this->hyperlink;
+
+    //If Form Token Exist
+    if(!$request->has('form_token')){abort(555,'Form Token Missing');}
+
+		//Check Type Request
+		switch($this->encrypter->decrypt($request->form_token)){
+
+      //Create
+      case 'delete':
+
+        //Set Model
+        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+        //Set Main
+        $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecord(
+          [
+            'column'=>[
+              'evidence_id'=>$request->evidence_id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Set Path Folder
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$data['evidence']->table_id.'/';
+
+        //Set Modified File Name Without Extension (Using last_insert_id)
+        $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
+
+        //Set Modified File Name With Extension
+        $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'].'.'.$data['evidence']->file_extension;
+
+        //Set The Full Upload Path
+        $path['upload'] = $path['folder'].$file['name']['modified']['with']['extension'];
+
+        //Check If The File Already Exists In Storage
+        $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
+
+        //If The File Exists, Delete It
+        if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
+
+        //Delete Record
+        $result['evidence']['delete'] = $model['cervie']['researcher']['evidence']->deleteRecord(
+          [
+            'column'=>[
+              'evidence_id'=>$data['evidence']->evidence_id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Set Model
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
+
+        //Set Main Verification
+        $data['main']['verification'] = $model['cervie']['researcher']['grant']->needVerification(
+          [
+            'column'=>[
+              'grant_id'=>$data['evidence']->table_id,
+              'employee_id'=>Auth::id(),
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+      break;
+
+    }
+
+    //Return to Selected Tab Category Route
+    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+                     ->with('alert_type','success')
+                     ->with('message','Evidence Deleted');
+
+  }
+
+  /**************************************************************************************
+ 		View
+ 	**************************************************************************************/
+	public function view(Request $request){
+
+		//Get Route Path
+		$this->routePath();
+
+		//Set Hyperlink
+		$hyperlink = $this->hyperlink;
+
+    //Set Page Sub
+    $page = $this->page;
+
+    //Set Page Sub
+    $page['sub'] .= 'view.sub';
+
     //Set Breadcrumb Icon
     $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
 
@@ -267,20 +609,114 @@ class IndexController extends Controller{
 		$data['title'] = array($this->header['category']);
 
     //Set Model
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkage();
+    $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
-    //Get Data
-    $data['main'] = $model['cervie']['researcher']['linkage']->getList(
+    //Set Model General Award Type
+    $model['general']['representation']['category'] = new RepresentationCategoryView();
+
+    //Get General Award Type
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
       [
         'column'=>[
-          'employee_id'=>$request->route('employee_id')
+          'category'=>'GRANT'
         ]
       ]
     );
 
+    //Set Model General Grant Category
+    $model['general']['project']['role'] = new ProjectRoleView();
 
-		//Return View
-		return view($this->route['view'].'list.index',compact('data','page','hyperlink'));
+    //Set Model General Grant Category
+    $model['general']['currency']['code'] = new CurrencyCodeView();
+
+    //Get General Grant Category
+    $data['general']['project']['role'] = $model['general']['project']['role']->selectBox();
+
+    //Get General Grant Category
+    $data['general']['currency']['code'] = $model['general']['currency']['code']->selectBox();
+
+    //Get Table Control
+    $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
+      [
+        'column'=>[
+          'table_control_id'=>'cervie_researcher_grant'
+        ]
+      ]
+    );
+
+    //Set Model General Sustainable Development Goal
+    $model['general']['sustainable']['development']['goal'] = new SustainableDevelopmentGoalView();
+
+    //Get General General Sustainable Development Goal
+    $data['general']['sustainable']['development']['goal'] = $model['general']['sustainable']['development']['goal']->selectBox();
+
+    //Set Model General Status
+    $model['general']['status'] = new StatusView();
+
+    //Get General Status
+    $data['general']['status'] = $model['general']['status'] ->selectBox(
+      [
+        'column'=>[
+          'table'=>'cervie_researcher_grant'
+        ]
+      ]
+    );
+
+    //Set Model
+    $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
+
+    //Read Main
+    $data['main'] = $model['cervie']['researcher']['grant']->readRecord(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id(),
+          'grant_id'=>$request->id
+        ]
+      ]
+    );
+
+    //Set Model
+    $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+    //Read Evidence
+    $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecordByResearcherTable(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id(),
+          'table_name'=>'cervie_researcher_grant',
+          'table_id'=>$request->id
+        ]
+      ]
+    );
+
+    //Defined Column
+    $data['table']['column']['cervie']['researcher']['evidence'] = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'class'=>'col-8',
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' File',
+      ],
+      2=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
+      ]
+    ];
+
+    //Set Asset
+    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
+
+    //Set Document
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
+
+    //Get Form Token
+		$form_token = $this->encrypt_token_form;
+
+  	//Return View
+		return view($this->route['view'].'view.index',compact('data','page','asset','form_token','hyperlink'));
 
   }
 
@@ -295,229 +731,179 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Redirect
-    $redirect = [];
+    //If Form Token Exist
+		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
 
-        //Check Request Validation
-        $validate = $request->validate(
+    //Check Type Request
+    switch($this->encrypter->decrypt($request->form_token)){
 
-          //Check Validation
-          [
-            'id'=>'required',
-            'qualification_id'=>'required',
-            'qualification_name'=>'required',
-            'institution_name'=>'required',
-            'date_start'=>'required',
-            'date_end'=>'required',
-            'filename'=>'mimetypes:application/pdf'
+      //Create
+      case 'update':
 
-          ],
-          //Error Message
-          [
-            'id.required'=>'Academic Qualification ID is Required',
-            'qualification_id.required'=>'Qualification Type is Required',
-            'qualification_name.required'=>'Qualification Name is Required',
-            'institution_name.required'=>'Institution Name is Required',
-            'date_start.required'=>'Date Start is Required',
-            'date_end.required'=>'Date End is Required',
+        //Convert array to string with commas separating the values
+        $sustainable_development_goal = implode(',',$request->sustainable_development_goal_id);
 
-          ]
-        );
+        //Get Award Type
+        $this->getValidateData($request);
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherAcademicQualification();
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
 
-        //Check Exist
-        $data['main'] = $model['cervie']['researcher']['linkage']::find($request->id);
-
-        //If Query Not found
-        if(!$data['main']){
-
-          //Return Failed
-          return back()->with('alert_type','error')
-                       ->with('message','Data Not Exist');
-
-        }
-
-        //Attachment
-        if($request->filename){
-          $attachment_extension = $request->filename->getClientOriginalExtension();
-          $attachment_name = $data['main']->academic_qualification_id . "." .$attachment_extension;
-          $data['main']->filename = $attachment_name;
-
-          File::delete(public_path('storage/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/'. $request->route('employee_id') . '/academic_qualification/' . $data['main']->filename));
-
-          //File Store Location
-          $request->filename->storeAs('public/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/' . $request->route('employee_id') . '/academic_qualification/', $attachment_name);
-
-        }
-
-        //Set Request to Model
-        $data['main']->employee_id = $request->route('employee_id');
-        $data['main']->qualification_id = $request->qualification_id;
-        $data['main']->qualification_name = $request->qualification_name;
-        $data['main']->institution_name = $request->institution_name;
-        $data['main']->qualification_other = $request->qualification_other;
-        $data['main']->date_start = $request->date_start;
-        $data['main']->date_end = $request->date_end;
-        $data['main']->updated_by = Auth::id();
-        $data['main']->updated_at = Carbon::now();
-
-        //Execute Query
-        $data['main']->save();
-
-        //Return Success
-        return back()->with('alert_type','success')
-                     ->with('message','Qualification Updated');
-
-  }
-
-  /**************************************************************************************
-    Delete
-  **************************************************************************************/
-  public function delete(Request $request){
-
-    //Get Route Path
-    $this->routePath();
-
-    //Set Hyperlink
-    $hyperlink = $this->hyperlink;
-
-    //Set Model
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkage();
-
-      //Check Request Validation
-      $validate = $request->validate(
-        //Check Validation
-        [
-          'id'=>'required'
-        ],
-        //Error Message
-        [
-          'id.required'=>'ID is Required'
-        ]
-      );
-
-        $data['main']= $model['cervie']['researcher']['linkage']::find($request->id);
-
-        //Set Data
-        $data['check'] = $model['cervie']['researcher']['linkage']->checkExist(
+        //Create Main
+        $result['main']['update'] = $model['cervie']['researcher']['grant']->updateRecord(
           [
             'column'=>[
-              'id'=>$request->id,
+              'grant_id'=>$request->id,
+              'employee_id'=>Auth::id(),
+              'project_role_id'=>($request->has('project_role_id')?$request->project_role_id:null),
+              'status_id'=>($request->has('status_id')?$request->status_id:null),
+              'date_start'=>($request->has('date_start')?$request->date_start:null),
+              'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'title'=>($request->has('title')?$request->title:null),
+              'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
+              'quantum'=>($request->has('quantum')?$request->quantum:null),
+              'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
+              'sustainable_development_goal'=>$sustainable_development_goal,
+              'remark'=>(($request->remark)?$request->remark:null),
+              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'updated_by'=>Auth::id()
             ]
           ]
         );
 
-        if($data['check'] < 1){
+        //If Files Exist
+        if($request->has('document')){
 
-          //Return Failed
-          return back()->with('alert_type','error')
-                       ->with('message','No data found');
+          //Get File Loop
+          foreach($request->file('document') as $key=>$value){
+
+            //Set Model
+            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+            //Read Evidence Current
+            $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecordByResearcherTable(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'table_name'=>'cervie_researcher_grant',
+                  'table_id'=>$request->id
+                ]
+              ]
+            );
+
+            //Set Counter
+            $counter = ((count($data['evidence']) == $key)?$key:count($data['evidence']));
+
+            //Set file name with extension
+            $file['name']['raw']['with']['extension'] = $value->getClientOriginalName();
+
+            //Set file name without extension
+            $file['name']['raw']['without']['extension'] = pathinfo($file['name']['raw']['with']['extension'], PATHINFO_FILENAME);
+
+            //Get file extension
+            $file['extension'] = $value->getClientOriginalExtension();
+
+            //Set path folder
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
+
+            //Set modified file name without extension (using last_insert_id)
+            $file['name']['modified']['without']['extension'] = ($counter+1);
+
+            //Set modified file name with extension
+            $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'].'.'.$file['extension'];
+
+            //Set the full upload path
+            $path['upload'] = $path['folder'].$file['name']['modified']['with']['extension'];
+
+            //Check if the file already exists in storage
+            $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
+
+            //If the file exists, delete it
+            if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
+
+            //Store the file in storage (you may use `fopen` if needed for specific storages)
+            Storage::disk()->put($path['upload'],fopen($value,'r+'));
+
+            //Set the model and create a new record in the database
+            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+            //Create Evidence Upload
+            $data['evidence']['upload'] = $model['cervie']['researcher']['evidence']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'file_id'=>$file['name']['modified']['without']['extension'],
+                  'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
+                  'file_raw_name'=>$file['name']['raw']['without']['extension'],
+                  'file_extension'=>$file['extension'],
+                  'table_name'=>'cervie_researcher_grant',
+                  'table_id'=>$request->id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
         }
 
-         // Construct the file path
-         $filePath = storage_path('app/public/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/' . $request->route('employee_id') . '/linkage/' . $data['main']->linkage_id);
+      break;
 
-         // Delete file if it exists
-         if (File::exists($filePath)) {
+    }
 
-           //Delete File
-           File::deleteDirectory($filePath);
-
-           //Set Request to Model
-           $model['cervie']['researcher']['linkage']::destroy($request->id);
-
-         }
-
-        //Return Success
-        return back()->with('alert_type','success')
-                     ->with('message','Linkage deleted');
-
-
+    //Return to Selected Tab Category Route
+    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+                     ->with('alert_type','success')
+                     ->with('message','Award Saved');
 
   }
 
   /**************************************************************************************
- 		Index
+ 		Get Data Table
  	**************************************************************************************/
-	public function view(Request $request){
+  public function getDataTable(){
 
-    //Get Route Path
-    $this->routePath();
-
-    //Set Hyperlink
-    $hyperlink = $this->hyperlink;
-
-    //Set Page Sub
-    $page = $this->page;
-
-    //Set Breadcrumb Icon
-    $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
-
-    //Set Breadcrumb Title
-    $data['breadcrumb']['title'] = ['Welcome Back, '.Auth::user()->name];
-
-    //Set Breadcrumb
-    $data['title'] = array($this->header['category']);
-
-    // Set Model
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkage();
-    $model['general']['agreement']['level'] = new AgreementLevel();
-    $model['general']['agreement']['type'] = new AgreementType();
-    $model['general']['linkage']['category'] = new LinkageCategory();
-    $model['general']['country'] = new Country();
-
-    //Get Data
-    $data['general']['agreement']['level'] = $model['general']['agreement']['level']->selectBox();
-    $data['general']['agreement']['type'] = $model['general']['agreement']['type']->selectBox();
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
-    $data['general']['country'] = $model['general']['country']->selectBox();
-
-    //Set Data
-    $data['main'] = $model['cervie']['researcher']['linkage']->viewSelected(
-      [
-        'column'=>[
-          'id'=>$request->id
-        ]
+    //Defined Column
+    $table = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'icon'=>'<i class="mdi mdi-account-card-details"></i>',
+        'name'=>' Type',
+      ],
+      2=>[
+        'icon'=>'<i class="mdi person-supervisor-circle"></i>',
+        'name'=>' Title',
+      ],
+      3=>[
+        'icon'=>'<i class="mdi mdi-certificate"></i>',
+        'name'=>' Role',
+      ],
+      4=>[
+        'icon'=>'<i class="mdi mdi-currency-usd"></i>',
+        'name'=>' Quantum',
+      ],
+      5=>[
+        'icon'=>'<i class="mdi mdi-google-earth"></i>',
+        'name'=>' SDG',
+      ],
+      6=>[
+        'icon'=>'<i class="mdi mdi-shield-check"></i>',
+        'name'=>' Verfication',
+      ],
+      7=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
       ]
-    );
+    ];
 
-    //Set Data
-    $data['evidence'] = $model['cervie']['researcher']['linkage']->getList(
-      [
-        'column'=>[
-          'id'=>$request->id
-        ]
-      ]
-    );
-
-		//Return View
-		return view($this->route['view'].'view.index',compact('data','hyperlink'));
+    //Return Table
+    return $table;
 
   }
-
-  /**************************************************************************************
-    View File
-  **************************************************************************************/
-  public function viewFile(Request $request){
-
-    //Get Route Path
-    $this->routePath();
-
-    //Set Hyperlink
-    $hyperlink = $this->hyperlink;
-
-    // Set Model
-    $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidence();
-
-    //Set Data
-    $data['main'] = $model['cervie']['researcher']['evidence']::find($request->id);
-
-
-    return response()->file(storage_path('app/public/resources/module/company/UCSI_EDUCATION/university/cervie/researcher/' . $data['main']->employee_id . '/linkage/'. $data['main']->researcher_category_id . '/'. $data['main']->file_name. '.' . $data['main']->file_extension));
-
-  }
-
 
 }

@@ -2,42 +2,43 @@
 
 @section('main-content')
 
-  {{-- Overall Summary --}}
-  @include($page['sub'].'.content_statistic')
+  <!-- content -->
+  <div class="col-lg-12 col-sm-12 flex-column d-flex stretch-card">
 
-  {{-- Linkage --}}
-  @include($page['sub'].'.content_list')
+    <!-- row 1 -->
+    <div class="row">
 
-  {{-- Linkage --}}
-  @include($page['sub'].'.content_view')
+      {{-- Linkage --}}
+      @include($page['sub'].'.linkage')
 
-<script type="text/javascript">
+    </div>
+    <!-- end row 1 -->
 
-  $(document).ready(function(){
+  </div>
+  <!-- end content -->
+
+  {{-- Pop Alert --}}
+  @include($hyperlink['navigation']['layout']['dashboard']['researcher']['modal']['pop_alert'])
+
+  <script type="text/javascript">
 
     /**************************************************************************************
-      Variable
+      Document On Load
     **************************************************************************************/
+    $(document).ready(function($){
 
-    $(".row_details").hide();
-
-    /**************************************************************************************
-      Session
-    **************************************************************************************/
-    @if(Session('message'))
-
-    Swal.fire({
-      title: "{{ ucwords(Session::get('alert_type')) }}",
-      text: "{{ ucwords(Session::get('message')) }}",
-      icon: "{{Session::get('alert_type')}}",
-      confirmButtonColor: "#ee5b5b"
+      /**************************************************************************************
+        Session
+      **************************************************************************************/
+      @if(Session('message'))
+        Swal.fire({
+          title: '{{ ucwords(Session::get('alert_type')) }}',
+          text: '{{ ucwords(Session::get('message')) }}',
+          icon: '{{ strtolower(Session::get('alert_type')) }}'
+        });
+      @endif
 
     });
-
-    @endif
-
-  });
-
-</script>
+  </script>
 
 @endsection
