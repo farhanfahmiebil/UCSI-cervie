@@ -40,6 +40,48 @@ Route::prefix('researcher')->group(function(){
           **************************************************************************************/
           Route::get('/list',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\IndexController@list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.list');
 
+          /* View
+          **************************************************************************************/
+          Route::prefix('view')->group(function(){
+
+            /* ID
+            **************************************************************************************/
+            Route::prefix('{id}')->group(function(){
+
+              /* Tab Category
+              **************************************************************************************/
+              Route::prefix('{tab?}')->group(function(){
+
+                /* Tab Category
+                **************************************************************************************/
+                Route::prefix('{tab_category?}')->group(function(){
+
+                  /* Tab Sub Category
+                  **************************************************************************************/
+                  Route::prefix('{tab_sub_category?}')->group(function(){
+
+                    /*  Index
+                    **************************************************************************************/
+                    Route::get('/',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view');
+
+                  }); //End Tab Sub Category
+
+                  /*  Download
+                  **************************************************************************************/
+                  Route::get('/download/category/{category}',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\IndexController@download')->name(config('routing.application.modules.dashboard.employee.name').'.users.manage.researcher.download');
+
+                  /*  Update
+                  **************************************************************************************/
+                  Route::post('/update',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.update');
+
+                }); //End Tab Category
+
+              }); //End Tab
+
+            }); //End ID
+
+          }); //End View
+
         }); //End User
 
       }); //End Organization ID

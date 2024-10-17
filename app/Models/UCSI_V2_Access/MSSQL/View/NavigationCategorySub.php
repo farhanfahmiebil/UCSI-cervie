@@ -19,7 +19,7 @@ use App\Models\UCSI_V2_General\MSSQL\Table\Setting;
 use Illuminate\Notifications\Notifiable;
 
 //Get Class
-class NavigationCategory extends Model{
+class NavigationCategorySub extends Model{
 
   // Use Audit
   // use \OwenIt\Auditing\Auditable;
@@ -39,7 +39,7 @@ class NavigationCategory extends Model{
   public function getList($data){
 
     //Set Table
-    $this->table = 'list_navigation_category';
+    $this->table = 'list_navigation_category_sub';
 
     //Get Result
     $result = DB::connection($this->connection)->table($this->table)
@@ -50,7 +50,7 @@ class NavigationCategory extends Model{
                                                // dd($data);
 // print_r($result->toSql());exit();
    //Filter Query
-   // if(isset($data['column']['module_company_id']) && $data['column']['module_company_id'] != null){$result = $result->where($this->table.'.module_company_id', $data['column']['module_company_id']);}
+   if(isset($data['column']['navigation_category_code']) && $data['column']['navigation_category_code'] != null){$result = $result->where($this->table.'.navigation_category_code', $data['column']['navigation_category_code']);}
    // if(isset($data['column']['employee_id']) && $data['column']['employee_id'] != null){$result = $result->where($this->table.'.employee_id', $data['column']['employee_id']);}
 //
    //Get Result

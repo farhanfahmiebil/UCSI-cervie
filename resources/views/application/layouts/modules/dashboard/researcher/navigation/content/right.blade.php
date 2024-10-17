@@ -15,36 +15,56 @@
 
           <!-- row -->
           <div class="row">
+
+            <!-- col -->
             <div class="col-lg-12">
-              <div class="nav nav-pills flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+              <!-- nav pill -->
+              <div class="nav nav-pills flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
                 {{-- Check Navigation Category Exist --}}
-                {{-- @if(count($access['navigation']['category'])) --}}
+                @if(count($access['navigation']['category']))
 
                   {{-- Get Navigation Category --}}
-                  {{-- @foreach($access['navigation']['category'] as $value) --}}
-                  {{-- @endforeach --}}
+                  @foreach($access['navigation']['category'] as $value)
+
+                    @php
+                      // Lowercase and explode category
+                      $category = explode('_', strtolower($value->navigation_category_code));
+
+                      // Determine the route
+                      $route = isset($hyperlink['navigation']['authorization']['researcher']['sidebar']['right'][strtolower($value->navigation_category_id)])
+                        ? route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right'][strtolower($value->navigation_category_id)])
+                        : '#';
+
+                      // Determine background class
+                      $navigation_category['is_active'] = (Request::segment(3) == $category[0] && (count($category) == 1 || Request::segment(4) == $category[1]));
+                      $navigation_category['card'] = $navigation_category['is_active'] ? 'bg-danger text-white' : 'shadow-sm bg-light rounded border border-light';
+                      $navigation_category['icon'] = $navigation_category['is_active'] ? 'btn-light' : 'btn-primary';
+                      $navigation_category['label'] = $navigation_category['is_active'] ? 'text-white' : 'text-dark';
+                    @endphp
+
+                    <a href="{{ $route }}" class="card mt-3 text-decoration-none {{ $navigation_category['card'] }}">
+                      <div class="card-body p-3 my-3 d-flex align-items-center">
+                        <button class="btn btn-rounded btn-icon {{ $navigation_category['icon'] }}">
+                          <i class="{{ $value->navigation_category_icon }}"></i>
+                        </button>
+                        <h4 class="card-title mb-0 ms-1 {{ $navigation_category['label'] }}">{{ $value->navigation_category_name }}</h4>
+                      </div>
+                    </a>
+
+                  @endforeach
                   {{-- End Get Navigation Category --}}
 
-                {{-- @endif --}}
+                @endif
                 {{-- End Check Navigation Category Exist --}}
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['home'],['employee_id'=> request()->route('employee_id')]) }}" class="nav-link text-danger">Dashboard</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['general_information']) }}" class="nav-link {{ ((Request::segment(3) == 'general' && Request::segment(4) == 'information')?'text-white bg-danger':'text-danger') }}">General Information</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['qualification']) }}" class="nav-link {{ ((Request::segment(3) == 'qualification')?'text-white bg-danger':'text-danger') }}">Qualifications</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['publication']) }}" class="nav-link {{ ((Request::segment(3) == 'publication')?'text-white bg-danger':'text-danger') }}">Publications</a>
-                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Grants</button>
-                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Postgraduate Supervision</button>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['award']) }}" class="nav-link {{ ((Request::segment(3) == 'award')?'text-white bg-danger':'text-danger') }}">Awards</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['stewardship']) }}" class="nav-link {{ ((Request::segment(3) == 'stewardship')?'text-white bg-danger':'text-danger') }}">Stewardships</a>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['recognition']) }}" class="nav-link {{ ((Request::segment(3) == 'recognition')?'text-white bg-danger':'text-danger') }}">Recognition</a>
-                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Consultancies</button>
-                <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right']['intellectual_property']) }}" class="nav-link {{ ((Request::segment(3) == 'intellectual' && Request::segment(4) == 'property')?'text-white bg-danger':'text-danger') }}">Intellectual Property</a>
-                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Commercialization</button>
-                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Community Engagement</button>
-                <button class="nav-link text-danger" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Linkages</button>
 
               </div>
+              <!-- end nav pill -->
+
             </div>
+            <!-- end col -->
+
           </div>
           <!-- end row -->
 
