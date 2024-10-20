@@ -28,7 +28,7 @@ class Organization extends Model{
   /**************************************************************************************
     Select Box
   **************************************************************************************/
-  public function selectBox($data){
+  public function selectBox($data = null){
 
     //Set Table
     $this->table = 'selectbox_organization';

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Class
-class CervieResearcherLinkage extends Model{
+class CervieResearcherPostGraduateSupervision extends Model{
 
   /**
    * The database connection that should be used by the model.
@@ -26,7 +26,7 @@ class CervieResearcherLinkage extends Model{
    *
    * @var string
    */
-  protected $table = 'cervie_researcher_linkage';
+  protected $table = 'cervie_researcher_postgraduate_supervision';
 
   /**************************************************************************************
     Create
@@ -34,26 +34,25 @@ class CervieResearcherLinkage extends Model{
   public function createRecord($data){
 
     //Set Table
-    $table = 'create_cervie_researcher_linkage';
+    $table = 'create_cervie_researcher_postgraduate_supervision';
 
     // Set Query
     $this->query = 'DECLARE @id INT;
                     EXEC ' . $table . ' ?,?,?,?,?,?,
-                                        ?,?,?,?,?,?,?, @id OUTPUT;
+                                        ?,?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
     $result = DB::connection($this->connection)->select($this->query, [
         $data['column']['employee_id'],
-        $data['column']['organization'],
-        $data['column']['title'],
-        $data['column']['agreement_level_id'],
-        $data['column']['agreement_type_id'],
-        $data['column']['amount'],
-        $data['column']['linkage_category_id'],
-        $data['column']['country_id'],
+        $data['column']['student_id'],
+        $data['column']['qualification_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['student_name'],
+        $data['column']['organization_id'],
+        $data['column']['programme'],
+        $data['column']['project_title'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -67,7 +66,7 @@ class CervieResearcherLinkage extends Model{
       $item = $this->readRecord(
         [
           'column'=>[
-            'linkage_id'=>$result[0]->id,
+            'postgraduate_supervision_id'=>$result[0]->id,
             'employee_id'=>$data['column']['employee_id'],
           ]
         ]
@@ -79,7 +78,7 @@ class CervieResearcherLinkage extends Model{
           'employee_id'=>$item->employee_id,
           'table_name'=>$this->table,
           'event'=>'create',
-          'auditable_id'=>$item->linkage_id,
+          'auditable_id'=>$item->postgraduate_supervision_id,
           'old_value'=>'[]',
           'new_value'=>json_encode($item),
           'created_by'=>$item->created_by,
@@ -107,14 +106,14 @@ class CervieResearcherLinkage extends Model{
   public function readRecord($data){
 
     //Set Table
-    $table = 'read_cervie_researcher_linkage';
+    $table = 'read_cervie_researcher_postgraduate_supervision';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->select($this->query,[
-        $data['column']['linkage_id'],
+        $data['column']['postgraduate_supervision_id'],
         $data['column']['employee_id'],
       ]
     );
@@ -133,35 +132,33 @@ class CervieResearcherLinkage extends Model{
   public function updateRecord($data){
 
     //Set Table
-    $table = 'update_cervie_researcher_linkage';
+    $table = 'update_cervie_researcher_postgraduate_supervision';
 
     //Read Record
     $item['old'] = $this->readRecord(
       [
         'column'=>[
-          'linkage_id'=>$data['column']['linkage_id'],
+          'postgraduate_supervision_id'=>$data['column']['postgraduate_supervision_id'],
           'employee_id'=>$data['column']['employee_id'],
         ]
       ]
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,
                                     ?,?,?,?,?,?,?';
-
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
-        $data['column']['linkage_id'],
+        $data['column']['postgraduate_supervision_id'],
         $data['column']['employee_id'],
-        $data['column']['organization'],
-        $data['column']['title'],
-        $data['column']['agreement_level_id'],
-        $data['column']['agreement_type_id'],
-        $data['column']['linkage_category_id'],
-        $data['column']['amount'],
-        $data['column']['country_id'],
+        $data['column']['student_id'],
+        $data['column']['qualification_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['student_name'],
+        $data['column']['organization_id'],
+        $data['column']['programme'],
+        $data['column']['project_title'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by'],
@@ -172,7 +169,7 @@ class CervieResearcherLinkage extends Model{
     $item['new'] = $this->readRecord(
       [
         'column'=>[
-          'linkage_id'=>$data['column']['linkage_id'],
+          'postgraduate_supervision_id'=>$data['column']['postgraduate_supervision_id'],
           'employee_id'=>$data['column']['employee_id'],
         ]
       ]
@@ -184,7 +181,7 @@ class CervieResearcherLinkage extends Model{
         'employee_id'=>$data['column']['employee_id'],
         'table_name'=>$this->table,
         'event'=>'update',
-        'auditable_id'=>$data['column']['linkage_id'],
+        'auditable_id'=>$data['column']['postgraduate_supervision_id'],
         'old_value'=>json_encode($item['old']),
         'new_value'=>json_encode($item['new']),
         'created_by'=>$data['column']['updated_by'],
@@ -202,14 +199,14 @@ class CervieResearcherLinkage extends Model{
   public function deleteRecord($data){
 
     //Set Table
-    $table = 'delete_cervie_researcher_linkage';
+    $table = 'delete_cervie_researcher_postgraduate_supervision';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
-        $data['column']['linkage_id'],
+        $data['column']['postgraduate_supervision_id'],
         $data['column']['employee_id']
       ]
     );
@@ -225,14 +222,14 @@ class CervieResearcherLinkage extends Model{
   public function needVerification($data){
 
     //Set Table
-    $table = 'update_cervie_researcher_linkage_verification';
+    $table = 'update_cervie_researcher_postgraduate_supervision_verification';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
-        $data['column']['linkage_id'],
+        $data['column']['postgraduate_supervision_id'],
         $data['column']['employee_id'],
         $data['column']['updated_by']
       ]

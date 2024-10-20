@@ -1,7 +1,7 @@
 <?php
 
 //Get Controller Path
-namespace App\Http\Controllers\Application\Modules\Dashboard\Researcher\Linkage;
+namespace App\Http\Controllers\Application\Modules\Dashboard\Researcher\CommunityEngagement;
 
 //Get Authorization
 use Auth;
@@ -16,15 +16,11 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
-use App\Models\UCSI_V2_General\MSSQL\View\LinkageCategory AS LinkageCategoryView;
-use App\Models\UCSI_V2_General\MSSQL\View\AgreementLevel AS AgreementLevelView;
-use App\Models\UCSI_V2_General\MSSQL\View\AgreementType AS AgreementTypeView;
-use App\Models\UCSI_V2_General\MSSQL\View\Country AS CountryView;
-use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherLinkage AS CervieResearcherLinkageView;
+use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherCommunityEngagement AS CervieResearcherCommunityEngagementView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
-use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLinkage AS CervieResearcherLinkageProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherCommunityEngagement AS CervieResearcherCommunityEngagementProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 
 //Get Request
@@ -48,7 +44,7 @@ class IndexController extends Controller{
   //Path Header
 	protected $header = [
 		'application'=>'Dashboard',
-    'category'=>'Linkage',
+    'category'=>'Community Engagement',
 		'module'=>'',
 		'module_sub'=>'',
     'item'=>'',
@@ -70,8 +66,8 @@ class IndexController extends Controller{
 	public function routePath(){
 
 		//Set Route View
-		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.linkage.';
-    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.linkage.';
+		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.community_engagement.';
+    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.community_engagement.';
 
     //Set Navigation
 		$this->hyperlink['navigation'] = $this->navigation['hyperlink'];
@@ -116,30 +112,6 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
-    //Set Model Linkage Category
-    $model['general']['linkage']['category'] = new LinkageCategoryView();
-
-    //Set Model Agreement Type
-    $model['general']['agreement']['type'] = new AgreementTypeView();
-
-    //Set Model Agreement Level
-    $model['general']['agreement']['level'] = new AgreementLevelView();
-
-    //Set Model Country
-    $model['general']['country'] = new CountryView();
-
-    //Get General Linkage Category
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
-
-    //Get Agreement Type
-    $data['general']['agreement']['type'] = $model['general']['agreement']['type']->selectBox();
-
-    //Get Agreement Level
-    $data['general']['agreement']['level'] = $model['general']['agreement']['level']->selectBox();
-
-    //Get General Country
-    $data['general']['country'] = $model['general']['country']->selectBox();
-
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
@@ -147,7 +119,7 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_linkage'
+          'table_control_id'=>'cervie_researcher_community_engagement'
         ]
       ]
     );
@@ -184,14 +156,14 @@ class IndexController extends Controller{
     //Define Validation Rules
     $rules = [
       'organization'=>['required'],
-      'title'=>['required'],
-      'agreement_type_id'=>['required'],
-      'agreement_level_id'=>['required'],
+      'project_name'=>['required'],
+      'sponsor'=>['required'],
       'amount'=>['required'],
-      'linkage_category_id'=>['required'],
-      'country_id'=>['required'],
+      'description'=>['required'],
       'date_start' => ['required','date'],
       'date_end' => ['required','date'],
+      'date_end' => ['required','date'],
+      'star_rating'=>['required'],
       'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
       'document_name.*'=>['required'], // Validate that each file has an associated name
     ];
@@ -199,14 +171,13 @@ class IndexController extends Controller{
     //Custom Validation Messages
     $messages = [
       'organization.required'=>'Organization is required',
-      'title.required'=>'Title is required',
-      'agreement_level_id.required'=>'Agreement Level is required',
-      'agreement_type_id.required'=>'Agreement Type is required',
+      'project_name.required'=>'Project Name is required',
+      'sponsor.required'=>'Sponsor is required',
       'amount.required'=>'Amount is required',
-      'linkage_category_id.required'=>'Category is required',
-      'country_id.required'=>'Country is required',
+      'description.required'=>'Description is required',
       'date_start.required'=>'Date Start is Required',
       'date_end.required'=>'Date End is Required',
+      'star_rating.required'=>'Star Rating is Required',
     ];
 
     //If Document Name Exist
@@ -254,28 +225,28 @@ class IndexController extends Controller{
       case 'create':
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
         //Create Main
-        $result['main']['create'] = $model['cervie']['researcher']['linkage']->createRecord(
+        $result['main']['create'] = $model['cervie']['researcher']['community']['engagement']->createRecord(
           [
             'column'=>[
               'employee_id'=>Auth::id(),
               'organization'=>($request->has('organization')?$request->organization:null),
-              'title'=>($request->has('title')?$request->title:null),
-              'agreement_level_id'=>($request->has('agreement_level_id')?$request->agreement_level_id:null),
-              'agreement_type_id'=>($request->has('agreement_type_id')?$request->agreement_type_id:null),
+              'project_name'=>($request->has('project_name')?$request->project_name:null),
+              'sponsor'=>($request->has('sponsor')?$request->sponsor:null),
               'amount'=>($request->has('amount')?$request->amount:null),
-              'linkage_category_id'=>($request->has('linkage_category_id')?$request->linkage_category_id:null),
-              'country_id'=>($request->has('country_id')?$request->country_id:null),
+              'description'=>($request->has('description')?$request->description:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
             ]
           ]
         );
+
 
         //If Files Exist
         if($request->has('document')){
@@ -293,7 +264,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set Path Folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$result['main']['create']->last_insert_id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$result['main']['create']->last_insert_id.'/';
 
             //Set Modified File Name Without Extension (Using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($key+1);
@@ -325,7 +296,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_linkage',
+                  'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -353,7 +324,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Linkage Added');
+                     ->with('message','Community Engagement Added');
 
   }
 
@@ -383,10 +354,10 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
     //Set Model Award
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageView();
+    $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementView();
 
     //Set Main Data Researcher Publication
-    $data['main']['cervie']['researcher']['linkage'] = $model['cervie']['researcher']['linkage']->getList(
+    $data['main']['cervie']['researcher']['community']['engagement'] = $model['cervie']['researcher']['community']['engagement']->getList(
       [
         'eloquent'=>'pagination',
         'column'=>[
@@ -396,7 +367,7 @@ class IndexController extends Controller{
     );
 
     //Set Table Researcher Publication
-    $data['table']['column']['cervie']['researcher']['linkage'] = $this->getDataTable();
+    $data['table']['column']['cervie']['researcher']['community']['engagement'] = $this->getDataTable();
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -427,20 +398,20 @@ class IndexController extends Controller{
       case 'delete':
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
         //Delete Main
-        $result['main']['delete'] = $model['cervie']['researcher']['linkage']->deleteRecord(
+        $result['main']['delete'] = $model['cervie']['researcher']['community']['engagement']->deleteRecord(
           [
             'column'=>[
-              'linkage_id'=>$request->id,
+              'community_engagement_id'=>$request->id,
               'employee_id'=>Auth::id()
             ]
           ]
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$request->id.'/';
 
         //Check If The Folder Already Exists In Storage
         $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
@@ -456,20 +427,20 @@ class IndexController extends Controller{
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'table_name'=>'cervie_researcher_linkage',
+              'table_name'=>'cervie_researcher_community_engagement',
               'table_id'=>$request->id
             ]
           ]
         );
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
         //Delete Evidence
-        $data['main']['verification'] = $model['cervie']['researcher']['linkage']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['community']['engagement']->needVerification(
           [
             'column'=>[
-              'linkage_id'=>$request->id,
+              'community_engagement_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'updated_by'=>Auth::id()
             ]
@@ -483,7 +454,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Linkage Deleted');
+                     ->with('message','Community Engagement Deleted');
 
   }
 
@@ -521,7 +492,7 @@ class IndexController extends Controller{
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$data['evidence']->table_id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$data['evidence']->table_id.'/';
 
         //Set Modified File Name Without Extension (Using last_insert_id)
         $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
@@ -549,13 +520,13 @@ class IndexController extends Controller{
         );
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
         //Set Main Verification
-        $data['main']['verification'] = $model['cervie']['researcher']['linkage']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['community']['engagement']->needVerification(
           [
             'column'=>[
-              'linkage_id'=>$data['evidence']->table_id,
+              'community_engagement_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
               'updated_by'=>Auth::id()
             ]
@@ -602,54 +573,24 @@ class IndexController extends Controller{
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
-    //Set Model General Award Type
-    $model['general']['linkage']['category'] = new LinkageCategoryView();
-
-    //Get General Award Type
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
-
-    //Set Model Linkage Category
-    $model['general']['linkage']['category'] = new LinkageCategoryView();
-
-    //Set Model Agreement Type
-    $model['general']['agreement']['type'] = new AgreementTypeView();
-
-    //Set Model Agreement Level
-    $model['general']['agreement']['level'] = new AgreementLevelView();
-
-    //Set Model Country
-    $model['general']['country'] = new CountryView();
-
-    //Get General Linkage Category
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
-
-    //Get Agreement Type
-    $data['general']['agreement']['type'] = $model['general']['agreement']['type']->selectBox();
-
-    //Get Agreement Level
-    $data['general']['agreement']['level'] = $model['general']['agreement']['level']->selectBox();
-
-    //Get General Country
-    $data['general']['country'] = $model['general']['country']->selectBox();
-
     //Get Table Control
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_linkage'
+          'table_control_id'=>'cervie_researcher_community_engagement'
         ]
       ]
     );
 
     //Set Model
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+    $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
     //Read Main
-    $data['main'] = $model['cervie']['researcher']['linkage']->readRecord(
+    $data['main'] = $model['cervie']['researcher']['community']['engagement']->readRecord(
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'linkage_id'=>$request->id
+          'community_engagement_id'=>$request->id
         ]
       ]
     );
@@ -662,7 +603,7 @@ class IndexController extends Controller{
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'table_name'=>'cervie_researcher_linkage',
+          'table_name'=>'cervie_researcher_community_engagement',
           'table_id'=>$request->id
         ]
       ]
@@ -686,10 +627,10 @@ class IndexController extends Controller{
     ];
 
     //Set Asset
-    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$request->id.'/';
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -723,23 +664,22 @@ class IndexController extends Controller{
         $this->getValidateData($request);
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
         //Create Main
-        $result['main']['update'] = $model['cervie']['researcher']['linkage']->updateRecord(
+        $result['main']['update'] = $model['cervie']['researcher']['community']['engagement']->updateRecord(
           [
             'column'=>[
-              'linkage_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'community_engagement_id'=>$request->id,
               'organization'=>($request->has('organization')?$request->organization:null),
-              'title'=>($request->has('title')?$request->title:null),
-              'agreement_level_id'=>($request->has('agreement_level_id')?$request->agreement_level_id:null),
-              'agreement_type_id'=>($request->has('agreement_type_id')?$request->agreement_type_id:null),
+              'project_name'=>($request->has('project_name')?$request->project_name:null),
+              'sponsor'=>($request->has('sponsor')?$request->sponsor:null),
               'amount'=>($request->has('amount')?$request->amount:null),
-              'linkage_category_id'=>($request->has('linkage_category_id')?$request->linkage_category_id:null),
-              'country_id'=>($request->has('country_id')?$request->country_id:null),
+              'description'=>($request->has('description')?$request->description:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -761,7 +701,7 @@ class IndexController extends Controller{
               [
                 'column'=>[
                   'employee_id'=>Auth::id(),
-                  'table_name'=>'cervie_researcher_linkage',
+                  'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$request->id
                 ]
               ]
@@ -780,7 +720,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set path folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$request->id.'/';
 
             //Set modified file name without extension (using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($counter+1);
@@ -812,7 +752,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_linkage',
+                  'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -832,7 +772,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Award Saved');
+                     ->with('message','Community Engagement Saved');
 
   }
 
@@ -849,11 +789,11 @@ class IndexController extends Controller{
       ],
       1=>[
         'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-        'name'=>' Organization',
+        'name'=>' Project Name',
       ],
       2=>[
-        'icon'=>'<i class="mdi person-supervisor-circle"></i>',
-        'name'=>' Title',
+        'icon'=>'<i class="mdi mdi-account-multiple"></i>',
+        'name'=>' Organization',
       ],
       3=>[
         'icon'=>'<i class="mdi mdi-calendar-account"></i>',

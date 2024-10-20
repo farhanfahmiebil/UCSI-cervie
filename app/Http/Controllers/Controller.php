@@ -171,6 +171,8 @@ class Controller extends BaseController{
                 'recognition'=>config('routing.application.modules.dashboard.researcher.name').'.recognition.list',
                 'grant'=>config('routing.application.modules.dashboard.researcher.name').'.grant.list',
                 'linkage'=>config('routing.application.modules.dashboard.researcher.name').'.linkage.list',
+                'postgraduate_supervision'=>config('routing.application.modules.dashboard.researcher.name').'.postgraduate_supervision.list',
+
               ],
               'home'=>config('routing.application.modules.dashboard.employee.name').'.home',
             ],

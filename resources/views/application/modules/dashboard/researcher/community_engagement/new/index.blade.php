@@ -22,7 +22,7 @@
             <div class="card-body">
 
               <!-- card title -->
-              <h4 class="card-title">Linkage Information</h4>
+              <h4 class="card-title">Community Engagement Information</h4>
               <!-- end card title -->
 
               <!-- error -->
@@ -40,53 +40,23 @@
               <!-- row 1 -->
               <div class="row">
 
-                <!-- linkage category id -->
+                <!-- organization -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_category_id">Linkage Category</label>
-                    <select class="form-control select2" id="linkage_category_id" name="linkage_category_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Linkage Category Exist --}}
-                      @if(count($data['general']['linkage']['category']) > 0)
-
-                        {{-- Get General Linkage Category Data --}}
-                        @foreach($data['general']['linkage']['category'] as $key=>$value)
-                          <option value="{{ $value->linkage_category_id }}" {{ ((old('linkage_category_id') == $value->linkage_category_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Linkage Category Level Data --}}
-
-                      @endif
-                      {{-- End Check General Linkage Category Level Exist --}}
-
-                    </select>
+                    <label for="organization">Organization</label>
+                    <input type="text" class="form-control" id="organization" name="organization" value="{{ old('organization') }}" placeholder="Organization">
                   </div>
                 </div>
-                <!-- end linkage category id -->
+                <!-- end organization -->
 
-                <!-- country id -->
+                <!-- project name -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="country_id">Country</label>
-                    <select class="form-control select2" id="country_id" name="country_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Country Exist --}}
-                      @if(count($data['general']['country']) > 0)
-
-                        {{-- Get General Country Data --}}
-                        @foreach($data['general']['country'] as $key=>$value)
-                          <option value="{{ $value->country_id }}" {{ ((old('country_id') == $value->country_id)?'selected':'') }}>{{ $value->country }}</option>
-                        @endforeach
-                        {{-- End Get General Country Data --}}
-
-                      @endif
-                      {{-- End Check General Country Exist --}}
-
-                    </select>
+                    <label for="project_name">Project Name</label>
+                    <input type="text" class="form-control" id="project_name" name="project_name" value="{{ old('project_name') }}" placeholder="Project Name">
                   </div>
                 </div>
-                <!-- end representation category id -->
+                <!-- end project name -->
 
               </div>
               <!-- end row 1 -->
@@ -94,23 +64,23 @@
               <!-- row 2 -->
               <div class="row">
 
-                <!-- conferring body -->
+                <!-- sponsor -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_start">Date Start</label>
-                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ old('date_start') }}" placeholder="">
+                    <label for="sponsor">Sponsor</label>
+                    <input type="text" class="form-control" id="sponsor" name="sponsor" value="{{ old('sponsor') }}" placeholder="Sponsor">
                   </div>
                 </div>
-                <!-- end conferring body -->
+                <!-- end sponsor -->
 
-                <!-- title -->
+                <!-- amount -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="title">Date End</label>
-                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ old('date_end') }}" placeholder="">
+                    <label for="amount">Amount</label>
+                    <input type="text" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" placeholder="Amount">
                   </div>
                 </div>
-                <!-- end title -->
+                <!-- end amount -->
 
               </div>
               <!-- end row 2 -->
@@ -118,53 +88,23 @@
               <!-- row 3 -->
               <div class="row">
 
-                <!-- agreement level -->
+                <!-- date start -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="agreement_level">Agreement Level</label>
-                    <select class="form-control select2" id="agreement_level_id" name="agreement_level_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Agreement Level Exist --}}
-                      @if(count($data['general']['agreement']['level']) > 0)
-
-                        {{-- Get General Agreement Level Data --}}
-                        @foreach($data['general']['agreement']['level'] as $key=>$value)
-                          <option value="{{ $value->agreement_level_id }}" {{ ((old('agreement_level_id') == $value->agreement_level_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Agreement Level Data --}}
-
-                      @endif
-                      {{-- End Check General Agreement Level Exist --}}
-
-                    </select>
+                    <label for="date_start">Date Start</label>
+                    <input type="date" class="form-control" id="date_start" name="date_start" value="{{ old('date_start') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end agreement level -->
+                <!-- end date start -->
 
-                <!-- agreement type -->
+                <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="agreement_type">Agreement Type</label>
-                    <select class="form-control select2" id="agreement_type_id" name="agreement_type_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Agreement Type Exist --}}
-                      @if(count($data['general']['agreement']['type']) > 0)
-
-                        {{-- Get General Agreement Type Data --}}
-                        @foreach($data['general']['agreement']['type'] as $key=>$value)
-                          <option value="{{ $value->agreement_type_id }}" {{ ((old('agreement_type_id') == $value->agreement_type_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Agreement Type Data --}}
-
-                      @endif
-                      {{-- End Check General Agreement Type Exist --}}
-
-                    </select>
+                    <label for="date_end">Date End</label>
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ old('date_end') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end agreement type -->
+                <!-- end date end -->
 
               </div>
               <!-- end row 3 -->
@@ -172,41 +112,33 @@
               <!-- row 4 -->
               <div class="row">
 
-                <!-- organization -->
+                <!-- description -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="conferring_body">Organization</label>
-                    <input type="text" class="form-control" id="organization" name="organization" value="{{ old('organization') }}" placeholder="Organization">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}" placeholder="Description">
                   </div>
                 </div>
-                <!-- end organization -->
+                <!-- end description -->
 
-                <!-- title -->
+                <!-- Star Rating -->
                 <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="Linkage Title">
-                  </div>
+                    <div class="form-group">
+                        <label for="amount">Star Rating</label>
+                        <div id="star-rating" class="text-warning mb-3">
+                            <i class="star mdi mdi-star" data-value="1"></i>
+                            <i class="star mdi mdi-star" data-value="2"></i>
+                            <i class="star mdi mdi-star" data-value="3"></i>
+                            <i class="star mdi mdi-star" data-value="4"></i>
+                            <i class="star mdi mdi-star" data-value="5"></i>
+                        </div>
+                        <input type="hidden" name="star_rating" id="rating-input">
+                    </div>
                 </div>
-                <!-- end title -->
+                <!-- end Star Rating -->
 
               </div>
               <!-- end row 4 -->
-
-              <!-- row 5 -->
-              <div class="row">
-
-                <!-- amount -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="text" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" placeholder="">
-                  </div>
-                </div>
-                <!-- end amount -->
-
-              </div>
-              <!-- end row 5 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)
@@ -232,10 +164,8 @@
                       <thead>
 
                         @php
-
-                          //Set Checkbox Status
+                          // Set Checkbox Status
                           $checkbox['status'] = false;
-
                         @endphp
 
                         {{-- Check Table Column Exist --}}
@@ -248,10 +178,8 @@
                               @if(isset($value['category']) && $value['category'] == 'checkbox')
 
                                 @php
-
-                                  //Set Checkbox Status
+                                  // Set Checkbox Status
                                   $checkbox['status'] = true;
-
                                 @endphp
 
                                 <td>{!! $value['checkbox'] !!}</td>
@@ -312,7 +240,6 @@
 
                       <div class="col-12">
                         <button type="button" class="btn btn-primary add-new-file">Add New File</button>
-
                       </div>
                     </div>
 
@@ -322,7 +249,6 @@
                 </div>
                 <!-- end row 1 -->
 
-
                 <!-- script for dynamic row numbering and file operations -->
                 <script type="text/javascript">
 
@@ -330,6 +256,30 @@
                     Document On Load
                   **************************************************************************************/
                   $(document).ready(function(){
+
+                    /* Star Rating
+                    **************************************************************************************/
+                    const stars = document.querySelectorAll('.star');
+                    const ratingInput = document.getElementById('rating-input');
+                    let selectedRating = 0;
+
+                    stars.forEach(star => {
+                        star.addEventListener('click', () => {
+                            selectedRating = star.getAttribute('data-value');
+                            updateStars();
+                            ratingInput.value = selectedRating; // Set the hidden input value
+                        });
+                    });
+
+                    //Update Stars
+                    function updateStars() {
+                        stars.forEach(star => {
+                            star.classList.remove('selected');
+                            if (star.getAttribute('data-value') <= selectedRating) {
+                                star.classList.add('selected');
+                            }
+                        });
+                    }
 
                     // Initial check to hide the button if there are already 2 rows
                     checkFileCount();

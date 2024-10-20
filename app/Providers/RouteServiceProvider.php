@@ -228,6 +228,12 @@ class RouteServiceProvider extends ServiceProvider{
                 //Linkage
                 require base_path($this->path['dashboard']['researcher'].'linkage/index.php');
 
+                //Postgraduate Supervision
+                require base_path($this->path['dashboard']['researcher'].'postgraduate_supervision/index.php');
+
+                //Community Engagement
+                require base_path($this->path['dashboard']['researcher'].'community_engagement/index.php');
+
              }); //End Dashboard
 
            }); //End Employee

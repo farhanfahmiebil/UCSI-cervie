@@ -22,7 +22,7 @@
             <div class="card-body">
 
               <!-- card title -->
-              <h4 class="card-title">linkage Information</h4>
+              <h4 class="card-title">Community Engagement Information</h4>
               <!-- end card title -->
 
               <!-- error -->
@@ -40,58 +40,53 @@
               <!-- row 1 -->
               <div class="row">
 
-                <!-- representation category id -->
+                <!-- organization -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="linkage_category_id">Linkage Category</label>
-                    <select class="form-control select2" id="linkage_category_id" name="linkage_category_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Linkage Category Exist --}}
-                      @if(count($data['general']['linkage']['category']) > 0)
-
-                        {{-- Get General Linkage Category Data --}}
-                        @foreach($data['general']['linkage']['category'] as $key=>$value)
-                          <option value="{{ $value->linkage_category_id }}" {{ (($data['main']->linkage_category_id == $value->linkage_category_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Linkage Category Data --}}
-
-                      @endif
-                      {{-- End Check General Linkage Category Exist --}}
-
-                    </select>
+                    <label for="organization">Organization</label>
+                    <input type="text" class="form-control" id="organization" name="organization" value="{{ $data['main']->organization }}" placeholder="">
                   </div>
                 </div>
-                <!-- end linkage category id -->
+                <!-- end organization -->
 
-                <!-- country id -->
+                <!-- project name -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="country_id">Country</label>
-                    <select class="form-control select2" id="country_id" name="country_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Country Exist --}}
-                      @if(count($data['general']['country']) > 0)
-
-                        {{-- Get General Country Data --}}
-                        @foreach($data['general']['country'] as $key=>$value)
-                        <option value="{{ $value->country_id }}" {{ (($data['main']->country_id == $value->country_id)?'selected':'') }}>{{ $value->country }}</option>
-                        @endforeach
-                        {{-- End Get General Country Data --}}
-
-                      @endif
-                      {{-- End Check General Country Exist --}}
-
-                    </select>
+                    <label for="project_name">Project Name</label>
+                    <input type="text" class="form-control" id="project_name" name="project_name" value="{{ $data['main']->project_name }}" placeholder="">
                   </div>
                 </div>
-                <!-- end country id -->
+                <!-- end project name -->
 
               </div>
               <!-- end row 1 -->
 
               <!-- row 2 -->
+              <div class="row">
+
+                <!-- sponsor -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="sponsor">Sponsor</label>
+                    <input type="text" class="form-control" id="sponsor" name="sponsor" value="{{ $data['main']->sponsor }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end sponsor -->
+
+                <!-- amount -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="text" class="form-control" id="amount" name="amount" value="{{ $data['main']->amount }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end amount -->
+
+              </div>
+              <!-- end row 2 -->
+
+
+              <!-- row 3 -->
               <div class="row">
 
                 <!-- date start -->
@@ -113,100 +108,39 @@
                 <!-- end date end -->
 
                 </div>
-                <!-- end row 2 -->
-
-                <!-- row 3 -->
-                <div class="row">
-
-                  <!-- agreement level -->
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="agreement_level">Agreement Level</label>
-                      <select class="form-control select2" id="agreement_level_id" name="agreement_level_id">
-                        <option value="">-- Please Select --</option>
-
-                        {{-- Check General Agreement Level Exist --}}
-                        @if(count($data['general']['agreement']['level']) > 0)
-
-                          {{-- Get General Agreement Level Data --}}
-                          @foreach($data['general']['agreement']['level'] as $key=>$value)
-                          <option value="{{ $value->agreement_level_id }}" {{ (($data['main']->agreement_level_id == $value->agreement_level_id)?'selected':'') }}>{{ $value->name }}</option>
-                          @endforeach
-                          {{-- End Get General Agreement Level Data --}}
-
-                        @endif
-                        {{-- End Check General Agreement Level Exist --}}
-
-                      </select>
-                    </div>
-                  </div>
-                  <!-- end agreement level -->
-
-                  <!-- agreement type -->
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="agreement_type">Agreement Type</label>
-                      <select class="form-control select2" id="agreement_type_id" name="agreement_type_id">
-                        <option value="">-- Please Select --</option>
-
-                        {{-- Check General Agreement Type Exist --}}
-                        @if(count($data['general']['agreement']['type']) > 0)
-
-                          {{-- Get General Agreement Type Data --}}
-                          @foreach($data['general']['agreement']['type'] as $key=>$value)
-                          <option value="{{ $value->agreement_type_id }}" {{ (($data['main']->agreement_type_id == $value->agreement_type_id)?'selected':'') }}>{{ $value->name }}</option>
-                          @endforeach
-                          {{-- End Get General Agreement Type Data --}}
-
-                        @endif
-                        {{-- End Check General Agreement Type Exist --}}
-
-                      </select>
-                    </div>
-                  </div>
-                  <!-- end agreement type -->
-
-                </div>
                 <!-- end row 3 -->
 
                 <!-- row 4 -->
                 <div class="row">
 
-                  <!-- organization -->
+                  <!-- description -->
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label for="conferring_body">Organization</label>
-                      <input type="text" class="form-control" id="organization" name="organization" value="{{ $data['main']->organization }}" placeholder="">
+                      <label for="description">Description</label>
+                      <input type="text" class="form-control" id="description" name="description" value="{{ $data['main']->description }}" placeholder="">
                     </div>
                   </div>
-                  <!-- end organization -->
+                  <!-- end description -->
 
-                  <!-- title -->
+                  <!-- Star Rating -->
                   <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="title">Title</label>
-                      <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->title }}" placeholder="">
-                    </div>
+                      <div class="form-group">
+                          <label for="amount">Star Rating</label>
+                          <div id="star-rating" class="text-warning mb-3">
+                              @for($i = 1; $i <= 5; $i++)
+                              <i class="star mdi mdi-star {{ isset($data['main']->star_rating) && $data['main']->star_rating >= $i ? 'text-warning' : '' }}" data-value="{{ $i }}"></i>
+                              @endfor
+                          </div>
+                          <input type="hidden" name="star_rating" id="rating-input" value="{{ $data['main']->star_rating }}">
+                      </div>
                   </div>
-                  <!-- end title -->
+                  <!-- end Star Rating -->
+
 
                 </div>
                 <!-- end row 4 -->
 
-                <!-- row 5 -->
-                <div class="row">
 
-                  <!-- amount -->
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="amount">Amount</label>
-                      <input type="text" class="form-control" id="amount" name="amount" value="{{ $data['main']->amount }}" placeholder="">
-                    </div>
-                  </div>
-                  <!-- end amount -->
-
-                </div>
-                <!-- end row 5 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)
@@ -305,7 +239,7 @@
                                 <!-- end hyperlink -->
 
                                 <!-- remove file -->
-                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->linkage_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->community_engagement_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                                 </a>
                                 <!-- end remove file -->
@@ -365,6 +299,34 @@
                     Document On Load
                   **************************************************************************************/
                   $(document).ready(function(){
+
+                    const stars = $('.star');
+                    const ratingInput = $('#rating-input');
+                    let selectedRating = ratingInput.val() || 0; // Initialize from hidden input
+
+                    updateStars(selectedRating); // Set initial stars based on existing value
+
+                    stars.on('click', function() {
+                        selectedRating = $(this).data('value');
+                        updateStars(selectedRating);
+                        ratingInput.val(selectedRating); // Update hidden input with selected rating
+                    });
+
+                    stars.on('mouseenter', function() {
+                        const hoverRating = $(this).data('value');
+                        updateStars(hoverRating);
+                    });
+
+                    stars.on('mouseleave', function() {
+                        updateStars(selectedRating);
+                    });
+
+                    function updateStars(rating = 0) {
+                        stars.each(function() {
+                            const starValue = $(this).data('value');
+                            $(this).toggleClass('text-warning', starValue <= rating);
+                        });
+                    }
 
                     // Initial check to hide the button if there are already 2 rows
                     checkFileCount();
@@ -459,7 +421,7 @@
 
                 <div class="col-md-12">
                   <a href="{{ route($hyperlink['page']['list']) }}" class="btn btn-light"><i class="mdi mdi-arrow-left"></i>Back</a>
-                  <input type="hidden" id="id" name="id" value="{{ $data['main']->linkage_id }}">
+                  <input type="hidden" id="id" name="id" value="{{ $data['main']->community_engagement_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>

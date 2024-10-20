@@ -1,7 +1,7 @@
 <?php
 
 //Get Controller Path
-namespace App\Http\Controllers\Application\Modules\Dashboard\Researcher\Linkage;
+namespace App\Http\Controllers\Application\Modules\Dashboard\Researcher\PostgraduateSupervision;
 
 //Get Authorization
 use Auth;
@@ -16,15 +16,14 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
-use App\Models\UCSI_V2_General\MSSQL\View\LinkageCategory AS LinkageCategoryView;
-use App\Models\UCSI_V2_General\MSSQL\View\AgreementLevel AS AgreementLevelView;
-use App\Models\UCSI_V2_General\MSSQL\View\AgreementType AS AgreementTypeView;
-use App\Models\UCSI_V2_General\MSSQL\View\Country AS CountryView;
-use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherLinkage AS CervieResearcherLinkageView;
+use App\Models\UCSI_V2_General\MSSQL\View\Qualification AS QualificationView;
+use App\Models\UCSI_V2_Education\MSSQL\View\Organization AS OrganizationView;
+use App\Models\UCSI_V2_Education\MSSQL\View\Status AS StatusView;
+use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherPostGraduateSupervision AS CervieResearcherPostGraduateSupervisionView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
-use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLinkage AS CervieResearcherLinkageProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherPostGraduateSupervision AS CervieResearcherPostGraduateSupervisionProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 
 //Get Request
@@ -70,8 +69,8 @@ class IndexController extends Controller{
 	public function routePath(){
 
 		//Set Route View
-		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.linkage.';
-    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.linkage.';
+		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.postgraduate_supervision.';
+    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.postgraduate_supervision.';
 
     //Set Navigation
 		$this->hyperlink['navigation'] = $this->navigation['hyperlink'];
@@ -116,29 +115,36 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
-    //Set Model Linkage Category
-    $model['general']['linkage']['category'] = new LinkageCategoryView();
+    //Set Model Qualification
+    $model['general']['qualification'] = new QualificationView();
 
-    //Set Model Agreement Type
-    $model['general']['agreement']['type'] = new AgreementTypeView();
+    //Set Model Organization
+    $model['education']['organization'] = new OrganizationView();
 
-    //Set Model Agreement Level
-    $model['general']['agreement']['level'] = new AgreementLevelView();
+    //Set Model Status
+    $model['education']['status'] = new StatusView();
 
-    //Set Model Country
-    $model['general']['country'] = new CountryView();
+    //Get General Qualification
+    $data['general']['qualification'] = $model['general']['qualification']->selectBox();
 
-    //Get General Linkage Category
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
+    //Get Education Organization
+    $data['education']['organization'] = $model['education']['organization']->selectBox(
+      [
+        'column'=>[
+          'company_office_id'=>'MAIN_CAMPUS',
+          'company_id'=>'UCSI_EDUCATION'
+        ]
+      ]
+    );
 
-    //Get Agreement Type
-    $data['general']['agreement']['type'] = $model['general']['agreement']['type']->selectBox();
-
-    //Get Agreement Level
-    $data['general']['agreement']['level'] = $model['general']['agreement']['level']->selectBox();
-
-    //Get General Country
-    $data['general']['country'] = $model['general']['country']->selectBox();
+    //Get Education Status
+    $data['education']['status'] = $model['education']['status']->selectBox(
+      [
+        'column'=>[
+          'table'=>'cervie_researcher_postgraduate_supervision'
+        ]
+      ]
+    );
 
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
@@ -147,7 +153,7 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_linkage'
+          'table_control_id'=>'cervie_researcher_postgraduate_supervision'
         ]
       ]
     );
@@ -183,13 +189,12 @@ class IndexController extends Controller{
 
     //Define Validation Rules
     $rules = [
-      'organization'=>['required'],
-      'title'=>['required'],
-      'agreement_type_id'=>['required'],
-      'agreement_level_id'=>['required'],
-      'amount'=>['required'],
-      'linkage_category_id'=>['required'],
-      'country_id'=>['required'],
+      'qualification_id'=>['required'],
+      'organization_id'=>['required'],
+      'student_id'=>['required'],
+      'student_name'=>['required'],
+      'programme'=>['required'],
+      'project_title'=>['required'],
       'date_start' => ['required','date'],
       'date_end' => ['required','date'],
       'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
@@ -198,13 +203,12 @@ class IndexController extends Controller{
 
     //Custom Validation Messages
     $messages = [
-      'organization.required'=>'Organization is required',
-      'title.required'=>'Title is required',
-      'agreement_level_id.required'=>'Agreement Level is required',
-      'agreement_type_id.required'=>'Agreement Type is required',
-      'amount.required'=>'Amount is required',
-      'linkage_category_id.required'=>'Category is required',
-      'country_id.required'=>'Country is required',
+      'qualification_id.required'=>'Qualification is required',
+      'organization_id.required'=>'University is required',
+      'student_id.required'=>'Student ID is required',
+      'student_name.required'=>'Student Name is required',
+      'programme.required'=>'Programme is required',
+      'project_title.required'=>'Project Title is required',
       'date_start.required'=>'Date Start is Required',
       'date_end.required'=>'Date End is Required',
     ];
@@ -254,20 +258,19 @@ class IndexController extends Controller{
       case 'create':
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['postgraduate']['supervision'] = new CervieResearcherPostGraduateSupervisionProcedure();
 
         //Create Main
-        $result['main']['create'] = $model['cervie']['researcher']['linkage']->createRecord(
+        $result['main']['create'] = $model['cervie']['researcher']['postgraduate']['supervision']->createRecord(
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'organization'=>($request->has('organization')?$request->organization:null),
-              'title'=>($request->has('title')?$request->title:null),
-              'agreement_level_id'=>($request->has('agreement_level_id')?$request->agreement_level_id:null),
-              'agreement_type_id'=>($request->has('agreement_type_id')?$request->agreement_type_id:null),
-              'amount'=>($request->has('amount')?$request->amount:null),
-              'linkage_category_id'=>($request->has('linkage_category_id')?$request->linkage_category_id:null),
-              'country_id'=>($request->has('country_id')?$request->country_id:null),
+              'qualification_id'=>($request->has('qualification_id')?$request->qualification_id:null),
+              'organization_id'=>($request->has('organization_id')?$request->organization_id:null),
+              'student_name'=>($request->has('student_name')?$request->student_name:null),
+              'student_id'=>($request->has('student_id')?$request->student_id:null),
+              'programme'=>($request->has('programme')?$request->programme:null),
+              'project_title'=>($request->has('project_title')?$request->project_title:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'remark'=>(($request->remark)?$request->remark:null),
@@ -293,7 +296,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set Path Folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$result['main']['create']->last_insert_id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/postgraduate_supervision/'.$result['main']['create']->last_insert_id.'/';
 
             //Set Modified File Name Without Extension (Using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($key+1);
@@ -325,7 +328,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_linkage',
+                  'table_name'=>'cervie_researcher_postgraduate_supervision',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -353,7 +356,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Linkage Added');
+                     ->with('message','Postgraduate Supervision Added');
 
   }
 
@@ -383,7 +386,7 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
     //Set Model Award
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageView();
+    $model['cervie']['researcher']['linkage'] = new CervieResearcherPostGraduateSupervisionView();
 
     //Set Main Data Researcher Publication
     $data['main']['cervie']['researcher']['linkage'] = $model['cervie']['researcher']['linkage']->getList(
@@ -427,20 +430,20 @@ class IndexController extends Controller{
       case 'delete':
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['postgraduate']['supervision'] = new CervieResearcherPostGraduateSupervisionProcedure();
 
         //Delete Main
-        $result['main']['delete'] = $model['cervie']['researcher']['linkage']->deleteRecord(
+        $result['main']['delete'] = $model['cervie']['researcher']['postgraduate']['supervision']->deleteRecord(
           [
             'column'=>[
-              'linkage_id'=>$request->id,
+              'postgraduate_supervision_id'=>$request->id,
               'employee_id'=>Auth::id()
             ]
           ]
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/postgraduate_supervision/'.$request->id.'/';
 
         //Check If The Folder Already Exists In Storage
         $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
@@ -456,20 +459,20 @@ class IndexController extends Controller{
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'table_name'=>'cervie_researcher_linkage',
+              'table_name'=>'cervie_researcher_postgraduate_supervision',
               'table_id'=>$request->id
             ]
           ]
         );
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['postgraduate']['supervision'] = new CervieResearcherPostGraduateSupervisionProcedure();
 
         //Delete Evidence
-        $data['main']['verification'] = $model['cervie']['researcher']['linkage']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['postgraduate']['supervision']->needVerification(
           [
             'column'=>[
-              'linkage_id'=>$request->id,
+              'postgraduate_supervision_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'updated_by'=>Auth::id()
             ]
@@ -483,7 +486,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Linkage Deleted');
+                     ->with('message','Postgraduate Supervision Deleted');
 
   }
 
@@ -521,7 +524,7 @@ class IndexController extends Controller{
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$data['evidence']->table_id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/postgraduate_supervision/'.$data['evidence']->table_id.'/';
 
         //Set Modified File Name Without Extension (Using last_insert_id)
         $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
@@ -549,13 +552,13 @@ class IndexController extends Controller{
         );
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['linkage'] = new CervieResearcherPostGraduateSupervisionProcedure();
 
         //Set Main Verification
         $data['main']['verification'] = $model['cervie']['researcher']['linkage']->needVerification(
           [
             'column'=>[
-              'linkage_id'=>$data['evidence']->table_id,
+              'postgraduate_supervision_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
               'updated_by'=>Auth::id()
             ]
@@ -602,54 +605,55 @@ class IndexController extends Controller{
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
-    //Set Model General Award Type
-    $model['general']['linkage']['category'] = new LinkageCategoryView();
+    //Set Model Qualification
+    $model['general']['qualification'] = new QualificationView();
 
-    //Get General Award Type
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
+    //Set Model Organization
+    $model['education']['organization'] = new OrganizationView();
 
-    //Set Model Linkage Category
-    $model['general']['linkage']['category'] = new LinkageCategoryView();
+    //Set Model Status
+    $model['education']['status'] = new StatusView();
 
-    //Set Model Agreement Type
-    $model['general']['agreement']['type'] = new AgreementTypeView();
+    //Get General Qualification
+    $data['general']['qualification'] = $model['general']['qualification']->selectBox();
 
-    //Set Model Agreement Level
-    $model['general']['agreement']['level'] = new AgreementLevelView();
+    //Get Education Organization
+    $data['education']['organization'] = $model['education']['organization']->selectBox(
+      [
+        'column'=>[
+          'company_office_id'=>'MAIN_CAMPUS',
+          'company_id'=>'UCSI_EDUCATION'
+        ]
+      ]
+    );
 
-    //Set Model Country
-    $model['general']['country'] = new CountryView();
-
-    //Get General Linkage Category
-    $data['general']['linkage']['category'] = $model['general']['linkage']['category']->selectBox();
-
-    //Get Agreement Type
-    $data['general']['agreement']['type'] = $model['general']['agreement']['type']->selectBox();
-
-    //Get Agreement Level
-    $data['general']['agreement']['level'] = $model['general']['agreement']['level']->selectBox();
-
-    //Get General Country
-    $data['general']['country'] = $model['general']['country']->selectBox();
+    //Get Education Status
+    $data['education']['status'] = $model['education']['status']->selectBox(
+      [
+        'column'=>[
+          'table'=>'cervie_researcher_postgraduate_supervision'
+        ]
+      ]
+    );
 
     //Get Table Control
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_linkage'
+          'table_control_id'=>'cervie_researcher_postgraduate_supervision'
         ]
       ]
     );
 
     //Set Model
-    $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+    $model['cervie']['researcher']['postgraduate']['supervision'] = new CervieResearcherPostGraduateSupervisionProcedure();
 
     //Read Main
-    $data['main'] = $model['cervie']['researcher']['linkage']->readRecord(
+    $data['main'] = $model['cervie']['researcher']['postgraduate']['supervision']->readRecord(
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'linkage_id'=>$request->id
+          'postgraduate_supervision_id'=>$request->id
         ]
       ]
     );
@@ -662,7 +666,7 @@ class IndexController extends Controller{
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'table_name'=>'cervie_researcher_linkage',
+          'table_name'=>'cervie_researcher_postgraduate_supervision',
           'table_id'=>$request->id
         ]
       ]
@@ -686,10 +690,10 @@ class IndexController extends Controller{
     ];
 
     //Set Asset
-    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/postgraduate_supervision/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/postgraduate_supervision/'.$request->id.'/';
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -723,21 +727,20 @@ class IndexController extends Controller{
         $this->getValidateData($request);
 
         //Set Model
-        $model['cervie']['researcher']['linkage'] = new CervieResearcherLinkageProcedure();
+        $model['cervie']['researcher']['postgraduate']['supervision'] = new CervieResearcherPostGraduateSupervisionProcedure();
 
         //Create Main
-        $result['main']['update'] = $model['cervie']['researcher']['linkage']->updateRecord(
+        $result['main']['update'] = $model['cervie']['researcher']['postgraduate']['supervision']->updateRecord(
           [
             'column'=>[
-              'linkage_id'=>$request->id,
+              'postgraduate_supervision_id'=>$request->id,
               'employee_id'=>Auth::id(),
-              'organization'=>($request->has('organization')?$request->organization:null),
-              'title'=>($request->has('title')?$request->title:null),
-              'agreement_level_id'=>($request->has('agreement_level_id')?$request->agreement_level_id:null),
-              'agreement_type_id'=>($request->has('agreement_type_id')?$request->agreement_type_id:null),
-              'amount'=>($request->has('amount')?$request->amount:null),
-              'linkage_category_id'=>($request->has('linkage_category_id')?$request->linkage_category_id:null),
-              'country_id'=>($request->has('country_id')?$request->country_id:null),
+              'qualification_id'=>($request->has('qualification_id')?$request->qualification_id:null),
+              'organization_id'=>($request->has('organization_id')?$request->organization_id:null),
+              'student_name'=>($request->has('student_name')?$request->student_name:null),
+              'student_id'=>($request->has('student_id')?$request->student_id:null),
+              'programme'=>($request->has('programme')?$request->programme:null),
+              'project_title'=>($request->has('project_title')?$request->project_title:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'remark'=>(($request->remark)?$request->remark:null),
@@ -761,7 +764,7 @@ class IndexController extends Controller{
               [
                 'column'=>[
                   'employee_id'=>Auth::id(),
-                  'table_name'=>'cervie_researcher_linkage',
+                  'table_name'=>'cervie_researcher_postgraduate_supervision',
                   'table_id'=>$request->id
                 ]
               ]
@@ -780,7 +783,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set path folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/linkage/'.$request->id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/postgraduate_supervision/'.$request->id.'/';
 
             //Set modified file name without extension (using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($counter+1);
@@ -812,7 +815,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_linkage',
+                  'table_name'=>'cervie_researcher_postgraduate_supervision',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -832,7 +835,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Award Saved');
+                     ->with('message','Postgraduate Supervision Saved');
 
   }
 
@@ -849,25 +852,33 @@ class IndexController extends Controller{
       ],
       1=>[
         'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-        'name'=>' Organization',
+        'name'=>' Student ID',
       ],
       2=>[
         'icon'=>'<i class="mdi person-supervisor-circle"></i>',
-        'name'=>' Title',
+        'name'=>' Student Name',
       ],
       3=>[
         'icon'=>'<i class="mdi mdi-calendar-account"></i>',
-        'name'=>' Date Start',
+        'name'=>' Qualification',
       ],
       4=>[
         'icon'=>'<i class="mdi mdi-calendar-account"></i>',
-        'name'=>' Date End',
+        'name'=>' University',
       ],
       5=>[
+        'icon'=>'<i class="mdi mdi-calendar-account"></i>',
+        'name'=>' Programme',
+      ],
+      6=>[
+        'icon'=>'<i class="mdi mdi-calendar-account"></i>',
+        'name'=>' Status',
+      ],
+      7=>[
         'icon'=>'<i class="mdi mdi-shield-check"></i>',
         'name'=>' Verification',
       ],
-      6=>[
+      8=>[
         'icon'=>'<i class="mdi mdi-settings"></i>',
         'name'=>' Control',
       ]

@@ -22,7 +22,7 @@
             <div class="card-body">
 
               <!-- card title -->
-              <h4 class="card-title">Linkage Information</h4>
+              <h4 class="card-title">Postgraduate Supervisor Information</h4>
               <!-- end card title -->
 
               <!-- error -->
@@ -40,53 +40,53 @@
               <!-- row 1 -->
               <div class="row">
 
-                <!-- linkage category id -->
+                <!-- qualification id -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_category_id">Linkage Category</label>
-                    <select class="form-control select2" id="linkage_category_id" name="linkage_category_id">
+                    <label for="qualification_id">Qualification</label>
+                    <select class="form-control select2" id="qualification_id" name="qualification_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Linkage Category Exist --}}
-                      @if(count($data['general']['linkage']['category']) > 0)
+                      {{-- Check General Qualification Exist --}}
+                      @if(count($data['general']['qualification']) > 0)
 
-                        {{-- Get General Linkage Category Data --}}
-                        @foreach($data['general']['linkage']['category'] as $key=>$value)
-                          <option value="{{ $value->linkage_category_id }}" {{ ((old('linkage_category_id') == $value->linkage_category_id)?'selected':'') }}>{{ $value->name }}</option>
+                        {{-- Get General Qualification Data --}}
+                        @foreach($data['general']['qualification'] as $key=>$value)
+                          <option value="{{ $value->qualification_id }}" {{ ((old('qualification_id') == $value->qualification_id)?'selected':'') }}>{{ $value->qualification_name }}</option>
                         @endforeach
-                        {{-- End Get General Linkage Category Level Data --}}
+                        {{-- End Get General Qualification Data --}}
 
                       @endif
-                      {{-- End Check General Linkage Category Level Exist --}}
+                      {{-- End Check General Qualification Exist --}}
 
                     </select>
                   </div>
                 </div>
-                <!-- end linkage category id -->
+                <!-- end grant category id -->
 
-                <!-- country id -->
+                <!-- organization id -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="country_id">Country</label>
-                    <select class="form-control select2" id="country_id" name="country_id">
+                    <label for="project_role_id">University</label>
+                    <select class="form-control select2" id="organization_id" name="organization_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Country Exist --}}
-                      @if(count($data['general']['country']) > 0)
+                      {{-- Check Education Organization --}}
+                      @if(count($data['education']['organization']) > 0)
 
-                        {{-- Get General Country Data --}}
-                        @foreach($data['general']['country'] as $key=>$value)
-                          <option value="{{ $value->country_id }}" {{ ((old('country_id') == $value->country_id)?'selected':'') }}>{{ $value->country }}</option>
+                        {{-- Get Education Organization Data --}}
+                        @foreach($data['education']['organization'] as $key=>$value)
+                          <option value="{{ $value->organization_id }}" {{ ((old('organization_id') == $value->organization_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
-                        {{-- End Get General Country Data --}}
+                        {{-- End Get Education Organization Data --}}
 
                       @endif
-                      {{-- End Check General Country Exist --}}
+                      {{-- End Check Education Organization Exist --}}
 
                     </select>
                   </div>
                 </div>
-                <!-- end representation category id -->
+                <!-- end project role -->
 
               </div>
               <!-- end row 1 -->
@@ -94,23 +94,23 @@
               <!-- row 2 -->
               <div class="row">
 
-                <!-- conferring body -->
+                <!-- date start -->
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="date_start">Date Start</label>
                     <input type="date" class="form-control" id="date_start" name="date_start" value="{{ old('date_start') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end conferring body -->
+                <!-- end date start -->
 
-                <!-- title -->
+                <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="title">Date End</label>
+                    <label for="date_end">Date End</label>
                     <input type="date" class="form-control" id="date_end" name="date_end" value="{{ old('date_end') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end title -->
+                <!-- end date end -->
 
               </div>
               <!-- end row 2 -->
@@ -118,53 +118,23 @@
               <!-- row 3 -->
               <div class="row">
 
-                <!-- agreement level -->
+                <!-- student id  -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="agreement_level">Agreement Level</label>
-                    <select class="form-control select2" id="agreement_level_id" name="agreement_level_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Agreement Level Exist --}}
-                      @if(count($data['general']['agreement']['level']) > 0)
-
-                        {{-- Get General Agreement Level Data --}}
-                        @foreach($data['general']['agreement']['level'] as $key=>$value)
-                          <option value="{{ $value->agreement_level_id }}" {{ ((old('agreement_level_id') == $value->agreement_level_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Agreement Level Data --}}
-
-                      @endif
-                      {{-- End Check General Agreement Level Exist --}}
-
-                    </select>
+                    <label for="title">Student ID</label>
+                    <input type="text" class="form-control" id="student_id" name="student_id" value="{{ old('student_id') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end agreement level -->
+                <!-- end student id -->
 
-                <!-- agreement type -->
+                <!-- student name  -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="agreement_type">Agreement Type</label>
-                    <select class="form-control select2" id="agreement_type_id" name="agreement_type_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Agreement Type Exist --}}
-                      @if(count($data['general']['agreement']['type']) > 0)
-
-                        {{-- Get General Agreement Type Data --}}
-                        @foreach($data['general']['agreement']['type'] as $key=>$value)
-                          <option value="{{ $value->agreement_type_id }}" {{ ((old('agreement_type_id') == $value->agreement_type_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Agreement Type Data --}}
-
-                      @endif
-                      {{-- End Check General Agreement Type Exist --}}
-
-                    </select>
+                    <label for="title">Student Name</label>
+                    <input type="text" class="form-control" id="student_name" name="student_name" value="{{ old('student_name') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end agreement type -->
+                <!-- end student name -->
 
               </div>
               <!-- end row 3 -->
@@ -172,41 +142,26 @@
               <!-- row 4 -->
               <div class="row">
 
-                <!-- organization -->
+                <!-- programme  -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="conferring_body">Organization</label>
-                    <input type="text" class="form-control" id="organization" name="organization" value="{{ old('organization') }}" placeholder="Organization">
+                    <label for="title">Programme</label>
+                    <input type="text" class="form-control" id="programme" name="programme" value="{{ old('programme') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end organization -->
+                <!-- end programme -->
 
-                <!-- title -->
+                <!-- project title  -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="Linkage Title">
+                    <label for="title">Project Title</label>
+                    <input type="text" class="form-control" id="project_title" name="project_title" value="{{ old('project_title') }}" placeholder="">
                   </div>
                 </div>
-                <!-- end title -->
+                <!-- end project title -->
 
               </div>
               <!-- end row 4 -->
-
-              <!-- row 5 -->
-              <div class="row">
-
-                <!-- amount -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="text" class="form-control" id="amount" name="amount" value="{{ old('amount') }}" placeholder="">
-                  </div>
-                </div>
-                <!-- end amount -->
-
-              </div>
-              <!-- end row 5 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)
