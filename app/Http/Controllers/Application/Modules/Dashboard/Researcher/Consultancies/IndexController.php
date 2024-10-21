@@ -24,6 +24,7 @@ use App\Models\UCSI_V2_General\MSSQL\View\RepresentationRole AS RepresentationRo
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherConsultancies AS CervieResearcherConsultanciesProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTeamMember AS CervieResearcherTeamMemberProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -83,6 +84,7 @@ class IndexController extends Controller{
 		$this->hyperlink['page']['list'] = $this->route['name'].'list';
     $this->hyperlink['page']['delete']['main'] = $this->route['name'].'delete';
     $this->hyperlink['page']['delete']['evidence'] = $this->route['name'].'evidence.delete';
+    $this->hyperlink['page']['delete']['team']['member'] = $this->route['name'].'team_member.delete';
     $this->hyperlink['page']['view'] = $this->route['name'].'view';
     $this->hyperlink['page']['update'] = $this->route['name'].'update';
 
@@ -616,6 +618,74 @@ class IndexController extends Controller{
   }
 
   /**************************************************************************************
+    Delete
+  **************************************************************************************/
+  public function deleteTeamMember(Request $request){
+
+    //Get Route Path
+    $this->routePath();
+
+    //Set Hyperlink
+    $hyperlink = $this->hyperlink;
+
+    //If Form Token Exist
+    if(!$request->has('form_token')){abort(555,'Form Token Missing');}
+
+    //Check Type Request
+    switch($this->encrypter->decrypt($request->form_token)){
+
+      //Create
+      case 'delete':
+
+        //Set Model
+        $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+        //Set Main
+        $data['team_member'] = $model['cervie']['researcher']['team']['member']->readRecord(
+          [
+            'column'=>[
+              'team_member_id'=>$request->team_member_id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Delete Record
+        $result['team_member']['delete'] = $model['cervie']['researcher']['team']['member']->deleteRecord(
+          [
+            'column'=>[
+              'team_member_id'=>$data['team_member']->team_member_id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Set Model
+        $model['cervie']['researcher']['consultancies'] = new CervieResearcherConsultanciesProcedure();
+
+        //Set Main Verification
+        $data['main']['verification'] = $model['cervie']['researcher']['consultancies']->needVerification(
+          [
+            'column'=>[
+              'consultancies_id'=>$data['team_member']->table_id,
+              'employee_id'=>Auth::id(),
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+      break;
+
+    }
+
+    //Return to Selected Tab Category Route
+    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+                     ->with('alert_type','success')
+                     ->with('message','Team Member Deleted');
+
+  }
+
+  /**************************************************************************************
  		View
  	**************************************************************************************/
 	public function view(Request $request){
@@ -672,11 +742,37 @@ class IndexController extends Controller{
     //Set Model General Country
     $data['general']['country'] = $model['general']['country']->selectBox();
 
+    //Set Model General Representation Role
+    $model['general']['representation']['role'] = new RepresentationRoleView();
+
+    //Get General Representation Role
+    $data['general']['representation']['role'] = $model['general']['representation']['role']->selectBox(
+      [
+        'column'=>[
+          'category'=>'CONSULTANCIES'
+        ]
+      ]
+    );
+
     //Set Model
     $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
 
     //Read Evidence
     $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecordByResearcherTable(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id(),
+          'table_name'=>'cervie_researcher_consultancies',
+          'table_id'=>$request->id
+        ]
+      ]
+    );
+
+    //Set Model
+    $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+    //Read Evidence
+    $data['team_member'] = $model['cervie']['researcher']['team']['member']->readRecordByResearcherTable(
       [
         'column'=>[
           'employee_id'=>Auth::id(),
@@ -698,6 +794,28 @@ class IndexController extends Controller{
         'name'=>' File',
       ],
       2=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
+      ]
+    ];
+
+    //Defined Column
+    $data['table']['column']['cervie']['researcher']['team']['member'] = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'class'=>'col-4',
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' Name',
+      ],
+      2=>[
+        'class'=>'col-4',
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' Role',
+      ],
+      3=>[
         'icon'=>'<i class="mdi mdi-settings"></i>',
         'name'=>' Control',
       ]
@@ -800,7 +918,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set path folder
-            $path['folder'] = 'resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
+            $path['folder'] = 'resources/researcher/'.trim(Auth::id()).'/document/consultancies/'.$request->id.'/';
 
             //Set modified file name without extension (using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($counter+1);
@@ -832,6 +950,35 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
+                  'table_name'=>'cervie_researcher_consultancies',
+                  'table_id'=>$request->id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
+        }
+
+        //If Files Exist
+        if($request->has('team_member_name')){
+
+          //Get File Loop
+          foreach($request->team_member_name as $key=>$value){
+
+            //Set Model Evidence
+            $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+            //Create Evidence
+            $result['team']['member']['create'] = $model['cervie']['researcher']['team']['member']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'name'=>$value,
+                  'representation_role_id'=>$request->representation_role_id[$key],
                   'table_name'=>'cervie_researcher_consultancies',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),

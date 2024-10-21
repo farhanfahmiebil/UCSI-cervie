@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Class
-class CervieResearcherEvidence extends Model{
+class CervieResearcherTeamMember extends Model{
 
   /**
    * The database connection that should be used by the model.
@@ -26,7 +26,7 @@ class CervieResearcherEvidence extends Model{
    *
    * @var string
    */
-  protected $table = 'cervie_researcher_evidence';
+  protected $table = 'cervie_researcher_team_member';
 
   /**************************************************************************************
     Create
@@ -34,20 +34,18 @@ class CervieResearcherEvidence extends Model{
   public function createRecord($data){
 
     //Set Table
-    $table = 'create_cervie_researcher_evidence';
+    $table = 'create_cervie_researcher_team_member';
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 // dd($data);
     //Get Result
     $result = DB::connection($this->connection)->select($this->query,[
         $data['column']['employee_id'],
-        $data['column']['file_id'],
-        $data['column']['file_name'],
-        $data['column']['file_raw_name'],
-        $data['column']['file_extension'],
+        $data['column']['name'],
+        $data['column']['representation_role_id'],
         $data['column']['table_name'],
         $data['column']['table_id'],
         $data['column']['remark'],
@@ -63,7 +61,7 @@ class CervieResearcherEvidence extends Model{
       $item = $this->readRecord(
         [
           'column'=>[
-            'evidence_id'=>$result[0]->id,
+            'team_member_id'=>$result[0]->id,
             'employee_id'=>$data['column']['employee_id'],
           ]
         ]
@@ -75,7 +73,7 @@ class CervieResearcherEvidence extends Model{
           'employee_id'=>$item->employee_id,
           'table_name'=>$this->table,
           'event'=>'create',
-          'auditable_id'=>$item->evidence_id,
+          'auditable_id'=>$item->team_member_id,
           'old_value'=>'[]',
           'new_value'=>json_encode($item),
           'created_by'=>$item->created_by,
@@ -103,13 +101,13 @@ class CervieResearcherEvidence extends Model{
   public function readRecord($data){
 
     //Set Table
-    $table = 'read_cervie_researcher_evidence';
+    $table = 'read_cervie_researcher_team_member';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?;';
     //Get Result
     $result = DB::connection($this->connection)->select($this->query,[
-        $data['column']['evidence_id'],
+        $data['column']['team_member_id'],
         $data['column']['employee_id'],
       ]
     );
@@ -131,7 +129,7 @@ class CervieResearcherEvidence extends Model{
   public function readRecordByResearcherTable($data){
 
     //Set Table
-    $table = 'read_cervie_researcher_evidence_by_researcher_table';
+    $table = 'read_cervie_researcher_team_member_by_researcher_table';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?;';
@@ -161,13 +159,13 @@ class CervieResearcherEvidence extends Model{
   public function deleteRecord($data){
 
     //Set Table
-    $table = 'delete_cervie_researcher_evidence';
+    $table = 'delete_cervie_researcher_team_member';
 
     //Get Item Record
     $item = $this->readRecord(
       [
         'column'=>[
-          'evidence_id'=>$data['column']['evidence_id'],
+          'team_member_id'=>$data['column']['team_member_id'],
           'employee_id'=>$data['column']['employee_id'],
         ]
       ]
@@ -179,7 +177,7 @@ class CervieResearcherEvidence extends Model{
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
-        $data['column']['evidence_id'],
+        $data['column']['team_member_id'],
         $data['column']['employee_id']
       ]
     );
@@ -190,7 +188,7 @@ class CervieResearcherEvidence extends Model{
         'employee_id'=>$item->employee_id,
         'table_name'=>$this->table,
         'event'=>'delete',
-        'auditable_id'=>$data['column']['evidence_id'],
+        'auditable_id'=>$data['column']['team_member_id'],
         'old_value'=>json_encode($item),
         'new_value'=>'[]',
         'created_by'=>$item->created_by,
@@ -208,7 +206,7 @@ class CervieResearcherEvidence extends Model{
   public function deleteRecordByResearcherTable($data){
 
     //Set Table
-    $table = 'delete_cervie_researcher_evidence_by_researcher_table';
+    $table = 'delete_cervie_researcher_team_member_by_researcher_table';
 
     //Get Item Record by Research Table
     $item = $this->readRecordByResearcherTable(
@@ -242,7 +240,7 @@ class CervieResearcherEvidence extends Model{
           'employee_id'=>$value->employee_id,
           'table_name'=>$this->table,
           'event'=>'delete',
-          'auditable_id'=>$value->evidence_id,
+          'auditable_id'=>$value->team_member_id,
           'old_value'=>json_encode($value),
           'new_value'=>'[]',
           'created_by'=>$value->created_by,

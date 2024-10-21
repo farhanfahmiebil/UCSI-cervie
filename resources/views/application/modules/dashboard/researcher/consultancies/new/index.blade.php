@@ -238,49 +238,6 @@
                       </table>
                       <!-- end table -->
 
-<<<<<<< HEAD
-                      <div class="row text-center pt-3">
-                          <div class="col-12">
-                              <button type="button" class="btn btn-primary add-new-file">Add New File</button>
-                          </div>
-=======
-                      </thead>
-                      <!-- end thead -->
-
-                      <!-- tbody -->
-                      <tbody>
-                        <tr>
-                          <td class="row-number">1</td>
-                          <td>
-                            <div class="form-group">
-                              <label for="file_name">File Name for Evidence</label>
-                              <input type="text" class="form-control" name="document_name[]">
-                            </div>
-                            <div class="form-group">
-                              <input type="file" class="form-control" name="document[]">
-                            </div>
-                          </td>
-                          <td>
-                          &nbsp;
-                          </td>
-                        </tr>
-                      </tbody>
-                      <!-- end tbody -->
-
-                    </table>
-                    <!-- end table -->
-
-                    <div class="row text-center pt-3">
-
-                      <div class="col-12">
-                        <button type="button" class="btn btn-primary add-new-file"><i class="mdi mdi-plus"></i>Add New File</button>
->>>>>>> fbb279ace95970fa040c5acd31678a599277269f
-                      </div>
-
-                  </div>
-                  <!-- end table responsive -->
-
-              </div>
               <!-- end row 1 -->
 
               {{-- Script for dynamic row numbering and file operations --}}
@@ -445,62 +402,51 @@
               </div>
               <!-- end row 1 -->
 
-              {{-- Script for dynamic row numbering and team member operations --}}
+              <!-- script for dynamic row numbering and team member operations -->
               <script type="text/javascript">
                   $(document).ready(function() {
+                    /* Add New Team Member Row */
+                  $('.add-new-team-member').click(function() {
+                      var new_row = '';
+                      new_row += '<tr>';
+                      new_row += '<td class="row-number"></td>';
+                      new_row += '<td colspan="2">';
+                      new_row += '<div class="form-group">';
+                      new_row += '<label for="team_member_name">Name</label>';
+                      new_row += '<input type="text" class="form-control" name="team_member_name[]">';
+                      new_row += '</div>';
+                      new_row += '<div class="form-group">';
+                      new_row += '<label for="representation_role_id">Role</label>';
+                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
+                      new_row += '<option value="">-- Please Select --</option>';
+                      @if(count($data['general']['representation']['role']) > 0)
+                          @foreach($data['general']['representation']['role'] as $role)
+                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
+                          @endforeach
+                      @endif
+                      new_row += '</select>';
+                      new_row += '</div>';
+                      new_row += '</td>';
+                      new_row += '<td>';
+                      new_row += '<a href="#" class="btn btn-warning remove-team-member">';
+                      new_row += '<i class="mdi-alpha-x text-white"></i>';
+                      new_row += '</a>';
+                      new_row += '</td>';
+                      new_row += '</tr>';
 
-                    /* Function to initialize Select2 */
-                  function initializeSelect2() {
-                      $('.select2').select2({
-                          width: '100%', // Adjust width as needed
-                          placeholder: '-- Please Select --',
-                          allowClear: true
-                      });
-                  }
-
-                  /* Initial Select2 Initialization */
-                  initializeSelect2();
-
-                      /* Add New Team Member Row */
-                      $('.add-new-team-member').click(function() {
-                          var new_row = '';
-                          new_row += '<tr>';
-                          new_row += '<td class="row-number"></td>';
-                          new_row += '<td>';
-                          new_row += '<div class="form-group">';
-                          new_row += '<label for="team_member_name">Name</label>';
-                          new_row += '<input type="text" class="form-control" name="team_member_name[]">';
-                          new_row += '</div>';
-                          new_row += '<div class="form-group">';
-                          new_row += '<label for="representation_role_id">Role</label>';
-                          new_row += '<select class="form-control select2" name="representation_role_id[]">';
-                          new_row += '<option value="">-- Please Select --</option>';
-                          @if(count($data['general']['representation']['role']) > 0)
-                              @foreach($data['general']['representation']['role'] as $key=>$value)
-                              new_row += '<option value="{{ $value->representation_role_id }}" data-select2-id="{{ $value->representation_role_id }}">{{ $value->name }}</option>';
-                              @endforeach
-                          @endif
-                          new_row += '</select>';
-                          new_row += '</div>';
-                          new_row += '</td>';
-                          new_row += '<td>';
-                          new_row += '<a href="#" class="btn btn-danger remove-team-member">';
-                          new_row += '<i class="mdi mdi-trash-can text-white"></i>';
-                          new_row += '</a>';
-                          new_row += '</td>';
-                          new_row += '</tr>';
-
-                          $('#team-member-table tbody').append(new_row);
-                          recalculateRowNumbers();
-                          initializeSelect2();
-
-                      });
+                      $('#team-member-table tbody').append(new_row);
+                      recalculateRowNumbers();
+                      checkTeamMemberCount();
+                      initializeSelect2();
+                  });
 
                       /* Remove Team Member Row */
                       $(document).on('click', '.remove-team-member', function(e) {
                           e.preventDefault();
                           $(this).closest('tr').remove();
                           recalculateRowNumbers();
+                          checkTeamMemberCount();
+
                       });
 
                       /* Recalculate Row Numbers */
@@ -510,8 +456,33 @@
                           });
                       }
 
+                      /* Initialize Select2 */
+                      function initializeSelect2() {
+                          $('.select2').select2({
+                              width: '100%', // Adjust width as needed
+                              placeholder: '-- Please Select --',
+                              allowClear: true
+                          });
+                      }
+
+                      /* Check File Count and Hide/Show Add Button */
+                      function checkTeamMemberCount() {
+                          var team_member_count = $('#team-member-table tbody tr').length;
+                          var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
+
+                          if (team_member_count >= limit) {
+                              $('.add-new-team-member').hide();
+                          } else {
+                              $('.add-new-team-member').show();
+                          }
+                      }
+
+                      // Initial Select2 Initialization
+                      initializeSelect2();
                       // Initial recalculation in case of pre-existing rows
                       recalculateRowNumbers();
+                      checkTeamMemberCount();
+
                   });
               </script>
               <!-- end script for dynamic row numbering and team member operations -->

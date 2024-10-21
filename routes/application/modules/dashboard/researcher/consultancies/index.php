@@ -35,6 +35,10 @@ Route::prefix('consultancies')->group(function(){
   **************************************************************************************/
   Route::get('/evidence/delete', config('routing.application.modules.dashboard.researcher.controller').'\Consultancies\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name').'.consultancies.evidence.delete');
 
+  /*  Delete Team Member
+  **************************************************************************************/
+  Route::get('/team/member/delete', config('routing.application.modules.dashboard.researcher.controller').'\Consultancies\IndexController@deleteTeamMember')->name(config('routing.application.modules.dashboard.researcher.name').'.consultancies.team_member.delete');
+
   /*  View
   **************************************************************************************/
   Route::get('/view/{id}', config('routing.application.modules.dashboard.researcher.controller').'\Consultancies\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name').'.consultancies.view');
