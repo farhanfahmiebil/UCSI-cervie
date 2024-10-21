@@ -124,156 +124,140 @@
               </div>
               <!-- end row 4 -->
 
+              <!-- row 5 -->
+              <div class="row">
+
+                <!-- Country -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="country">Country</label>
+                    <select class="form-control select2" name="country[]" multiple>
+                      <option value="">--Please Select--</option>
+                      {{-- Check if Country exist --}}
+                      @if(count($data['general']['country']) > 0)
+
+                        @php
+                          // Get old values for Country (array) if they exist
+                          $selected_country = old('country', []);
+                        @endphp
+
+                        {{-- Get Country Data --}}
+                        @foreach($data['general']['country'] as $key=>$value)
+                          <option value="{{ $value->country_id }}"
+                            {{-- Check if this value was previously selected --}}
+                            {{ in_array($value->country_id,$selected_country) ? 'selected' : '' }}>
+                            {{ $value->country }}
+                          </option>
+                        @endforeach
+                        {{-- End Get Country Data --}}
+
+                      @endif
+                      {{-- End Check if Country exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end Country -->
+
+              </div>
+              <!-- end row 5 -->
+
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)
 
               <hr>
 
-                <!-- card title -->
-                <h4 class="card-title">Evidence</h4>
-                <!-- end card title -->
+              <!-- card title -->
+              <h4 class="card-title">Evidence</h4>
+              <!-- end card title -->
 
-                <!-- row 1 -->
-                <div class="row">
+              <!-- row 1 -->
+              <div class="row">
 
                   <!-- table responsive -->
                   <div class="table-responsive">
 
-                    <label for="file" class="form-label"><strong>File Upload Must be (.pdf)</strong></label>
+                      <label for="file" class="form-label"><strong>File Upload Must be (.pdf)</strong></label>
 
-                    <!-- table -->
-                    <table class="table">
+                      <!-- table -->
+                      <table class="table" id="evidence-table">
 
-                      <!-- thead -->
-                      <thead>
-
-                        @php
-                          // Set Checkbox Status
-                          $checkbox['status'] = false;
-                        @endphp
-
-                        {{-- Check Table Column Exist --}}
-                        @if(isset($data['table']['column']['cervie']['researcher']['evidence']) && count($data['table']['column']['cervie']['researcher']['evidence']) >= 1)
-
-                          {{-- Get Table Column Data --}}
-                          @foreach($data['table']['column']['cervie']['researcher']['evidence'] as $key => $value)
-
-                              {{-- Check if the column is of category 'checkbox' --}}
-                              @if(isset($value['category']) && $value['category'] == 'checkbox')
-
-                                @php
+                          <!-- thead -->
+                          <thead>
+                              @php
                                   // Set Checkbox Status
-                                  $checkbox['status'] = true;
-                                @endphp
+                                  $checkbox['status'] = false;
+                              @endphp
 
-                                <td>{!! $value['checkbox'] !!}</td>
+                              {{-- Check Table Column Exist --}}
+                              @if(isset($data['table']['column']['cervie']['researcher']['evidence']) && count($data['table']['column']['cervie']['researcher']['evidence']) >= 1)
 
+                                  {{-- Get Table Column Data --}}
+                                  @foreach($data['table']['column']['cervie']['researcher']['evidence'] as $key => $value)
+
+                                      {{-- Check if the column is of category 'checkbox' --}}
+                                      @if(isset($value['category']) && $value['category'] == 'checkbox')
+                                          @php
+                                              // Set Checkbox Status
+                                              $checkbox['status'] = true;
+                                          @endphp
+                                          <td>{!! $value['checkbox'] !!}</td>
+                                      @else
+                                          <td class="{{ isset($value['class']) ? $value['class'] : '' }}">
+                                              {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                                              {{ isset($value['name']) ? $value['name'] : '' }}
+                                          </td>
+                                      @endif
+
+                                  @endforeach
                               @else
-
-                                {{-- Check if 'class' is set and apply it --}}
-                                @if(isset($value['class']) && !empty($value['class']))
-                                  <td class="{{ $value['class'] }}">
-                                @else
-                                  <td>
-                                @endif
-
-                                  {{-- Output the icon and name --}}
-                                  {!! isset($value['icon']) ? $value['icon'] : '' !!}
-                                  {{ isset($value['name']) ? $value['name'] : '' }}
-
-                                </td>
-
+                                  <th>Column Not Defined</th>
                               @endif
-                              {{-- End Check if the column is of category 'checkbox' --}}
+                          </thead>
+                          <!-- end thead -->
 
-                          @endforeach
-                          {{-- End Get Table Column Data --}}
+                          <!-- tbody -->
+                          <tbody>
+                              <tr>
+                                  <td class="row-number">1</td>
+                                  <td>
+                                      <div class="form-group">
+                                          <label for="file_name">File Name for Evidence</label>
+                                          <input type="text" class="form-control" name="document_name[]">
+                                      </div>
+                                      <div class="form-group">
+                                          <input type="file" class="form-control" name="document[]">
+                                      </div>
+                                  </td>
+                                  <td>
+                                      &nbsp;
+                                  </td>
+                              </tr>
+                          </tbody>
+                          <!-- end tbody -->
 
-                        @else
-                          <th>Column Not Defined</th>
-                        @endif
-                        {{-- End Check Table Column Data Exist --}}
+                      </table>
+                      <!-- end table -->
 
-                      </thead>
-                      <!-- end thead -->
-
-                      <!-- tbody -->
-                      <tbody>
-                        <tr>
-                          <td class="row-number">1</td>
-                          <td>
-                            <div class="form-group">
-                              <label for="file_name">File Name for Evidence</label>
-                              <input type="text" class="form-control" name="document_name[]">
-                            </div>
-                            <div class="form-group">
-                              <input type="file" class="form-control" name="document[]">
-                            </div>
-                          </td>
-                          <td>
-                          &nbsp;
-                          </td>
-                        </tr>
-                      </tbody>
-                      <!-- end tbody -->
-
-                    </table>
-                    <!-- end table -->
-
-                    <div class="row text-center pt-3">
-
-                      <div class="col-12">
-                        <button type="button" class="btn btn-primary add-new-file">Add New File</button>
+                      <div class="row text-center pt-3">
+                          <div class="col-12">
+                              <button type="button" class="btn btn-primary add-new-file">Add New File</button>
+                          </div>
                       </div>
-                    </div>
 
                   </div>
                   <!-- end table responsive -->
 
-                </div>
-                <!-- end row 1 -->
+              </div>
+              <!-- end row 1 -->
 
-                <!-- script for dynamic row numbering and file operations -->
-                <script type="text/javascript">
+              {{-- Script for dynamic row numbering and file operations --}}
+              <script type="text/javascript">
+                  $(document).ready(function() {
+                      checkFileCount();
 
-                  /**************************************************************************************
-                    Document On Load
-                  **************************************************************************************/
-                  $(document).ready(function(){
-
-                    /* Star Rating
-                    **************************************************************************************/
-                    const stars = document.querySelectorAll('.star');
-                    const ratingInput = document.getElementById('rating-input');
-                    let selectedRating = 0;
-
-                    stars.forEach(star => {
-                        star.addEventListener('click', () => {
-                            selectedRating = star.getAttribute('data-value');
-                            updateStars();
-                            ratingInput.value = selectedRating; // Set the hidden input value
-                        });
-                    });
-
-                    //Update Stars
-                    function updateStars() {
-                        stars.forEach(star => {
-                            star.classList.remove('selected');
-                            if (star.getAttribute('data-value') <= selectedRating) {
-                                star.classList.add('selected');
-                            }
-                        });
-                    }
-
-                    // Initial check to hide the button if there are already 2 rows
-                    checkFileCount();
-
-                    /*  Add New File Row
-                    **************************************************************************************/
-                    $('.add-new-file').click(function(){
-
-                      // Add a new row to the table
-                      var new_row =  '';
+                      /* Add New File Row */
+                      $('.add-new-file').click(function() {
+                          var new_row = '';
                           new_row += '<tr>';
                           new_row += '<td class="row-number"></td>';
                           new_row += '<td>';
@@ -292,59 +276,216 @@
                           new_row += '</td>';
                           new_row += '</tr>';
 
-                      $('table tbody').append(new_row);
-
-                      // Recalculate row numbers and check the file count
-                      recalculateRowNumbers();
-                      checkFileCount();
-                    });
-
-                    /*  Remove File Row
-                    **************************************************************************************/
-                    $(document).on('click','.remove-file',function(e){
-                      e.preventDefault();
-                      $(this).closest('tr').remove();
-
-                      // Recalculate row numbers after a row is removed
-                      recalculateRowNumbers();
-                      checkFileCount();
-                    });
-
-                    /*  Recalculate Row Numbers
-                    **************************************************************************************/
-                    function recalculateRowNumbers(){
-                      // Loop through each row and update the "No" column
-                      $('table tbody tr').each(function(index){
-                        $(this).find('.row-number').text(index + 1);
+                          $('#evidence-table tbody').append(new_row);
+                          recalculateRowNumbers();
+                          checkFileCount();
                       });
-                    }
 
-                    /*  Check File Count and Hide/Show Add Button
-                    **************************************************************************************/
-                    function checkFileCount(){
-                      var file_count = $('table tbody tr').length;
-                      var is_single = '{{ $data['cervie']['researcher']['table']['control']->evidence_single_only }}';
-                      var limit = '{{ $data['cervie']['researcher']['table']['control']->evidence_upload_count }}';
+                      /* Remove File Row */
+                      $(document).on('click', '.remove-file', function(e) {
+                          e.preventDefault();
+                          $(this).closest('tr').remove();
+                          recalculateRowNumbers();
+                          checkFileCount();
+                      });
 
-                      if(is_single !== 1){
-                        if(file_count >= limit){
-                          $('.add-new-file').hide(); // Hide the add button if file count is 2 or more
-                        }else{
-                          $('.add-new-file').show(); // Show the add button if file count is less than 2
-                        }
+                      /* Recalculate Row Numbers */
+                      function recalculateRowNumbers() {
+                          $('#evidence-table tbody tr').each(function(index) {
+                              $(this).find('.row-number').text(index + 1);
+                          });
                       }
-                    }
 
-                    // Initial recalculation and file count check in case of pre-existing rows
-                    recalculateRowNumbers();
-                    checkFileCount();
+                      /* Check File Count and Hide/Show Add Button */
+                      function checkFileCount() {
+                          var file_count = $('#evidence-table tbody tr').length;
+                          var limit = '{{ $data['cervie']['researcher']['table']['control']->evidence_upload_count }}';
 
+                          if (file_count >= limit) {
+                              $('.add-new-file').hide();
+                          } else {
+                              $('.add-new-file').show();
+                          }
+                      }
+
+                      // Initial recalculation in case of pre-existing rows
+                      recalculateRowNumbers();
+                      checkFileCount();
                   });
-                </script>
-                <!-- end script for dynamic row numbering and file operations -->
+              </script>
+              <!-- end script for dynamic row numbering and file operations -->
 
               @endif
               {{-- End Evidence Need --}}
+
+              {{-- Team Member Need --}}
+              @if($data['cervie']['researcher']['table']['control']->team_member_need)
+
+              <hr>
+
+              <!-- card title -->
+              <h4 class="card-title">Team Member</h4>
+              <!-- end card title -->
+
+              <!-- row 1 -->
+              <div class="row">
+
+                  <!-- table responsive -->
+                  <div class="table-responsive">
+
+                      <!-- table -->
+                      <table class="table" id="team-member-table">
+
+                          <!-- thead -->
+                          <thead>
+                              @php
+                                  // Set Checkbox Status
+                                  $checkbox['status'] = false;
+                              @endphp
+
+                              {{-- Check Table Column Exist --}}
+                              @if(isset($data['table']['column']['cervie']['researcher']['team']['member']) && count($data['table']['column']['cervie']['researcher']['team']['member']) >= 1)
+                                  {{-- Get Table Column Data --}}
+                                  @foreach($data['table']['column']['cervie']['researcher']['team']['member'] as $key => $value)
+                                      {{-- Check if the column is of category 'checkbox' --}}
+                                      @if(isset($value['category']) && $value['category'] == 'checkbox')
+                                          @php
+                                              // Set Checkbox Status
+                                              $checkbox['status'] = true;
+                                          @endphp
+                                          <td>{!! $value['checkbox'] !!}</td>
+                                      @else
+                                          <td class="{{ isset($value['class']) ? $value['class'] : '' }}">
+                                              {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                                              {{ isset($value['name']) ? $value['name'] : '' }}
+                                          </td>
+                                      @endif
+                                  @endforeach
+                              @else
+                                  <th>Column Not Defined</th>
+                              @endif
+                          </thead>
+                          <!-- end thead -->
+
+                          <!-- tbody -->
+                          <tbody>
+                              <tr>
+                                  <td class="row-number">1</td>
+                                  <td>
+                                      <div class="form-group">
+                                          <label for="team_member_name">Name</label>
+                                          <input type="text" class="form-control" name="team_member_name[]">
+                                      </div>
+                                      <div class="form-group">
+                                          <label for="representation_role_id">Role</label><br>
+                                          <select class="form-control select2" name="representation_role_id[]">
+                                              <option value="">-- Please Select --</option>
+                                              {{-- Check General Representation Category Exist --}}
+                                              @if(count($data['general']['representation']['role']) > 0)
+                                                  {{-- Get General Representation Category Data --}}
+                                                  @foreach($data['general']['representation']['role'] as $key=>$value)
+                                                      <option value="{{ $value->representation_role_id }}">{{ $value->name }}</option>
+                                                  @endforeach
+                                              @endif
+                                          </select>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      &nbsp;
+                                  </td>
+                              </tr>
+                          </tbody>
+                          <!-- end tbody -->
+
+                      </table>
+                      <!-- end table -->
+
+                      <div class="row text-center pt-3">
+                          <div class="col-12">
+                              <button type="button" class="btn btn-primary add-new-team-member">Add New Team Member</button>
+                          </div>
+                      </div>
+
+                  </div>
+                  <!-- end table responsive -->
+
+              </div>
+              <!-- end row 1 -->
+
+              {{-- Script for dynamic row numbering and team member operations --}}
+              <script type="text/javascript">
+                  $(document).ready(function() {
+
+                    /* Function to initialize Select2 */
+                  function initializeSelect2() {
+                      $('.select2').select2({
+                          width: '100%', // Adjust width as needed
+                          placeholder: '-- Please Select --',
+                          allowClear: true
+                      });
+                  }
+
+                  /* Initial Select2 Initialization */
+                  initializeSelect2();
+
+                      /* Add New Team Member Row */
+                      $('.add-new-team-member').click(function() {
+                          var new_row = '';
+                          new_row += '<tr>';
+                          new_row += '<td class="row-number"></td>';
+                          new_row += '<td>';
+                          new_row += '<div class="form-group">';
+                          new_row += '<label for="team_member_name">Name</label>';
+                          new_row += '<input type="text" class="form-control" name="team_member_name[]">';
+                          new_row += '</div>';
+                          new_row += '<div class="form-group">';
+                          new_row += '<label for="representation_role_id">Role</label>';
+                          new_row += '<select class="form-control select2" name="representation_role_id[]">';
+                          new_row += '<option value="">-- Please Select --</option>';
+                          @if(count($data['general']['representation']['role']) > 0)
+                              @foreach($data['general']['representation']['role'] as $key=>$value)
+                              new_row += '<option value="{{ $value->representation_role_id }}" data-select2-id="{{ $value->representation_role_id }}">{{ $value->name }}</option>';
+                              @endforeach
+                          @endif
+                          new_row += '</select>';
+                          new_row += '</div>';
+                          new_row += '</td>';
+                          new_row += '<td>';
+                          new_row += '<a href="#" class="btn btn-danger remove-team-member">';
+                          new_row += '<i class="mdi mdi-trash-can text-white"></i>';
+                          new_row += '</a>';
+                          new_row += '</td>';
+                          new_row += '</tr>';
+
+                          $('#team-member-table tbody').append(new_row);
+                          recalculateRowNumbers();
+                          initializeSelect2();
+
+                      });
+
+                      /* Remove Team Member Row */
+                      $(document).on('click', '.remove-team-member', function(e) {
+                          e.preventDefault();
+                          $(this).closest('tr').remove();
+                          recalculateRowNumbers();
+                      });
+
+                      /* Recalculate Row Numbers */
+                      function recalculateRowNumbers() {
+                          $('#team-member-table tbody tr').each(function(index) {
+                              $(this).find('.row-number').text(index + 1);
+                          });
+                      }
+
+                      // Initial recalculation in case of pre-existing rows
+                      recalculateRowNumbers();
+                  });
+              </script>
+              <!-- end script for dynamic row numbering and team member operations -->
+
+              @endif
+              {{-- End Team Member Need --}}
+
 
             </div>
             <!-- card body -->

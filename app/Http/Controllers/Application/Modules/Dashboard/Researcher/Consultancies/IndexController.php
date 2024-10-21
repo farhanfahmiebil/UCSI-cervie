@@ -16,8 +16,9 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
-use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
+use App\Models\UCSI_V2_General\MSSQL\View\Country AS CountryView;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherConsultancies AS CervieResearcherConsultanciesView;
+use App\Models\UCSI_V2_General\MSSQL\View\RepresentationRole AS RepresentationRoleView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
@@ -125,6 +126,24 @@ class IndexController extends Controller{
       ]
     );
 
+    //Set Model General Country
+    $model['general']['country'] = new CountryView();
+
+    //Set Model General Country
+    $data['general']['country'] = $model['general']['country']->selectBox();
+
+    //Set Model General Representation Role
+    $model['general']['representation']['role'] = new RepresentationRoleView();
+
+    //Get General Representation Role
+    $data['general']['representation']['role'] = $model['general']['representation']['role']->selectBox(
+      [
+        'column'=>[
+          'category'=>'CONSULTANCIES'
+        ]
+      ]
+    );
+
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
       0=>[
@@ -136,6 +155,22 @@ class IndexController extends Controller{
         'name'=>' File',
       ],
       2=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
+      ]
+    ];
+
+    //Defined Column
+    $data['table']['column']['cervie']['researcher']['team']['member'] = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' Member',
+      ],
+      3=>[
         'icon'=>'<i class="mdi mdi-settings"></i>',
         'name'=>' Control',
       ]
@@ -165,6 +200,9 @@ class IndexController extends Controller{
       'date_end' => ['required','date'],
       'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
       'document_name.*'=>['required'], // Validate that each file has an associated name
+      'team_member_name.*'=>['required'], // Validate that each team member has an associated name
+      'representation_role_id.*'=>['required'], // Validate that each team member has an associated role
+
     ];
 
     //Custom Validation Messages
@@ -225,6 +263,9 @@ class IndexController extends Controller{
       //Create
       case 'create':
 
+        //Convert array to string with commas separating the values
+        $country = implode(',',$request->country);
+
         //Set Model
         $model['cervie']['researcher']['consultancies'] = new CervieResearcherConsultanciesProcedure();
 
@@ -236,6 +277,7 @@ class IndexController extends Controller{
               'client'=>($request->has('client')?$request->client:null),
               'title'=>($request->has('title')?$request->title:null),
               'amount'=>($request->has('amount')?$request->amount:null),
+              'country'=>$country,
               'reference_no'=>($request->has('reference_no')?$request->reference_no:null),
               'description'=>($request->has('description')?$request->description:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
@@ -295,6 +337,35 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
+                  'table_name'=>'cervie_researcher_consultancies',
+                  'table_id'=>$result['main']['create']->last_insert_id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
+        }
+
+        //If Files Exist
+        if($request->has('team_member_name')){
+
+          //Get File Loop
+          foreach($request->team_member_name as $key=>$value){
+
+            //Set Model Evidence
+            $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+            //Create Evidence
+            $result['team']['member']['create'] = $model['cervie']['researcher']['team']['member']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'name'=>$value,
+                  'representation_role_id'=>$request->representation_role_id[$key],
                   'table_name'=>'cervie_researcher_consultancies',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
@@ -595,6 +666,12 @@ class IndexController extends Controller{
       ]
     );
 
+    //Set Model General Country
+    $model['general']['country'] = new CountryView();
+
+    //Set Model General Country
+    $data['general']['country'] = $model['general']['country']->selectBox();
+
     //Set Model
     $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
 
@@ -660,6 +737,9 @@ class IndexController extends Controller{
       //Create
       case 'update':
 
+        //Convert array to string with commas separating the values
+        $country = implode(',',$request->country);
+
         //Get Award Type
         $this->getValidateData($request);
 
@@ -679,6 +759,7 @@ class IndexController extends Controller{
               'description'=>($request->has('description')?$request->description:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'country'=>$country,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -771,7 +852,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Consultantcies Saved');
+                     ->with('message','Consultancies Saved');
 
   }
 

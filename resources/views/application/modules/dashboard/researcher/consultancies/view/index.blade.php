@@ -124,6 +124,43 @@
                 </div>
                 <!-- end row 4 -->
 
+              <!-- row 5 -->
+              <div class="row">
+
+                <!-- Country -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="country">Country</label>
+                    <select class="form-control select2" name="country[]" multiple>
+                      <option value="">--Please Select--</option>
+
+                      {{-- Check General Country Exist --}}
+                      @if(count($data['general']['country']) > 0)
+
+                          @php
+                            // Explode Country from the main data (comma-separated string)
+                            $selected_country = explode(',',$data['main']->country);
+                          @endphp
+
+                          {{-- Get General Country Data --}}
+                          @foreach($data['general']['country'] as $key=>$value)
+                            <option value="{{ $value->country_id }}"
+                              {{ in_array($value->country_id,$selected_country) ? 'selected' : '' }}>
+                              {{ $value->country }}
+                            </option>
+                          @endforeach
+                          {{-- End Get General Country Data --}}
+
+                      @endif
+                      {{-- End Check General Country Exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end Country -->
+
+              </div>
+              <!-- end row 5 -->
+
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)

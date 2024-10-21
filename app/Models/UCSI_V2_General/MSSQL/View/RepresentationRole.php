@@ -63,6 +63,9 @@ class RepresentationRole extends Model{
             ->table($table)
             ->where($table.'.status_name','active');
 
+    //Filter Query
+    if(isset($data['column']['category']) && $data['column']['category'] != null){$result = $result->where($table.'.category',$data['column']['category']);}
+
 
     $result = $result->get()
                      ->toarray();
