@@ -166,11 +166,12 @@ class Controller extends BaseController{
                 'publication'=>config('routing.application.modules.dashboard.researcher.name').'.publication.list',
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.home.list',
                 'intellectual_property'=>config('routing.application.modules.dashboard.researcher.name').'.intellectual.property.home.list',
+                // 'commercialization'=>config('routing.application.modules.dashboard.researcher.name').'.commercialization.list',
                 'award'=>config('routing.application.modules.dashboard.researcher.name').'.award.list',
                 'stewardship'=>config('routing.application.modules.dashboard.researcher.name').'.stewardship.list',
                 'recognition'=>config('routing.application.modules.dashboard.researcher.name').'.recognition.list',
                 'grant'=>config('routing.application.modules.dashboard.researcher.name').'.grant.list',
-                'linkage'=>config('routing.application.modules.dashboard.researcher.name').'.linkage.list',
+                'linkages'=>config('routing.application.modules.dashboard.researcher.name').'.linkage.list',
                 'postgraduate_supervision'=>config('routing.application.modules.dashboard.researcher.name').'.postgraduate_supervision.list',
 
               ],

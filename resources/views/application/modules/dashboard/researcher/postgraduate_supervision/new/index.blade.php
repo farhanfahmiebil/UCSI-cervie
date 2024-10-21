@@ -106,7 +106,18 @@
                 <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_end">Date End</label>
+                    <div class="d-flex bd-highlight">
+                      <div class="flex-grow-1 bd-highlight">
+                        <label for="date_end">Date End</label>
+                      </div>
+                      <div class="bd-highlight">
+                        <label for="is_ongoing" class="form-check-label">
+                          <input type="checkbox" class="form-check-input" id="is_ongoing" name="is_ongoing" value="1" {{ old('is_ongoing') ? 'checked' : ''}}>
+                          Is On Going
+                          <i class="input-helper"></i>
+                        </label>
+                      </div>
+                    </div>
                     <input type="date" class="form-control" id="date_end" name="date_end" value="{{ old('date_end') }}" placeholder="">
                   </div>
                 </div>
@@ -266,7 +277,7 @@
                     <div class="row text-center pt-3">
 
                       <div class="col-12">
-                        <button type="button" class="btn btn-primary add-new-file">Add New File</button>
+                        <button type="button" class="btn btn-primary add-new-file"><i class="mdi mdi-plus"></i>Add New File</button>
 
                       </div>
                     </div>

@@ -151,7 +151,7 @@
                       </div>
                       <div class="bd-highlight">
                         <label for="is_lifetime" class="form-check-label">
-                          <input type="checkbox" class="form-check-input" name="is_lifetime" value="1" {{ old('is_lifetime') ? 'checked' : ''}}>
+                          <input type="checkbox" class="form-check-input" id="is_lifetime" name="is_lifetime" value="1" {{ old('is_lifetime') ? 'checked' : ''}}>
                           Is Lifetime
                           <i class="input-helper"></i>
                         </label>
@@ -269,7 +269,7 @@
                     <div class="row text-center pt-3">
 
                       <div class="col-12">
-                        <button type="button" class="btn btn-primary add-new-file">Add New File</button>
+                        <button type="button" class="btn btn-primary add-new-file"><i class="mdi mdi-plus"></i>Add New File</button>
 
                       </div>
                     </div>

@@ -91,7 +91,18 @@
                 <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_end">Date End</label>
+                    <div class="d-flex bd-highlight">
+                      <div class="flex-grow-1 bd-highlight">
+                        <label for="date_end">Date End</label>
+                      </div>
+                      <div class="bd-highlight">
+                        <label for="is_current_position" class="form-check-label">
+                          <input type="checkbox" class="form-check-input" id="is_current_position" name="is_current_position" value="1" {{ old('is_current_position') ? 'checked' : ''}}>
+                          Is Current Position
+                          <i class="input-helper"></i>
+                        </label>
+                      </div>
+                    </div>
                     <input type="date" class="form-control" id="date_end" name="date_end" value="{{ old('date_end') }}" placeholder="">
                   </div>
                 </div>
@@ -99,24 +110,6 @@
 
               </div>
               <!-- end row 2 -->
-
-              <!-- row 3 -->
-              <div class="row">
-
-                <!-- is main -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="is_main">Is Current Position</label>
-                    <select class="form-control select2" id="is_main" name="is_main">
-                      <option value="0" {{ ((old('is_main') == '0')?'selected':'') }}>No</option>
-                      <option value="1" {{ ((old('is_main') == '1')?'selected':'') }}>Yes</option>
-                    </select>
-                  </div>
-                </div>
-                <!-- end is main -->
-
-              </div>
-              <!-- end row 3 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)
@@ -222,7 +215,7 @@
                     <div class="row text-center pt-3">
 
                       <div class="col-12">
-                        <button type="button" class="btn btn-primary add-new-file">Add New File</button>
+                        <button type="button" class="btn btn-primary add-new-file"><i class="mdi mdi-plus"></i>Add New File</button>
 
                       </div>
                     </div>
@@ -358,5 +351,41 @@
 
   </form>
   <!-- end form -->
+
+  <script type="text/javascript">
+
+    /**************************************************************************************
+      Document On Load
+    **************************************************************************************/
+    $(document).ready(function(){
+
+      /**************************************************************************************
+        Is Current Position
+      **************************************************************************************/
+      $('#is_current_position').on('click',function(){
+        if($(this).is(':checked')){
+          //If the checkbox is checked, clear the Date End input and disable it
+          $('#date_end').val('').attr('disabled', true);
+        }else{
+          //If the checkbox is unchecked, enable the Date End input
+          $('#date_end').attr('disabled', false);
+        }
+      });
+
+      /**************************************************************************************
+        Date End
+      **************************************************************************************/
+      $('#date_end').on('input',function(){
+        if($(this).val()){
+          // If a date is entered, uncheck the 'Is Lifetime' checkbox
+          $('#is_current_position').prop('checked', false);
+        }else{
+          // If Date End is cleared, allow 'Is Lifetime' to be checked
+          $('#is_current_position').prop('checked', true);
+        }
+      });
+    });
+
+  </script>
 
 @endsection

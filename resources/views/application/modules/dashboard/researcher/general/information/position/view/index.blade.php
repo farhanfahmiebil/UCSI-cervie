@@ -124,23 +124,22 @@
                 <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_end">Date End</label>
-                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ \Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d') }}" placeholder="">
+                    <div class="d-flex bd-highlight">
+                      <div class="flex-grow-1 bd-highlight">
+                        <label for="date_end">Date End</label>
+                      </div>
+                      <div class="bd-highlight">
+                        <label for="is_current_position" class="form-check-label">
+                          <input type="checkbox" class="form-check-input" id="is_current_position" name="is_current_position" value="1" {{ (($data['main']->is_current_position) ?'checked':'') }}>
+                          Is Current Position {{ $data['main']->date_end }}
+                          <i class="input-helper"></i>
+                        </label>
+                      </div>
+                    </div>
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):'') }}" placeholder="">
                   </div>
                 </div>
                 <!-- end date end -->
-
-                <!-- is main -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="is_main">Is Current Position</label>
-                    <select class="form-control select2" id="is_main" name="is_main">
-                      <option value="1" {{ (($data['main']->is_main == 1)?'selected':'') }}>Yes</option>
-                      <option value="0" {{ (($data['main']->is_main == 1)?'selected':'') }}>No</option>
-                    </select>
-                  </div>
-                </div>
-                <!-- end is main -->
 
               </div>
               <!-- end row 2 -->
@@ -284,7 +283,7 @@
                     <div class="row text-center pt-3">
 
                       <div class="col-12">
-                        <button type="button" class="btn btn-primary add-new-file">Add New File</button>
+                        <button type="button" class="btn btn-primary add-new-file"><i class="mdi mdi-plus"></i>Add New File</button>
                       </div>
                     </div>
 

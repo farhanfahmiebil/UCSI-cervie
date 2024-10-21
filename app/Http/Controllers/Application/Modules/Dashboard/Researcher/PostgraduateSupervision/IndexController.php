@@ -273,6 +273,7 @@ class IndexController extends Controller{
               'project_title'=>($request->has('project_title')?$request->project_title:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'is_ongoing'=>(($request->is_ongoing)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -743,6 +744,7 @@ class IndexController extends Controller{
               'project_title'=>($request->has('project_title')?$request->project_title:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'is_ongoing'=>(($request->is_ongoing)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

@@ -238,10 +238,43 @@
                       </table>
                       <!-- end table -->
 
+<<<<<<< HEAD
                       <div class="row text-center pt-3">
                           <div class="col-12">
                               <button type="button" class="btn btn-primary add-new-file">Add New File</button>
                           </div>
+=======
+                      </thead>
+                      <!-- end thead -->
+
+                      <!-- tbody -->
+                      <tbody>
+                        <tr>
+                          <td class="row-number">1</td>
+                          <td>
+                            <div class="form-group">
+                              <label for="file_name">File Name for Evidence</label>
+                              <input type="text" class="form-control" name="document_name[]">
+                            </div>
+                            <div class="form-group">
+                              <input type="file" class="form-control" name="document[]">
+                            </div>
+                          </td>
+                          <td>
+                          &nbsp;
+                          </td>
+                        </tr>
+                      </tbody>
+                      <!-- end tbody -->
+
+                    </table>
+                    <!-- end table -->
+
+                    <div class="row text-center pt-3">
+
+                      <div class="col-12">
+                        <button type="button" class="btn btn-primary add-new-file"><i class="mdi mdi-plus"></i>Add New File</button>
+>>>>>>> fbb279ace95970fa040c5acd31678a599277269f
                       </div>
 
                   </div>

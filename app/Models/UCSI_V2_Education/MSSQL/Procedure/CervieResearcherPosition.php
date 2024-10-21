@@ -47,10 +47,10 @@ class CervieResearcherPosition extends Model{
         $data['column']['name'],
         $data['column']['organization_id'],
         $data['column']['organization_name'],
-        $data['column']['is_main'],
         $data['column']['user_position_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['is_current_position'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -154,10 +154,10 @@ class CervieResearcherPosition extends Model{
         $data['column']['name'],
         $data['column']['organization_id'],
         $data['column']['organization_name'],
-        $data['column']['is_main'],
         $data['column']['user_position_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['is_current_position'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']

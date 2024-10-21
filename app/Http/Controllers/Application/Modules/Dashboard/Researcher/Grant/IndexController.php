@@ -664,7 +664,7 @@ class IndexController extends Controller{
     $model['general']['status'] = new StatusView();
 
     //Get General Status
-    $data['general']['status'] = $model['general']['status'] ->selectBox(
+    $data['general']['status'] = $model['general']['status']->selectBox(
       [
         'column'=>[
           'table'=>'cervie_researcher_grant'
@@ -720,7 +720,7 @@ class IndexController extends Controller{
     $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
+    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;

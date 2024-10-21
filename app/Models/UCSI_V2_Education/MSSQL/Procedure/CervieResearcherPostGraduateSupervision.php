@@ -39,7 +39,7 @@ class CervieResearcherPostGraduateSupervision extends Model{
     // Set Query
     $this->query = 'DECLARE @id INT;
                     EXEC ' . $table . ' ?,?,?,?,?,?,
-                                        ?,?,?,?,?,?, @id OUTPUT;
+                                        ?,?,?,?,?,?,? @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -49,6 +49,7 @@ class CervieResearcherPostGraduateSupervision extends Model{
         $data['column']['qualification_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['is_ongoing'],
         $data['column']['student_name'],
         $data['column']['organization_id'],
         $data['column']['programme'],
@@ -145,7 +146,7 @@ class CervieResearcherPostGraduateSupervision extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,
                                     ?,?,?,?,?,?,?';
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -155,6 +156,7 @@ class CervieResearcherPostGraduateSupervision extends Model{
         $data['column']['qualification_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['is_ongoing'],
         $data['column']['student_name'],
         $data['column']['organization_id'],
         $data['column']['programme'],
