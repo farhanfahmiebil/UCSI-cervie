@@ -172,8 +172,13 @@ class RouteServiceProvider extends ServiceProvider{
                //Account
                require base_path($this->path['dashboard']['employee'].'account/index.php');
 
+               //Researcher
+               require base_path($this->path['dashboard']['employee'].'researcher/index.php');
+
                //Ajax
                require base_path($this->path['dashboard']['employee'].'ajax/authorization/access/index.php');
+
+
 
              }); //End Dashboard
 
