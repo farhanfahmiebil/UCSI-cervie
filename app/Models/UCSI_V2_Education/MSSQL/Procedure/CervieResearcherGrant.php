@@ -146,8 +146,9 @@ class CervieResearcherGrant extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,
-                                    ?,?,?,?,?,?,?';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,
+                                    ?,?,?,?,?,
+                                    ?,?,?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[

@@ -193,10 +193,10 @@ class IndexController extends Controller{
               'name'=>$request->name,
               'organization_id'=>$request->organization_id,
               'organization_name'=>null,
-              'is_main'=>$request->is_main,
               'user_position_id'=>null,
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
+              'is_current_position'=>(($request->is_current_position)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -570,10 +570,10 @@ class IndexController extends Controller{
               'name'=>$request->name,
               'organization_id'=>$request->organization_id,
               'organization_name'=>null,
-              'is_main'=>$request->is_main,
               'user_position_id'=>null,
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
+              'is_current_position'=>(($request->is_current_position)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -682,9 +682,9 @@ class IndexController extends Controller{
     $rules = [
       'name'=>['required'],
       'organization_id'=>['required'],
-      'date_start' => ['required','date','before:date_end'],
-      'date_end' => ['required','date','after:date_start'],
-      'is_main'=>['boolean'], // Not required, but must be boolean if present
+      'date_start' => ['required','date'],
+      'date_end' => ['nullable','date','after:date_start'],
+      'is_current_position'=>['boolean'], // Not required, but must be boolean if present
       'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
       'document_name.*'=>['required'], // Validate that each file has an associated name
     ];
@@ -694,7 +694,7 @@ class IndexController extends Controller{
       'name.required'=>'Name is required',
       'organization_id.required'=>'Organization Name is Required',
       'date_start.required'=>'Date Start is Required',
-      'date_end.required'=>'Date End Date',
+      'date_end.required'=>'Date End is Required',
       'date_start.date'=>'Date Start Must Be Date Format',
       'date_end.date'=>'Date End Must Be Date Format',
       'date_end.after'=>'Date End must be after Date Start',
@@ -719,6 +719,24 @@ class IndexController extends Controller{
 
     //Create A Validator Instance
     $validator = Validator::make($request->all(), $rules, $messages);
+
+    //Custom rule: either date end or is current position must be present (but not both)
+    $validator->after(function ($validator) use ($request) {
+
+      $date_end = $request->input('date_end');
+      $is_current_position = $request->input('is_current_position');
+
+      //Check if both date end and is current position are empty
+      if(empty($date_end) && empty($is_current_position)){
+        $validator->errors()->add('date_or_work', 'Either Date End or Is Current Position must be provided.');
+      }
+
+      //Check if both fields are filled
+      if(!empty($date_end) && !empty($is_current_position)){
+        $validator->errors()->add('date_or_work', 'Only one of Date End or Is Current Position should be provided.');
+      }
+
+    });
 
     //Run The Validation
     $validator->validate();
