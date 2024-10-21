@@ -234,6 +234,9 @@ class RouteServiceProvider extends ServiceProvider{
                 //Community Engagement
                 require base_path($this->path['dashboard']['researcher'].'community_engagement/index.php');
 
+                //Consultancies
+                require base_path($this->path['dashboard']['researcher'].'consultancies/index.php');
+
              }); //End Dashboard
 
            }); //End Employee

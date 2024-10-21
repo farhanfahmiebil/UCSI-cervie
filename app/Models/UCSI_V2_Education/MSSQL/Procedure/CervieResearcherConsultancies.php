@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Class
-class CervieResearcherConsultantcies extends Model{
+class CervieResearcherConsultancies extends Model{
 
   /**
    * The database connection that should be used by the model.
@@ -26,7 +26,7 @@ class CervieResearcherConsultantcies extends Model{
    *
    * @var string
    */
-  protected $table = 'cervie_researcher_consultantcies';
+  protected $table = 'cervie_researcher_consultancies';
 
   /**************************************************************************************
     Create
@@ -34,41 +34,24 @@ class CervieResearcherConsultantcies extends Model{
   public function createRecord($data){
 
     //Set Table
-    $table = 'create_cervie_researcher_consultantcies';
+    $table = 'create_cervie_researcher_consultancies';
 
     // Set Query
     $this->query = 'DECLARE @id INT;
-                    EXEC ' . $table . ' ?,?,?,?,?,
-                                        ?,?,?,?,?,
-                                        ?,?,?,?,?,
-                                        ?,?,?,?,?,
+                    EXEC ' . $table . ' ?,?,?,?,?,?,
                                         ?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
     $result = DB::connection($this->connection)->select($this->query, [
         $data['column']['employee_id'],
-        $data['column']['consultantcies_type_id'],
-        $data['column']['author'],
+        $data['column']['client'],
         $data['column']['title'],
-        $data['column']['name'],
-        $data['column']['publisher'],
-        $data['column']['day'],
-        $data['column']['month'],
-        $data['column']['year'],
-        $data['column']['edition'],
-        $data['column']['volume'],
-        $data['column']['issue'],
-        $data['column']['doi'],
-        $data['column']['quartile_id'],
-        $data['column']['academic_indexing_body_id'],
-        $data['column']['isbn'],
-        $data['column']['issn'],
-        $data['column']['eissn'],
-        $data['column']['page_no'],
-        $data['column']['chapter_no'],
-        $data['column']['sustainable_development_goal'],
-        $data['column']['hyperlink'],
+        $data['column']['amount'],
+        $data['column']['reference_no'],
+        $data['column']['description'],
+        $data['column']['date_start'],
+        $data['column']['date_end'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -82,7 +65,7 @@ class CervieResearcherConsultantcies extends Model{
       $item = $this->readRecord(
         [
           'column'=>[
-            'consultantcies_id'=>$result[0]->id,
+            'consultancies_id'=>$result[0]->id,
             'employee_id'=>$data['column']['employee_id'],
           ]
         ]
@@ -94,7 +77,7 @@ class CervieResearcherConsultantcies extends Model{
           'employee_id'=>$item->employee_id,
           'table_name'=>$this->table,
           'event'=>'create',
-          'auditable_id'=>$item->consultantcies_id,
+          'auditable_id'=>$item->consultancies_id,
           'old_value'=>'[]',
           'new_value'=>json_encode($item),
           'created_by'=>$item->created_by,
@@ -122,14 +105,14 @@ class CervieResearcherConsultantcies extends Model{
   public function readRecord($data){
 
     //Set Table
-    $table = 'read_cervie_researcher_consultantcies';
+    $table = 'read_cervie_researcher_consultancies';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->select($this->query,[
-        $data['column']['consultantcies_id'],
+        $data['column']['consultancies_id'],
         $data['column']['employee_id'],
       ]
     );
@@ -150,13 +133,13 @@ class CervieResearcherConsultantcies extends Model{
   public function updateRecord($data){
 
     //Set Table
-    $table = 'update_cervie_researcher_consultantcies';
+    $table = 'update_cervie_researcher_consultancies';
 
     //Read Record
     $item['old'] = $this->readRecord(
       [
         'column'=>[
-          'consultantcies_id'=>$data['column']['consultantcies_id'],
+          'consultancies_id'=>$data['column']['consultancies_id'],
           'employee_id'=>$data['column']['employee_id'],
         ]
       ]
@@ -165,39 +148,22 @@ class CervieResearcherConsultantcies extends Model{
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?,?,?,?,?,
-                                    ?,?,?,?,?,
-                                    ?,?,?,?,?,
-                                    ?';
+                                    ?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
-        $data['column']['consultantcies_id'],
-        $data['column']['employee_id'],
-        $data['column']['consultantcies_type_id'],
-        $data['column']['author'],
-        $data['column']['title'],
-        $data['column']['name'],
-        $data['column']['publisher'],
-        $data['column']['day'],
-        $data['column']['month'],
-        $data['column']['year'],
-        $data['column']['edition'],
-        $data['column']['volume'],
-        $data['column']['issue'],
-        $data['column']['doi'],
-        $data['column']['quartile_id'],
-        $data['column']['academic_indexing_body_id'],
-        $data['column']['isbn'],
-        $data['column']['issn'],
-        $data['column']['eissn'],
-        $data['column']['page_no'],
-        $data['column']['chapter_no'],
-        $data['column']['sustainable_development_goal'],
-        $data['column']['hyperlink'],
-        $data['column']['remark'],
-        $data['column']['remark_user'],
-        $data['column']['updated_by']
+      $data['column']['consultancies_id'],
+      $data['column']['employee_id'],
+      $data['column']['client'],
+      $data['column']['title'],
+      $data['column']['amount'],
+      $data['column']['reference_no'],
+      $data['column']['description'],
+      $data['column']['date_start'],
+      $data['column']['date_end'],
+      $data['column']['remark'],
+      $data['column']['remark_user'],
+      $data['column']['updated_by']
       ]
     );
 
@@ -205,7 +171,7 @@ class CervieResearcherConsultantcies extends Model{
     $item['new'] = $this->readRecord(
       [
         'column'=>[
-          'consultantcies_id'=>$data['column']['consultantcies_id'],
+          'consultancies_id'=>$data['column']['consultancies_id'],
           'employee_id'=>$data['column']['employee_id'],
         ]
       ]
@@ -217,7 +183,7 @@ class CervieResearcherConsultantcies extends Model{
         'employee_id'=>$data['column']['employee_id'],
         'table_name'=>$this->table,
         'event'=>'update',
-        'auditable_id'=>$data['column']['consultantcies_id'],
+        'auditable_id'=>$data['column']['consultancies_id'],
         'old_value'=>json_encode($item['old']),
         'new_value'=>json_encode($item['new']),
         'created_by'=>$data['column']['updated_by'],
@@ -235,14 +201,14 @@ class CervieResearcherConsultantcies extends Model{
   public function deleteRecord($data){
 
     //Set Table
-    $table = 'delete_cervie_researcher_consultantcies';
+    $table = 'delete_cervie_researcher_consultancies';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
-        $data['column']['consultantcies_id'],
+        $data['column']['consultancies_id'],
         $data['column']['employee_id']
       ]
     );
@@ -258,14 +224,14 @@ class CervieResearcherConsultantcies extends Model{
   public function needVerification($data){
 
     //Set Table
-    $table = 'update_cervie_researcher_consultantcies_verification';
+    $table = 'update_cervie_researcher_consultancies_verification';
 
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
-        $data['column']['consultantcies_id'],
+        $data['column']['consultancies_id'],
         $data['column']['employee_id'],
         $data['column']['updated_by']
       ]
