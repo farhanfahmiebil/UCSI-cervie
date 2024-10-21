@@ -73,3 +73,12 @@ i.mdi {
 .star.selected {
     color: #ffcc00; /* Selected star color */
 }
+
+.progress {
+    height: 30px; /* Set the height of the progress bar */
+}
+
+@keyframes progress-animation {
+    from { width: 0; }
+    to { width: var(--progress-value); } /* Use a CSS variable for dynamic width */
+}

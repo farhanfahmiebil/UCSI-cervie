@@ -285,6 +285,7 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'title'=>($request->has('title')?$request->title:null),
+              'is_ongoing'=>(($request->is_ongoing)?1:0),
               'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
               'quantum'=>($request->has('quantum')?$request->quantum:null),
               'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
@@ -379,51 +380,101 @@ class IndexController extends Controller{
   /**************************************************************************************
  		List
  	**************************************************************************************/
-	public function list(Request $request){
+  public function list(Request $request)
+  {
+      // Get Route Path
+      $this->routePath();
 
-		//Get Route Path
-		$this->routePath();
+      // Set Hyperlink
+      $hyperlink = $this->hyperlink;
 
-		//Set Hyperlink
-		$hyperlink = $this->hyperlink;
+      // Set Page Sub
+      $page = $this->page;
+      $page['sub'] .= 'list.sub';
 
-    //Set Page Sub
-    $page = $this->page;
+      // Set Breadcrumb Icon
+      $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
 
-    //Set Page Sub
-    $page['sub'] .= 'list.sub';
+      // Set Breadcrumb Title
+      $data['breadcrumb']['title'] = ['Welcome Back, ' . Auth::user()->name];
 
-    //Set Breadcrumb Icon
-    $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
+      // Set Breadcrumb
+      $data['title'] = array($this->header['category']);
 
-    //Set Breadcrumb Title
-    $data['breadcrumb']['title'] = ['Welcome Back, '.Auth::user()->name];
+      // Set Model Award
+      $model['cervie']['researcher']['grant'] = new CervieResearcherGrantView();
+      $model['cervie']['researcher']['ongoing'] = new CervieResearcherGrantProcedure();
 
-		//Set Breadcrumb
-		$data['title'] = array($this->header['category']);
-    //Set Model Award
-    $model['cervie']['researcher']['grant'] = new CervieResearcherGrantView();
+      // Set Main Data Researcher Grant List
+      $data['main']['cervie']['researcher']['grant'] = $model['cervie']['researcher']['grant']->getList(
+          [
+              'eloquent' => 'pagination',
+              'column' => [
+                  'employee_id' => Auth::id(),
+              ]
+          ]
+      );
 
-    //Set Main Data Researcher Publication
-    $data['main']['cervie']['researcher']['grant'] = $model['cervie']['researcher']['grant']->getList(
-      [
-        'eloquent'=>'pagination',
-        'column'=>[
-          'employee_id'=>Auth::id(),
-        ]
-      ]
-    );
+      // Set Table Researcher Grant
+      $data['table']['column']['cervie']['researcher']['grant'] = $this->getDataTable();
 
-    //Set Table Researcher Publication
-    $data['table']['column']['cervie']['researcher']['grant'] = $this->getDataTable();
+      // Set Main Data Researcher Ongoing Grants
+      $ongoingGrants = $model['cervie']['researcher']['ongoing']->readRecordOngoing(
+          [
+              'column' => [
+                  'employee_id' => Auth::id(),
+              ]
+          ]
+      );
 
-    //Get Form Token
-		$form_token = $this->encrypt_token_form;
 
-		//Return View
-		return view($this->route['view'].'list.index',compact('data','form_token','page','hyperlink'));
+      // Calculate Progress for Ongoing Grants
+      $data['main']['cervie']['researcher']['ongoing'] = [];
+      foreach ($ongoingGrants as $grant) {
+          $startDate = Carbon::parse($grant->date_start);
+          $endDate = Carbon::parse($grant->date_end);
+          $currentDate = Carbon::now();
 
+          // Calculate total duration
+          $totalDays = $endDate->diffInDays($startDate);
+
+          // Calculate days passed since the start date
+          $daysPassed = max(0, $currentDate->diffInDays($startDate));
+
+          // Initialize progress percentage
+          $progressPercentage = 0;
+
+          if ($currentDate < $startDate) {
+              // Before start date: 0%
+              $progressPercentage = 0;
+          } elseif ($currentDate >= $startDate && $currentDate <= $endDate) {
+              // Between start and end date: calculate progress
+              $progressPercentage = ($daysPassed / $totalDays) * 100;
+          } else {
+              // After end date: 100%
+              $progressPercentage = 100;
+          }
+
+          // Ensure progress does not go below 0 or above 100
+          $progressPercentage = max(0, min(100, round($progressPercentage)));
+
+          // Store grant progress data
+          $data['main']['cervie']['researcher']['ongoing'][] = [
+              'grant_id' => $grant->grant_id,
+              'grant_title' => $grant->title,
+              'progress' => $progressPercentage,
+              'date_start' => $grant->date_start,
+              'date_end' => $grant->date_end,
+          ];
+      }
+
+      // Get Form Token
+      $form_token = $this->encrypt_token_form;
+
+      // Return View
+      return view($this->route['view'] . 'list.index', compact('data', 'form_token', 'page', 'hyperlink'));
   }
+
 
   /**************************************************************************************
  		Delete
@@ -769,6 +820,7 @@ class IndexController extends Controller{
               'status_id'=>($request->has('status_id')?$request->status_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'is_ongoing'=>(($request->is_ongoing)?1:0),
               'title'=>($request->has('title')?$request->title:null),
               'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
               'quantum'=>($request->has('quantum')?$request->quantum:null),
@@ -866,7 +918,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Award Saved');
+                     ->with('message','Grant Saved');
 
   }
 

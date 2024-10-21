@@ -38,7 +38,7 @@ class CervieResearcherGrant extends Model{
 
     // Set Query
     $this->query = 'DECLARE @id INT;
-                    EXEC ' . $table . ' ?,?,?,?,?,?,
+                    EXEC ' . $table . ' ?,?,?,?,?,?,?,
                                         ?,?,?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
@@ -49,6 +49,7 @@ class CervieResearcherGrant extends Model{
         $data['column']['representation_category_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['is_ongoing'],
         $data['column']['currency_code_id'],
         $data['column']['quantum'],
         $data['column']['project_role_id'],
@@ -128,6 +129,28 @@ class CervieResearcherGrant extends Model{
   }
 
   /**************************************************************************************
+    Read
+  **************************************************************************************/
+  public function readRecordOngoing($data){
+
+    //Set Table
+    $table = 'read_cervie_researcher_grant_ongoing';
+
+    //Set Query
+    $this->query = 'EXEC '.$table.' ?;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->select($this->query,[
+        $data['column']['employee_id'],
+      ]
+    );
+
+    //Return Result
+    return $result;
+
+  }
+
+  /**************************************************************************************
     Update
   **************************************************************************************/
   public function updateRecord($data){
@@ -148,7 +171,7 @@ class CervieResearcherGrant extends Model{
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?,?,?,?';
+                                    ?,?,?,?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -158,6 +181,7 @@ class CervieResearcherGrant extends Model{
         $data['column']['representation_category_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['is_ongoing'],
         $data['column']['currency_code_id'],
         $data['column']['quantum'],
         $data['column']['project_role_id'],

@@ -8,6 +8,9 @@
     <!-- row 1 -->
     <div class="row">
 
+      {{-- Graph --}}
+      @include($page['sub'].'.graph')
+
       {{-- Grant --}}
       @include($page['sub'].'.grant')
 
