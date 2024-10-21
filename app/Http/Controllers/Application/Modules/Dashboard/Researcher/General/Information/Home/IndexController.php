@@ -16,7 +16,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
-use App\Models\UCSI_V2_General\MSSQL\View\ProfessionalMembershipLevel;
+use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherPosition;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherAreaInterest;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherWorkExperience;
@@ -207,25 +207,34 @@ class IndexController extends Controller{
       ]
     );
 
-    //Set Model Professional Membership Level
-    $model['general']['professional']['membership']['level'] = new ProfessionalMembershipLevel();
-    $data['general']['professional']['membership']['level'] = $model['general']['professional']['membership']['level']->selectBox();
+    //Set Model Representation Category
+    $model['general']['representation']['category'] = new RepresentationCategoryView();
 
-    //Get General Professional Membership Level
-    foreach($data['general']['professional']['membership']['level'] as $key=>$value){
+    //Get Representation Category
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
+      [
+        'column'=>[
+          'category'=>'PROFESSIONAL_MEMBERSHIP'
+        ]
+      ]
+    );
+
+    //Get General Representation Category
+    foreach($data['general']['representation']['category'] as $key=>$value){
 
       //Set Main Data Researcher Professional Membership
-      $data['main']['cervie']['researcher']['professional']['membership'][$value->professional_membership_level_id] = $this->getData(
+      $data['main']['cervie']['researcher']['professional']['membership'][$value->representation_category_id] = $this->getData(
         [
           'eloquent'=>'pagination',
           'category'=>'professional_membership',
           'column'=>[
-            'professional_membership_level_id'=>$value->professional_membership_level_id
+            'representation_category_id'=>$value->representation_category_id
           ]
         ]
       );
 
     }
+    // dd(1);;
     // dd($data['main']['cervie']['researcher']['professional']['membership']);
 // dd($data['main']['cervie']['researcher']['professional']['membership'][1]);
     // dd(count($data['main']['cervie']['researcher']['position']));
@@ -358,18 +367,14 @@ class IndexController extends Controller{
             'name'=>' Role',
           ],
           3=>[
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Level',
-          ],
-          4=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
             'name'=>' Period',
           ],
-          5=>[
+          4=>[
             'icon'=>'<i class="mdi mdi-shield-check"></i>',
             'name'=>' Verification',
           ],
-          6=>[
+          5=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
             'name'=>' Control',
           ]
@@ -464,7 +469,7 @@ class IndexController extends Controller{
             'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
             'column'=>[
               'employee_id'=>Auth::id(),
-              'professional_membership_level_id'=>$data['column']['professional_membership_level_id']
+              'representation_category_id'=>$data['column']['representation_category_id']
             ]
           ]
         );

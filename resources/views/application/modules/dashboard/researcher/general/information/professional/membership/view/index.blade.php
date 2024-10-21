@@ -85,21 +85,21 @@
                 <!-- professional membership level -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="professional_membership_level_id">Professional Membership Level</label>
-                    <select class="form-control select2" id="professional_membership_level_id" name="professional_membership_level_id">
+                    <label for="representation_category_id">Professional Membership Level</label>
+                    <select class="form-control select2" id="representation_category_id" name="representation_category_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Professional Membership Level Exist --}}
-                      @if(count($data['general']['professional']['membership']['level']) > 0)
+                      {{-- Check General Representation Category Exist --}}
+                      @if(count($data['general']['representation']['category']) > 0)
 
-                        {{-- Get General Professional Membership Level Data --}}
-                        @foreach($data['general']['professional']['membership']['level'] as $key=>$value)
-                          <option value="{{ $value->professional_membership_level_id }}" {{ (($data['main']->professional_membership_level_id == $value->professional_membership_level_id)?'selected':'') }}>{{ $value->name }}</option>
+                        {{-- Get General Representation Category Data --}}
+                        @foreach($data['general']['representation']['category'] as $key=>$value)
+                          <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
-                        {{-- End Get General Professional Membership Level Data --}}
+                        {{-- End Get General Representation Category Data --}}
 
                       @endif
-                      {{-- End Check General Professional Membership Level Exist --}}
+                      {{-- End Check General Representation Category Exist --}}
 
                     </select>
                   </div>
@@ -115,21 +115,21 @@
                 <!-- professional membership role -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="professional_membership_role_id">Professional Membership Role</label>
-                    <select class="form-control select2" id="professional_membership_role_id" name="professional_membership_role_id">
+                    <label for="representation_role_id">Professional Membership Role</label>
+                    <select class="form-control select2" id="representation_role_id" name="representation_role_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Professional Membership Role Exist --}}
-                      @if(count($data['general']['professional']['membership']['role']) > 0)
+                      {{-- Check General Representation Role Exist --}}
+                      @if(count($data['general']['representation']['role']) > 0)
 
-                        {{-- Get General Professional Membership Role Data --}}
-                        @foreach($data['general']['professional']['membership']['role'] as $key=>$value)
-                          <option value="{{ $value->professional_membership_role_id }}" {{ (($data['main']->professional_membership_role_id == $value->professional_membership_role_id)?'selected':'') }}>{{ $value->name }}</option>
+                        {{-- Get General Representation Role Data --}}
+                        @foreach($data['general']['representation']['role'] as $key=>$value)
+                          <option value="{{ $value->representation_role_id }}" {{ (($data['main']->representation_role_id == $value->representation_role_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
-                        {{-- End Get General Professional Membership Role Data --}}
+                        {{-- End Get General Representation Role Data --}}
 
                       @endif
-                      {{-- End Check General Professional Membership Role Exist --}}
+                      {{-- End Check General Representation Role Exist --}}
 
                     </select>
                   </div>

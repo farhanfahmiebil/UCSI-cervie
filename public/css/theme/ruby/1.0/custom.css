@@ -19,6 +19,11 @@ height: 100% !important;
     transition: left 0.3s ease, width 0.3s ease;
 }
 
+a.btn i{
+  margin: 0 3px 0 0;
+  vertical-align: middle;
+}
+
 .sidebar-wrapper .brand{
   justify-content: center;
 }
@@ -169,6 +174,37 @@ height: 100%;
   height:15.5rem;
   width:15.5rem;
 }
+
+.custom-tabs-container .tab-header{
+  display: flex;
+  align-items: center;
+}
+
+.scrollable-nav {
+  display: flex;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  list-style: none;
+  padding: 0;
+  margin: 0 10px;
+}
+
+/*******************************************************************************
+  Nav Tab
+*******************************************************************************/
+.nav-tabs .nav-item {
+  flex-shrink: 0;
+}
+
+.tab-content {
+  margin-top: 20px;
+}
+
+.previous, .next {
+  margin: 0 20px;
+  cursor: pointer;
+}
+
 
 /*******************************************************************************
   Toggle Sidebar

@@ -16,13 +16,13 @@
 **************************************************************************************/
 Route::prefix('intellectual')->group(function(){
 
-  /*  List
-  **************************************************************************************/
-  Route::get('/list',config('routing.application.modules.dashboard.researcher.controller').'\Intellectual\Property\Home\IndexController@list')->name(config('routing.application.modules.dashboard.researcher.name').'.intellectual.property.home.list');
-
   /* Property
   **************************************************************************************/
   Route::prefix('property')->group(function(){
+
+    /*  List
+    **************************************************************************************/
+    Route::get('/list',config('routing.application.modules.dashboard.researcher.controller').'\Intellectual\Property\Home\IndexController@list')->name(config('routing.application.modules.dashboard.researcher.name').'.intellectual.property.home.list');
 
     /* Patent
     **************************************************************************************/

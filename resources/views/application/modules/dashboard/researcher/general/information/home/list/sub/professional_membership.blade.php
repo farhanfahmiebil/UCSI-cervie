@@ -26,11 +26,11 @@
 			</div>
       <!-- end header -->
 
-      {{-- Check Professional Membership Level Exist --}}
-      @if(count($data['general']['professional']['membership']['level']) > 0)
+      {{-- Check Representation Category Exist --}}
+      @if(count($data['general']['representation']['category']) > 0)
 
-        {{-- Get Professional Membership Level Data --}}
-        @foreach($data['general']['professional']['membership']['level'] as $key=>$value)
+        {{-- Get Representation Category Data --}}
+        @foreach($data['general']['representation']['category'] as $key=>$value)
 
           <div class="row pt-5 pb-1">
 
@@ -112,7 +112,7 @@
                 @if(count($data['main']['cervie']['researcher']['professional']['membership']) > 0)
 
                   {{-- Get Researcher Professional Membership Data --}}
-                  @foreach($data['main']['cervie']['researcher']['professional']['membership'][$value->professional_membership_level_id] as $k=>$v)
+                  @foreach($data['main']['cervie']['researcher']['professional']['membership'][$value->representation_category_id] as $k=>$v)
 
                     <tr id="{{ $v->professional_membership_id }}">
 
@@ -128,8 +128,7 @@
 
                       <td>{{ ($k+1) }}</td>
                       <td>{{ $v->name }}</td>
-                      <td>{{ $v->professional_membership_role_name }}</td>
-                      <td>{{ $v->professional_membership_level_name }}</td>
+                      <td>{{ $v->representation_role_name }}</td>
                       <td>{{ \Carbon\Carbon::parse($v->date_start)->format('d-m-Y') }} - {{ \Carbon\Carbon::parse($v->date_end)->format('d-m-Y') }}</td>
                       <td><span class="badge bg-{{ (($v->need_verification)?'warning':'success') }}">{{ (($v->need_verification)?'Pending':'Verified') }}</span></td>
                       <td>
@@ -167,10 +166,10 @@
             <div class="col-12 pt-3">
 
               {{-- Check Main Data Exist --}}
-              @if(count($data['main']['cervie']['researcher']['professional']['membership'][$value->professional_membership_level_id]) >= 1)
+              @if(count($data['main']['cervie']['researcher']['professional']['membership'][$value->representation_category_id]) >= 1)
 
                 <!-- paginate -->
-                {{ $data['main']['cervie']['researcher']['professional']['membership'][$value->professional_membership_level_id]->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+                {{ $data['main']['cervie']['researcher']['professional']['membership'][$value->representation_category_id]->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
                 <!-- end paginate -->
 
               @endif
@@ -183,10 +182,10 @@
           <!-- end table responsive -->
 
         @endforeach
-        {{-- Get Professional Membership Level Data --}}
+        {{-- Get Representation Category Data --}}
 
       @endif
-      {{-- End Check Researcher Professional Membership Level Exist --}}
+      {{-- End Check Representation Category Exist --}}
 
     </div>
     <!-- end card body -->

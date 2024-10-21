@@ -103,7 +103,7 @@
                     <li class="nav-item" role="presentation">
                       <a class="nav-link {{ (request()->tab_category == strtolower($value->navigation_category_code) ? 'active' : '') }}"
                          id="tab-{{ $value->navigation_category_id }}"
-                         href="{{ route($hyperlink['page']['view'], ['organization_id' => request()->organization_id, 'id' => request()->id, 'tab' => 'tab', 'tab_category' => strtolower($value->navigation_category_id)]) }}"
+                         href="{{ route($hyperlink['page']['researcher']['view'],['organization_id' => request()->organization_id, 'id' => request()->id, 'tab' => 'tab', 'tab_category' => strtolower($value->navigation_category_id)]) }}"
                          role="tab"
                          aria-controls="{{ strtolower($value->navigation_category_id) }}"
                          aria-selected="{{ (request()->tab_category == strtolower($value->navigation_category_code) ? 'true' : 'false') }}">
@@ -134,13 +134,12 @@
                 @endif
                 {{-- End Check Error --}}
 
-                {{-- Sub Navigation Tab Main --}}
-                @include($hyperlink['page']['navigation']['main'].'.tab.content.main.index')
+                {{-- Sub Navigation Tab Main
+                @include($hyperlink['page']['navigation']['main'].'.tab.content.main.index') --}}
 
               </div>
 
             </div>
-
 
           </div>
           <!-- end card body -->

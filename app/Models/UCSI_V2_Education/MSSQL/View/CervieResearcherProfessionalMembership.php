@@ -63,8 +63,10 @@ class CervieResearcherProfessionalMembership extends Model{
                                                ->where($table.'.employee_id',$data['column']['employee_id']);
 
     //Filter Column
-    if(isset($data['column']['professional_membership_level_id']) && $data['column']['professional_membership_level_id'] != null){$result = $result->where($table.'.professional_membership_level_id',$data['column']['professional_membership_level_id']);}
-// dd($data);
+    if(isset($data['column']['representation_category_id']) && $data['column']['representation_category_id'] != null){$result = $result->where($table.'.representation_category_id',$data['column']['representation_category_id']);}
+    //Get Result
+//     $result = $result->get();
+// dd($result);
     //Check Type For Soft and Hard Delete
     if(isset($data['eloquent']) != null && $data['eloquent'] == 'pagination'){
 
@@ -72,7 +74,7 @@ class CervieResearcherProfessionalMembership extends Model{
       $result = $result->paginate(
         $perPage = $this->getPagination(['manual'=>true]),
         $columns = ['*'],
-        $pageName = 'professional_membership'.((isset($data['column']['professional_membership_level_id']))?'_'.$data['column']['professional_membership_level_id']:''),
+        $pageName = 'professional_membership'.((isset($data['column']['representation_category_id']))?'_'.$data['column']['representation_category_id']:''),
       );
 
     }else{

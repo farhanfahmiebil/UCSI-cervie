@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UCSI_V2_General\MSSQL\View\Setting;
 
 //Get Class
-class ProfessionalMembershipRole extends Model{
+class RepresentationRole extends Model{
 
   /**
    * The database connection that should be used by the model.
@@ -56,7 +56,7 @@ class ProfessionalMembershipRole extends Model{
   public function selectBox($data = null){
 
     //Set Table
-    $table = 'selectbox_professional_membership_role';
+    $table = 'selectbox_representation_role';
 
     //Get Query
     $result = DB::connection($this->connection)

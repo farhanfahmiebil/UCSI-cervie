@@ -268,12 +268,11 @@
                   {{-- Get Main Data --}}
                   @foreach($data['main']['data'] as $key=>$value)
 
-                    <tr id="{{ trim($value->employee_id) }}">
+                    <tr id="{{ trim($value->organization_id) }}">
                       <td>{{ ($key+1) }}</td>
-                      <td>{{ $value->employee_id }}</td>
-                      <td>{{ $value->full_name }}</td>
+                      <td>{{ $value->name }}</td>
                       <td>
-                        <a href="{{ route($hyperlink['page']['view']['researcher'],['organization_id'=>trim($value->organization_id),'employee_id'=>trim($value->employee_id)]) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="View List of Researcher"><i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route($hyperlink['page']['list']['researcher'],['organization_id'=>trim($value->organization_id)]) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="View List of Researcher"><i class="bi bi-arrow-right"></i></a>
                       </td>
                     </tr>
 

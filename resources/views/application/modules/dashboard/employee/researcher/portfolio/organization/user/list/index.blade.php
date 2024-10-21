@@ -273,7 +273,7 @@
                       <td>{{ $value->employee_id }}</td>
                       <td>{{ $value->full_name }}</td>
                       <td>
-                        <a href="{{ route($hyperlink['page']['view'],['organization_id'=>trim($value->organization_id),'id'=>trim($value->employee_id)]) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="View List of Researcher"><i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route($hyperlink['page']['researcher']['view'],['organization_id'=>trim($value->organization_id),'employee_id'=>trim($value->employee_id)]) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="View List of Researcher"><i class="bi bi-arrow-right"></i></a>
                       </td>
                     </tr>
 

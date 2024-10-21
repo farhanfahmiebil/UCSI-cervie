@@ -33,15 +33,15 @@
                       $category = explode('_', strtolower($value->navigation_category_code));
 
                       // Determine the route
-                      $route = isset($hyperlink['navigation']['authorization']['researcher']['sidebar']['right'][strtolower($value->navigation_category_id)])
-                        ? route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right'][strtolower($value->navigation_category_id)])
-                        : '#';
+                      $route = isset($hyperlink['navigation']['authorization']['researcher']['sidebar']['right'][strtolower($value->navigation_category_code)])
+                        ?route($hyperlink['navigation']['authorization']['researcher']['sidebar']['right'][strtolower($value->navigation_category_code)])
+                        :'#';
 
                       // Determine background class
                       $navigation_category['is_active'] = (Request::segment(3) == $category[0] && (count($category) == 1 || Request::segment(4) == $category[1]));
-                      $navigation_category['card'] = $navigation_category['is_active'] ? 'bg-danger text-white' : 'shadow-sm bg-light rounded border border-light';
-                      $navigation_category['icon'] = $navigation_category['is_active'] ? 'btn-light' : 'btn-primary';
-                      $navigation_category['label'] = $navigation_category['is_active'] ? 'text-white' : 'text-dark';
+                      $navigation_category['card'] = $navigation_category['is_active']?'bg-danger text-white':'shadow-sm bg-light rounded border border-light';
+                      $navigation_category['icon'] = $navigation_category['is_active']?'btn-light':'btn-primary';
+                      $navigation_category['label'] = $navigation_category['is_active']?'text-white':'text-dark';
                     @endphp
 
                     <a href="{{ $route }}" class="card mt-3 text-decoration-none {{ $navigation_category['card'] }}">

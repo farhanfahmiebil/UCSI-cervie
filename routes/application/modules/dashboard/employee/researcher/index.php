@@ -44,41 +44,68 @@ Route::prefix('researcher')->group(function(){
           **************************************************************************************/
           Route::prefix('view')->group(function(){
 
-            /* ID
+            /* Employee ID
             **************************************************************************************/
-            Route::prefix('{id}')->group(function(){
+            Route::prefix('{employee_id}')->group(function(){
+
+              /**************************************************************************************
+                Redirect Researcher to Default Page
+              **************************************************************************************/
+              Route::redirect('/','{employee_id}/tab/general/information/list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view');
 
               /* Tab Category
               **************************************************************************************/
-              Route::prefix('{tab?}')->group(function(){
+              Route::prefix('tab')->group(function(){
 
-                /* Tab Category
+                /* General
                 **************************************************************************************/
-                Route::prefix('{tab_category?}')->group(function(){
+                Route::prefix('general')->group(function(){
 
-                  /* Tab Sub Category
+                  /* Information
                   **************************************************************************************/
-                  Route::prefix('{tab_category_sub?}')->group(function(){
+                  Route::prefix('information')->group(function(){
 
-                    /*  Index
+                    /*  Home
                     **************************************************************************************/
-                    Route::get('/',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view');
+                    Route::get('/list',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Home\IndexController@list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.home.list');
 
-                  }); //End Tab Sub Category
+                    /* Position
+                    **************************************************************************************/
+                    Route::prefix('position')->group(function(){
 
-                  /*  Download
-                  **************************************************************************************/
-                  Route::get('/download/category/{category}',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\IndexController@download')->name(config('routing.application.modules.dashboard.employee.name').'.users.manage.researcher.download');
+                      /*  New
+                      **************************************************************************************/
+                      Route::get('/new',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Position\IndexController@new')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.position.new');
 
-                  /*  Update
-                  **************************************************************************************/
-                  Route::post('/update',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.update');
+                      /*  Create
+                      **************************************************************************************/
+                      Route::post('/create',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Position\IndexController@create')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.position.create');
 
-                }); //End Tab Category
+                      /*  List
+                      **************************************************************************************/
+                      Route::get('/list',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Position\IndexController@list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.position.list');
+
+                      /*  Delete
+                      **************************************************************************************/
+                      Route::get('/delete',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Position\IndexController@delete')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.position.delete');
+
+                      /*  View
+                      **************************************************************************************/
+                      Route::get('/view/{id}',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Position\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.position.view');
+
+                      /*  Update
+                      **************************************************************************************/
+                      Route::get('/update',config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Position\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.position.update');
+
+                    }); //End Position
+
+                  }); //End Information
+
+                }); //End General
 
               }); //End Tab
 
-            }); //End ID
+            }); //End Employee ID
 
           }); //End View
 

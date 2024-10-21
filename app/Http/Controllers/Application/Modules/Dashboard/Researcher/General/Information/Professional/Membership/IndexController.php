@@ -16,8 +16,8 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
-use App\Models\UCSI_V2_General\MSSQL\View\ProfessionalMembershipLevel AS ProfessionalMembershipLevelView;
-use App\Models\UCSI_V2_General\MSSQL\View\ProfessionalMembershipRole AS ProfessionalMembershipRoleView;
+use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
+use App\Models\UCSI_V2_General\MSSQL\View\RepresentationRole AS RepresentationRoleView;
 use App\Models\UCSI_V2_General\MSSQL\View\ProfessionalMembershipType AS ProfessionalMembershipTypeView;
 
 //Model Procedure
@@ -113,17 +113,29 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category'],$this->header['module']);
 
-    //Set Model Professional Membership Level
-    $model['general']['professional']['membership']['level'] = new ProfessionalMembershipLevelView();
+    //Set Model Representation Category
+    $model['general']['representation']['category'] = new RepresentationCategoryView();
 
-    //Get Professional Membership Level
-    $data['general']['professional']['membership']['level'] = $model['general']['professional']['membership']['level']->selectBox();
+    //Get Representation Category
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
+      [
+        'column'=>[
+          'category'=>'PROFESSIONAL_MEMBERSHIP'
+        ]
+      ]
+    );
 
-    //Set Model Professional Membership Role
-    $model['general']['professional']['membership']['role'] = new ProfessionalMembershipRoleView();
+    //Set Model Representation Role
+    $model['general']['representation']['role'] = new RepresentationRoleView();
 
-    //Get Professional Membership Role
-    $data['general']['professional']['membership']['role'] = $model['general']['professional']['membership']['role']->selectBox();
+    //Get Representation Role
+    $data['general']['representation']['role'] = $model['general']['representation']['role']->selectBox(
+      [
+        'column'=>[
+          'category'=>'PROFESSIONAL_MEMBERSHIP'
+        ]
+      ]
+    );
 
     //Set Model Professional Membership Type
     $model['general']['professional']['membership']['type'] = new ProfessionalMembershipTypeView();
@@ -199,8 +211,8 @@ class IndexController extends Controller{
             'column'=>[
               'employee_id'=>Auth::id(),
               'name'=>$request->name,
-              'professional_membership_level_id'=>$request->professional_membership_level_id,
-              'professional_membership_role_id'=>$request->professional_membership_role_id,
+              'representation_category_id'=>$request->representation_category_id,
+              'representation_role_id'=>$request->representation_role_id,
               'professional_membership_type_id'=>$request->professional_membership_type_id,
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
@@ -469,17 +481,29 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Set Model Professional Membership Level
-    $model['general']['professional']['membership']['level'] = new ProfessionalMembershipLevelView();
+    //Set Model Representation Category
+    $model['general']['representation']['category'] = new RepresentationCategoryView();
 
-    //Get Professional Membership Level
-    $data['general']['professional']['membership']['level'] = $model['general']['professional']['membership']['level']->selectBox();
+    //Get Representation Category
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
+      [
+        'column'=>[
+          'category'=>'PROFESSIONAL_MEMBERSHIP'
+        ]
+      ]
+    );
 
-    //Set Model Professional Membership Role
-    $model['general']['professional']['membership']['role'] = new ProfessionalMembershipRoleView();
+    //Set Model Representation Role
+    $model['general']['representation']['role'] = new RepresentationRoleView();
 
-    //Get Professional Membership Role
-    $data['general']['professional']['membership']['role'] = $model['general']['professional']['membership']['role']->selectBox();
+    //Get Representation Role
+    $data['general']['representation']['role'] = $model['general']['representation']['role']->selectBox(
+      [
+        'column'=>[
+          'category'=>'PROFESSIONAL_MEMBERSHIP'
+        ]
+      ]
+    );
 
     //Set Model Professional Membership Type
     $model['general']['professional']['membership']['type'] = new ProfessionalMembershipTypeView();
@@ -590,8 +614,8 @@ class IndexController extends Controller{
               'professional_membership_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'name'=>$request->name,
-              'professional_membership_level_id'=>$request->professional_membership_level_id,
-              'professional_membership_role_id'=>$request->professional_membership_role_id,
+              'representation_category_id'=>$request->representation_category_id,
+              'representation_role_id'=>$request->representation_role_id,
               'professional_membership_type_id'=>$request->professional_membership_type_id,
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
@@ -700,8 +724,8 @@ class IndexController extends Controller{
     //Define validation rules
     $rules = [
       'name'=>['required'],
-      'professional_membership_level_id'=>['required'],
-      'professional_membership_role_id'=>['required'],
+      'representation_category_id'=>['required'],
+      'representation_role_id'=>['required'],
       'professional_membership_type_id'=>['required'],
       'date_start' => ['required','date'],
       'date_end' => ['nullable','date','after:date_start'],
@@ -713,8 +737,8 @@ class IndexController extends Controller{
     //Custom validation messages
     $messages = [
       'name.required'=>'Membership Name is required',
-      'professional_membership_level_id.required'=>'Professional Membership Level is required',
-      'professional_membership_role_id.required'=>'Professional Membership Role is required',
+      'representation_category_id.required'=>'Professional Membership Level is required',
+      'representation_role_id.required'=>'Professional Membership Role is required',
       'professional_membership_type_id.required'=>'Professional Membership Type is required',
       'date_start.required'=>'Date Start is Required',
       'date_start.date'=>'Date Start Must Be Date Format',
@@ -729,7 +753,7 @@ class IndexController extends Controller{
       foreach($request->document_name as $key=>$value){
 
         $rules['document.' . $key] = ['required', 'mimes:pdf', 'max:3072'];
-        
+
         $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
         $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
         $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';

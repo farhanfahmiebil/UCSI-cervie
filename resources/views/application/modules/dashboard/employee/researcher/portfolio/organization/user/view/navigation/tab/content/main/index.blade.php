@@ -1,78 +1,83 @@
-{{-- Get Navigation Category --}}
-@foreach($data['navigation']['category']['main'] as $key=>$value)
+@php
+$value = collect($data['navigation']['category']['main'])->first(function ($item) {
+    return in_array(strtolower($item->navigation_category_code), [request()->segment(11), request()->segment(11).'_'.request()->segment(12)]);
+});
+@endphp
 
-  <!-- tab pane -->
-  <div class="tab-pane fade {{ ((request()->tab_category == strtolower($value->navigation_category_code))?'show active':'') }}"
-       id="{{ request()->tab_category ?? 'default-tab' }}" role="tabpanel">
+<!-- tab pane -->
+<div class="tab-pane fade {{ $value ? 'show active' : 'show' }}" id="{{ request()->tab_category ?? 'default-tab' }}" role="tabpanel">
 
-    <!-- card -->
-    <div class="card">
+  <!-- card -->
+  <div class="card">
 
-      <!-- card body -->
-      <div class="card-body">
+    <!-- card body -->
+    <div class="card-body">
 
-        <!-- row -->
-        <div class="row gx-3">
+      <!-- row -->
+      <div class="row gx-3">
 
-          <!-- col -->
-          <div class="col-sm-12 col-12">
+        <!-- col -->
+        <div class="col-sm-12 col-12">
 
-            <!-- row -->
-            <div class="row gx-3">
+          <!-- row -->
+          <div class="row gx-3">
 
-              <!-- col -->
-              <div class="col-12">
+            <!-- col -->
+            <div class="col-12">
 
-                <!-- row -->
-                <div class="row justify-content-center mt-5">
+              <!-- row -->
+              <div class="row justify-content-center mt-5">
 
-                  <!-- content -->
-                  <div class="{{ ((!count($data['navigation']['category']['sub']))?'col-12':'col-sm-9 col-12 order-sm-1 order-2') }}">
-{{ count($data['navigation']['category']['sub']) }}
-                    {{-- Sub Navigation Tab --}}
-                    @include($hyperlink['page']['navigation']['main'].'.main.'.request()->tab_category)
-
-                  </div>
-                  <!-- end content -->
+                <!-- content -->
+                <div class="{{ ((!count($data['navigation']['category']['sub']))?'col-12':'col-sm-9 col-12 order-sm-1 order-2') }}">
 
                   {{-- If Navigation Category Sub Exist --}}
-                  @if(count($data['navigation']['category']['sub'])>1)
+                  @if(count($data['navigation']['category']['sub']) > 1)
 
-                    <!-- content navigation right -->
-                    <div class="col-sm-3 col-12 order-sm-2 order-1">
-
-                      {{-- Sub Navigation Tab Main --}}
-                      @include($hyperlink['page']['navigation']['main'].'.tab.content.navigation.right.index')
-
-                    </div>
-                    <!-- end content navigation right -->
+                    {{-- Sub Navigation Tab Pointer --}}
+                    @include($page['navigation']['tab']['pointer'])
 
                   @endif
                   {{-- End If Navigation Category Sub Exist --}}
 
                 </div>
-                <!-- end row -->
+                <!-- end content -->
+
+                {{-- If Navigation Category Sub Exist --}}
+                @if(count($data['navigation']['category']['sub'])>1)
+
+                  <!-- content navigation right -->
+                  <div class="col-sm-3 col-12 order-sm-2 order-1">
+
+                    {{-- Sub Navigation Tab Right --}}
+                    @include($page['navigation']['tab']['right'])
+
+                  </div>
+                  <!-- end content navigation right -->
+
+                @endif
+                {{-- End If Navigation Category Sub Exist --}}
 
               </div>
-              <!-- end col -->
+              <!-- end row -->
 
             </div>
-            <!-- end row -->
+            <!-- end col -->
 
           </div>
-          <!-- end col -->
+          <!-- end row -->
 
         </div>
-        <!-- end row -->
+        <!-- end col -->
 
       </div>
-      <!-- end card body -->
+      <!-- end row -->
 
     </div>
-    <!-- end card -->
+    <!-- end card body -->
 
   </div>
-  <!-- end tab pane -->
+  <!-- end card -->
 
-@endforeach
-{{-- End Get Navigation Category --}}
+</div>
+<!-- end tab pane -->
