@@ -518,34 +518,31 @@
         });
       });
 
-      /*  Year Start and End Validation
+      /**************************************************************************************
+        Is Current Position
       **************************************************************************************/
-      $('#year_start, #year_end').on('input',function(){
-        validateYear({
-          'input': {
-            'id': $(this).attr('id'),
-            'year': $(this).val()
-          }
-        });
+      $('#is_current_position').on('click',function(){
+        if($(this).is(':checked')){
+          //If the checkbox is checked, clear the Date End input and disable it
+          $('#date_end').val('').attr('disabled', true);
+        }else{
+          //If the checkbox is unchecked, enable the Date End input
+          $('#date_end').attr('disabled', false);
+        }
       });
 
-      /*  Validate Year
+      /**************************************************************************************
+        Date End
       **************************************************************************************/
-      function validateYear(data){
-        var year_pattern = /^\d{0,4}$/; // Allows 0 to 4 digits
-
-        if(!year_pattern.test(data.input.year)){
-          $('#' + data.input.id).val(data.input.year.slice(0, -1));
+      $('#date_end').on('input',function(){
+        if($(this).val()){
+          // If a date is entered, uncheck the 'Is Lifetime' checkbox
+          $('#is_current_position').prop('checked', false);
+        }else{
+          // If Date End is cleared, allow 'Is Lifetime' to be checked
+          $('#is_current_position').prop('checked', true);
         }
-
-        if(data.input.year.length === 4){
-          var year_value = parseInt(data.input.year, 10);
-          if (year_value < 1900 || year_value > 2100) {
-            alert('Please enter a year between 1900 and 2100.');
-            $('#' + data.input.id).val(''); // Clear the input if it's out of range
-          }
-        }
-      }
+      });
 
     });
   </script>

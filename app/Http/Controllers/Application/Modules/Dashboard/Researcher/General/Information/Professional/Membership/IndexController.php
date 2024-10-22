@@ -217,6 +217,7 @@ class IndexController extends Controller{
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
               'is_lifetime'=>(($request->is_lifetime)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -366,7 +367,9 @@ class IndexController extends Controller{
           [
             'column'=>[
               'professional_membership_id'=>$request->id,
+              'need_verification'=>1,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -454,6 +457,7 @@ class IndexController extends Controller{
             'column'=>[
               'professional_membership_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -620,6 +624,7 @@ class IndexController extends Controller{
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
               'is_lifetime'=>(($request->is_lifetime)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

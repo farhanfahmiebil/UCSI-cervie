@@ -114,7 +114,7 @@
                   <td>{{ $value->student_id }}</td>
                   <td>{{ $value->student_name }}</td>
                   <td>{{ $value->qualification_name }}</td>
-                  <td>{{ $value->organization_name }}</td>
+                  <td>{{ $value->organization }}</td>
                   <td>{{ $value->date_start }}</td>
                   <td>{{ $value->date_end }}</td>
                   <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>

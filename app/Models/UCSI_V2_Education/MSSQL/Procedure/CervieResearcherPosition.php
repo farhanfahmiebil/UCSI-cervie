@@ -38,7 +38,7 @@ class CervieResearcherPosition extends Model{
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 
     //Get Result
@@ -51,6 +51,7 @@ class CervieResearcherPosition extends Model{
         $data['column']['date_start'],
         $data['column']['date_end'],
         $data['column']['is_current_position'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -145,8 +146,10 @@ class CervieResearcherPosition extends Model{
     );
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?;';
-
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,
+                                    ?,?,?,?,?,
+                                    ?,?,?;';
+// dd($data);
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['position_id'],
@@ -158,6 +161,7 @@ class CervieResearcherPosition extends Model{
         $data['column']['date_start'],
         $data['column']['date_end'],
         $data['column']['is_current_position'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -201,12 +205,13 @@ class CervieResearcherPosition extends Model{
     $table = 'update_cervie_researcher_position_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['position_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

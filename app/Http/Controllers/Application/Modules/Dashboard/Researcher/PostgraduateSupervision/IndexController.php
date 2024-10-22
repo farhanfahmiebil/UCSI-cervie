@@ -118,24 +118,11 @@ class IndexController extends Controller{
     //Set Model Qualification
     $model['general']['qualification'] = new QualificationView();
 
-    //Set Model Organization
-    $model['education']['organization'] = new OrganizationView();
-
-    //Set Model Status
-    $model['education']['status'] = new StatusView();
-
     //Get General Qualification
     $data['general']['qualification'] = $model['general']['qualification']->selectBox();
 
-    //Get Education Organization
-    $data['education']['organization'] = $model['education']['organization']->selectBox(
-      [
-        'column'=>[
-          'company_office_id'=>'MAIN_CAMPUS',
-          'company_id'=>'UCSI_EDUCATION'
-        ]
-      ]
-    );
+    //Set Model Status
+    $model['education']['status'] = new StatusView();
 
     //Get Education Status
     $data['education']['status'] = $model['education']['status']->selectBox(
@@ -190,13 +177,14 @@ class IndexController extends Controller{
     //Define Validation Rules
     $rules = [
       'qualification_id'=>['required'],
-      'organization_id'=>['required'],
+      'organization'=>['required'],
       'student_id'=>['required'],
       'student_name'=>['required'],
       'programme'=>['required'],
       'project_title'=>['required'],
       'date_start' => ['required','date'],
-      'date_end' => ['required','date'],
+      'date_end' => ['nullable','date','after:date_start'],
+      'is_ongoing'=>['boolean'], // Not required, but must be boolean if present
       'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
       'document_name.*'=>['required'], // Validate that each file has an associated name
     ];
@@ -204,13 +192,16 @@ class IndexController extends Controller{
     //Custom Validation Messages
     $messages = [
       'qualification_id.required'=>'Qualification is required',
-      'organization_id.required'=>'University is required',
+      'organization.required'=>'University is required',
       'student_id.required'=>'Student ID is required',
       'student_name.required'=>'Student Name is required',
       'programme.required'=>'Programme is required',
       'project_title.required'=>'Project Title is required',
       'date_start.required'=>'Date Start is Required',
       'date_end.required'=>'Date End is Required',
+      'date_start.date'=>'Date Start Must Be Date Format',
+      'date_end.date'=>'Date End Must Be Date Format',
+      'date_end.after'=>'Date End must be after Date Start',
     ];
 
     //If Document Name Exist
@@ -228,6 +219,24 @@ class IndexController extends Controller{
 
     //Create A Validator Instance
     $validator = Validator::make($request->all(), $rules, $messages);
+
+    //Custom rule: either date end or is on going must be present (but not both)
+    $validator->after(function ($validator) use ($request) {
+
+      $date_end = $request->input('date_end');
+      $is_ongoing = $request->input('is_ongoing');
+
+      //Check if both date end and is on going are empty
+      if(empty($date_end) && empty($is_ongoing)){
+        $validator->errors()->add('date_or_work', 'Either Date End or Is Going must be provided.');
+      }
+
+      //Check if both fields are filled
+      if(!empty($date_end) && !empty($is_ongoing)){
+        $validator->errors()->add('date_or_work', 'Only one of Date End or Is Going should be provided.');
+      }
+
+    });
 
     //Run The Validation
     $validator->validate();
@@ -266,7 +275,7 @@ class IndexController extends Controller{
             'column'=>[
               'employee_id'=>Auth::id(),
               'qualification_id'=>($request->has('qualification_id')?$request->qualification_id:null),
-              'organization_id'=>($request->has('organization_id')?$request->organization_id:null),
+              'organization'=>($request->has('organization')?$request->organization:null),
               'student_name'=>($request->has('student_name')?$request->student_name:null),
               'student_id'=>($request->has('student_id')?$request->student_id:null),
               'programme'=>($request->has('programme')?$request->programme:null),
@@ -274,6 +283,7 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'is_ongoing'=>(($request->is_ongoing)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -475,6 +485,7 @@ class IndexController extends Controller{
             'column'=>[
               'postgraduate_supervision_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -561,6 +572,7 @@ class IndexController extends Controller{
             'column'=>[
               'postgraduate_supervision_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -609,24 +621,11 @@ class IndexController extends Controller{
     //Set Model Qualification
     $model['general']['qualification'] = new QualificationView();
 
-    //Set Model Organization
-    $model['education']['organization'] = new OrganizationView();
-
-    //Set Model Status
-    $model['education']['status'] = new StatusView();
-
     //Get General Qualification
     $data['general']['qualification'] = $model['general']['qualification']->selectBox();
 
-    //Get Education Organization
-    $data['education']['organization'] = $model['education']['organization']->selectBox(
-      [
-        'column'=>[
-          'company_office_id'=>'MAIN_CAMPUS',
-          'company_id'=>'UCSI_EDUCATION'
-        ]
-      ]
-    );
+    //Set Model Status
+    $model['education']['status'] = new StatusView();
 
     //Get Education Status
     $data['education']['status'] = $model['education']['status']->selectBox(
@@ -737,7 +736,7 @@ class IndexController extends Controller{
               'postgraduate_supervision_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'qualification_id'=>($request->has('qualification_id')?$request->qualification_id:null),
-              'organization_id'=>($request->has('organization_id')?$request->organization_id:null),
+              'organization'=>($request->has('organization')?$request->organization:null),
               'student_name'=>($request->has('student_name')?$request->student_name:null),
               'student_id'=>($request->has('student_id')?$request->student_id:null),
               'programme'=>($request->has('programme')?$request->programme:null),
@@ -745,6 +744,7 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'is_ongoing'=>(($request->is_ongoing)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

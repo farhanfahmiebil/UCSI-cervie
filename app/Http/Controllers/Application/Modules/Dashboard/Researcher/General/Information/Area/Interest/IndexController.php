@@ -176,6 +176,7 @@ class IndexController extends Controller{
             'column'=>[
               'employee_id'=>Auth::id(),
               'name'=>$request->name,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -259,7 +260,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Researcher Area Interest Added');
+                     ->with('message','Area Interest Added');
 
   }
 
@@ -325,6 +326,7 @@ class IndexController extends Controller{
             'column'=>[
               'area_interest_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -412,6 +414,7 @@ class IndexController extends Controller{
             'column'=>[
               'area_interest_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -520,8 +523,6 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-
-
     //If Form Token Exist
 		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
 
@@ -544,6 +545,7 @@ class IndexController extends Controller{
               'area_interest_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'name'=>$request->name,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

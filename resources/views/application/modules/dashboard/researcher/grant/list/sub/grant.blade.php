@@ -113,7 +113,7 @@
                   <td>{{ ($key+1) }}</td>
                   <td>{{ $value->representation_category_name }}</td>
                   <td>{{ $value->grant_title }}</td>
-                  <td>{{ $value->project_role_name }}</td>
+                  <td>{{ $value->representation_role_name }}</td>
                   <td>{{ $value->quantum }}</td>
                   <td>{{ $value->sustainable_development_goal }}</td>
                   <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>

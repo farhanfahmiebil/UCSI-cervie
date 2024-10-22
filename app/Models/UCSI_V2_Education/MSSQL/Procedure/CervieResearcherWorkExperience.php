@@ -39,7 +39,7 @@ class CervieResearcherWorkExperience extends Model{
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 
     //Get Result
@@ -50,6 +50,7 @@ class CervieResearcherWorkExperience extends Model{
         $data['column']['year_start'],
         $data['column']['year_end'],
         $data['column']['is_working_here'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -143,7 +144,7 @@ class CervieResearcherWorkExperience extends Model{
     );
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -154,6 +155,7 @@ class CervieResearcherWorkExperience extends Model{
         $data['column']['year_start'],
         $data['column']['year_end'],
         $data['column']['is_working_here'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -197,12 +199,13 @@ class CervieResearcherWorkExperience extends Model{
     $table = 'update_cervie_researcher_work_experience_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['work_experience_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

@@ -38,7 +38,7 @@ class CervieResearcherProfessionalMembership extends Model{
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 
     //Get Result
@@ -51,6 +51,7 @@ class CervieResearcherProfessionalMembership extends Model{
         $data['column']['date_start'],
         $data['column']['date_end'],
         $data['column']['is_lifetime'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -147,7 +148,7 @@ class CervieResearcherProfessionalMembership extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -160,6 +161,7 @@ class CervieResearcherProfessionalMembership extends Model{
         $data['column']['date_start'],
         $data['column']['date_end'],
         $data['column']['is_lifetime'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -226,12 +228,13 @@ class CervieResearcherProfessionalMembership extends Model{
     $table = 'update_cervie_researcher_professional_membership_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['professional_membership_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

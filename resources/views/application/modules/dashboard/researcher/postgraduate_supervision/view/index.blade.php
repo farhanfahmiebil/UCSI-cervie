@@ -62,31 +62,16 @@
                     </select>
                   </div>
                 </div>
-                <!-- end grant category id -->
+                <!-- end qualification id -->
 
-                <!-- organization id -->
+                <!-- organization -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="project_role_id">University</label>
-                    <select class="form-control select2" id="organization_id" name="organization_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check Education Organization --}}
-                      @if(count($data['education']['organization']) > 0)
-
-                        {{-- Get Education Organization Data --}}
-                        @foreach($data['education']['organization'] as $key=>$value)
-                        <option value="{{ $value->organization_id }}" {{ (($data['main']->organization_id == $value->organization_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get Education Organization Data --}}
-
-                      @endif
-                      {{-- End Check Education Organization Exist --}}
-
-                    </select>
+                    <label for="organization">University</label>
+                    <input type="text" class="form-control" id="organization" name="organization" value="{{ $data['main']->organization }}">
                   </div>
                 </div>
-                <!-- end project role -->
+                <!-- end organization -->
 
               </div>
               <!-- end row 1 -->
@@ -118,7 +103,7 @@
                         </label>
                       </div>
                     </div>
-                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ \Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d') }}" placeholder="">
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):null) }}" placeholder="">
                   </div>
                 </div>
                 <!-- end date end -->
@@ -547,6 +532,32 @@
           }
 
           });
+          });
+
+          /**************************************************************************************
+            Is Current OnGoing
+          **************************************************************************************/
+          $('#is_ongoing').on('click',function(){
+            if($(this).is(':checked')){
+              //If the checkbox is checked, clear the Date End input and disable it
+              $('#date_end').val('').attr('disabled', true);
+            }else{
+              //If the checkbox is unchecked, enable the Date End input
+              $('#date_end').attr('disabled', false);
+            }
+          });
+
+          /**************************************************************************************
+            Date End
+          **************************************************************************************/
+          $('#date_end').on('input',function(){
+            if($(this).val()){
+              // If a date is entered, uncheck the 'Is Lifetime' checkbox
+              $('#is_ongoing').prop('checked', false);
+            }else{
+              // If Date End is cleared, allow 'Is Lifetime' to be checked
+              $('#is_ongoing').prop('checked', true);
+            }
           });
 
           });

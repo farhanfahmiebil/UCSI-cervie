@@ -67,21 +67,21 @@
                 <!-- project role -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="project_role_id">Project Role</label>
-                    <select class="form-control select2" id="project_role_id" name="project_role_id">
+                    <label for="representation_role_id">Project Role</label>
+                    <select class="form-control select2" id="representation_role_id" name="representation_role_id">
                       <option value="">-- Please Select --</option>
 
-                      {{-- Check General Grant Category Exist --}}
-                      @if(count($data['general']['project']['role']) > 0)
+                      {{-- Check General Representation Role Exist --}}
+                      @if(count($data['general']['representation']['role']) > 0)
 
-                        {{-- Get General Grant Category Data --}}
-                        @foreach($data['general']['project']['role'] as $key=>$value)
-                          <option value="{{ $value->project_role_id }}" {{ (($data['main']->project_role_id == $value->project_role_id)?'selected':'') }}>{{ $value->name }}</option>
+                        {{-- Get General Representation Role Data --}}
+                        @foreach($data['general']['representation']['role'] as $key=>$value)
+                          <option value="{{ $value->representation_role_id }}" {{ (($data['main']->representation_role_id == $value->representation_role_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
-                        {{-- End Get General Project Role Data --}}
+                        {{-- End Get General Representation Role Level Data --}}
 
                       @endif
-                      {{-- End Check General Project Role Exist --}}
+                      {{-- End Check General Representation Role Level Exist --}}
 
                     </select>
                   </div>
@@ -118,7 +118,7 @@
                         </label>
                       </div>
                     </div>
-                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ \Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d') }}" placeholder="">
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):null) }}" placeholder="">
                   </div>
                 </div>
                 <!-- end date end -->
@@ -621,6 +621,32 @@
           }
 
           });
+          });
+
+          /**************************************************************************************
+            Is Ongoing
+          **************************************************************************************/
+          $('#is_ongoing').on('click',function(){
+            if($(this).is(':checked')){
+              //If the checkbox is checked, clear the Date End input and disable it
+              $('#date_end').val('').attr('disabled', true);
+            }else{
+              //If the checkbox is unchecked, enable the Date End input
+              $('#date_end').attr('disabled', false);
+            }
+          });
+
+          /**************************************************************************************
+            Date End
+          **************************************************************************************/
+          $('#date_end').on('input',function(){
+            if($(this).val()){
+              // If a date is entered, uncheck the 'Is Ongoing' checkbox
+              $('#is_ongoing').prop('checked', false);
+            }else{
+              // If Date End is cleared, allow 'Is Ongoing' to be checked
+              $('#is_ongoing').prop('checked', true);
+            }
           });
 
           });

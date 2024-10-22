@@ -21,8 +21,7 @@
 
       <!-- account profile name -->
       <div class="col mt-4">
-        <h6>{{-- $data['employee']['position']->position --}}</h6>
-        <h4 class="m-0">{{ $data['main']['data']->full_name }}</h4>
+        <h4 class="m-0">{{ $data['employee']['profile']->full_name }}</h4>
       </div>
       <!-- end account profile name -->
 
