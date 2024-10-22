@@ -27,6 +27,7 @@ use App\Models\UCSI_V2_Education\MSSQL\View\Status AS StatusView;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherGrant AS CervieResearcherGrantProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTeamMember AS CervieResearcherTeamMemberProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -85,6 +86,7 @@ class IndexController extends Controller{
     $this->hyperlink['page']['create'] = $this->route['name'].'create';
 		$this->hyperlink['page']['list'] = $this->route['name'].'list';
     $this->hyperlink['page']['delete']['main'] = $this->route['name'].'delete';
+    $this->hyperlink['page']['delete']['team']['member'] = $this->route['name'].'team_member.delete';
     $this->hyperlink['page']['delete']['evidence'] = $this->route['name'].'evidence.delete';
     $this->hyperlink['page']['view'] = $this->route['name'].'view';
     $this->hyperlink['page']['update'] = $this->route['name'].'update';
@@ -192,6 +194,23 @@ class IndexController extends Controller{
         'name'=>' Control',
       ]
     ];
+
+    //Defined Column
+    $data['table']['column']['cervie']['researcher']['team']['member'] = [
+      0=>[
+        'icon'=>'<i class="mdi mdi-numeric"></i>',
+        'name'=>'No',
+      ],
+      1=>[
+        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'name'=>' Member',
+      ],
+      3=>[
+        'icon'=>'<i class="mdi mdi-settings"></i>',
+        'name'=>' Control',
+      ]
+    ];
+
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -308,7 +327,7 @@ class IndexController extends Controller{
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'representation_role_id'=>($request->has('representation_role_id')?$request->representation_role_id:null),
+              'representation_role_id'=>($request->has('project_representation_role_id')?$request->project_representation_role_id:null),
               'status_id'=>($request->has('status_id')?$request->status_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
@@ -387,6 +406,36 @@ class IndexController extends Controller{
 
         }
 
+        //If Files Exist
+       if($request->has('team_member_name')){
+
+         //Get File Loop
+         foreach($request->team_member_name as $key=>$value){
+
+           //Set Model Evidence
+           $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+           //Create Evidence
+           $result['team']['member']['create'] = $model['cervie']['researcher']['team']['member']->createRecord(
+             [
+               'column'=>[
+                 'employee_id'=>Auth::id(),
+                 'name'=>$value,
+                 'representation_role_id'=>$request->representation_role_id[$key],
+                 'table_name'=>'cervie_researcher_grant',
+                 'table_id'=>$result['main']['create']->last_insert_id,
+                 'remark'=>(($request->remark)?$request->remark:null),
+                 'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                 'created_by'=>Auth::id(),
+               ]
+             ]
+           );
+
+         }
+
+       }
+
+
       break;
 
       //Default
@@ -457,45 +506,80 @@ class IndexController extends Controller{
       );
 
 
-      // Calculate Progress for Ongoing Grants
+      // // Calculate Progress for Ongoing Grants
+      // $data['main']['cervie']['researcher']['ongoing'] = [];
+      // foreach ($ongoingGrants as $grant) {
+      //     $startDate = Carbon::parse($grant->date_start);
+      //     $endDate = Carbon::parse($grant->date_end);
+      //     $currentDate = Carbon::now();
+      //
+      //     // Calculate total duration
+      //     $totalDays = $endDate->diffInDays($startDate);
+      //
+      //     // Calculate days passed since the start date
+      //     $daysPassed = max(0, $currentDate->diffInDays($startDate));
+      //
+      //     // Initialize progress percentage
+      //     $progressPercentage = 0;
+      //
+      //     if ($currentDate < $startDate) {
+      //         // Before start date: 0%
+      //         $progressPercentage = 0;
+      //     } elseif ($currentDate >= $startDate && $currentDate <= $endDate) {
+      //         // Between start and end date: calculate progress
+      //         $progressPercentage = ($daysPassed / $totalDays) * 100;
+      //     } else {
+      //         // After end date: 100%
+      //         $progressPercentage = 100;
+      //     }
+      //
+      //     // Ensure progress does not go below 0 or above 100
+      //     $progressPercentage = max(0, min(100, round($progressPercentage)));
+      //
+      //     // Store grant progress data
+      //     $data['main']['cervie']['researcher']['ongoing'][] = [
+      //         'grant_id'=>$grant->grant_id,
+      //         'grant_title'=>$grant->title,
+      //         'progress'=>$progressPercentage,
+      //         'date_start'=>$grant->date_start,
+      //         'date_end'=>$grant->date_end,
+      //     ];
+      // }
+
       $data['main']['cervie']['researcher']['ongoing'] = [];
-      foreach ($ongoingGrants as $grant) {
-          $startDate = Carbon::parse($grant->date_start);
-          $endDate = Carbon::parse($grant->date_end);
-          $currentDate = Carbon::now();
+foreach ($ongoingGrants as $grant) {
+    $startDate = Carbon::parse($grant->date_start);
+    $currentDate = Carbon::now();
 
-          // Calculate total duration
-          $totalDays = $endDate->diffInDays($startDate);
+    // Initialize progress percentage
+    $progressPercentage = 0;
 
-          // Calculate days passed since the start date
-          $daysPassed = max(0, $currentDate->diffInDays($startDate));
+    if ($currentDate < $startDate) {
+        // Before start date: 0%
+        $progressPercentage = 0;
+    } else {
+        // After start date: calculate progress
+        // Assume a total duration (for example, 1 year or 365 days)
+        $totalDays = 365; // You can adjust this based on your requirements
 
-          // Initialize progress percentage
-          $progressPercentage = 0;
+        // Calculate days passed since the start date
+        $daysPassed = $currentDate->diffInDays($startDate);
 
-          if ($currentDate < $startDate) {
-              // Before start date: 0%
-              $progressPercentage = 0;
-          } elseif ($currentDate >= $startDate && $currentDate <= $endDate) {
-              // Between start and end date: calculate progress
-              $progressPercentage = ($daysPassed / $totalDays) * 100;
-          } else {
-              // After end date: 100%
-              $progressPercentage = 100;
-          }
+        // Calculate progress as a percentage of total duration
+        $progressPercentage = ($daysPassed / $totalDays) * 100;
 
-          // Ensure progress does not go below 0 or above 100
-          $progressPercentage = max(0, min(100, round($progressPercentage)));
+        // Ensure progress does not go below 0 or above 100
+        $progressPercentage = max(0, min(100, round($progressPercentage)));
+    }
 
-          // Store grant progress data
-          $data['main']['cervie']['researcher']['ongoing'][] = [
-              'grant_id'=>$grant->grant_id,
-              'grant_title'=>$grant->title,
-              'progress'=>$progressPercentage,
-              'date_start'=>$grant->date_start,
-              'date_end'=>$grant->date_end,
-          ];
-      }
+    // Store grant progress data
+    $data['main']['cervie']['researcher']['ongoing'][] = [
+        'grant_id' => $grant->grant_id,
+        'grant_title' => $grant->title,
+        'progress' => $progressPercentage,
+        'date_start' => $grant->date_start,
+    ];
+}
 
       // Get Form Token
       $form_token = $this->encrypt_token_form;
@@ -787,22 +871,59 @@ class IndexController extends Controller{
       ]
     );
 
-    //Defined Column
-    $data['table']['column']['cervie']['researcher']['evidence'] = [
-      0=>[
-        'icon'=>'<i class="mdi mdi-numeric"></i>',
-        'name'=>'No',
-      ],
-      1=>[
-        'class'=>'col-8',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
-        'name'=>' File',
-      ],
-      2=>[
-        'icon'=>'<i class="mdi mdi-settings"></i>',
-        'name'=>' Control',
-      ]
-    ];
+    //Set Model
+     $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+     //Read Evidence
+     $data['team_member'] = $model['cervie']['researcher']['team']['member']->readRecordByResearcherTable(
+       [
+         'column'=>[
+           'employee_id'=>Auth::id(),
+           'table_name'=>'cervie_researcher_grant',
+           'table_id'=>$request->id
+         ]
+       ]
+     );
+
+     //Defined Column
+     $data['table']['column']['cervie']['researcher']['evidence'] = [
+       0=>[
+         'icon'=>'<i class="mdi mdi-numeric"></i>',
+         'name'=>'No',
+       ],
+       1=>[
+         'class'=>'col-8',
+         'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+         'name'=>' File',
+       ],
+       2=>[
+         'icon'=>'<i class="mdi mdi-settings"></i>',
+         'name'=>' Control',
+       ]
+     ];
+
+     //Defined Column
+     $data['table']['column']['cervie']['researcher']['team']['member'] = [
+       0=>[
+         'icon'=>'<i class="mdi mdi-numeric"></i>',
+         'name'=>'No',
+       ],
+       1=>[
+         'class'=>'col-4',
+         'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+         'name'=>' Name',
+       ],
+       2=>[
+         'class'=>'col-4',
+         'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+         'name'=>' Role',
+       ],
+       3=>[
+         'icon'=>'<i class="mdi mdi-settings"></i>',
+         'name'=>' Control',
+       ]
+     ];
+
 
     //Set Asset
     $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/grant/'.$request->id.'/';
@@ -853,7 +974,7 @@ class IndexController extends Controller{
             'column'=>[
               'grant_id'=>$request->id,
               'employee_id'=>Auth::id(),
-              'representation_role_id'=>($request->has('representation_role_id')?$request->representation_role_id:null),
+              'representation_role_id'=>($request->has('project_representation_role_id')?$request->project_representation_role_id:null),
               'status_id'=>($request->has('status_id')?$request->status_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
@@ -948,6 +1069,36 @@ class IndexController extends Controller{
           }
 
         }
+
+        //If Files Exist
+        if($request->has('team_member_name')){
+
+          //Get File Loop
+          foreach($request->team_member_name as $key=>$value){
+
+            //Set Model Evidence
+            $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+            //Create Evidence
+            $result['team']['member']['create'] = $model['cervie']['researcher']['team']['member']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'name'=>$value,
+                  'representation_role_id'=>$request->representation_role_id[$key],
+                  'table_name'=>'cervie_researcher_grant',
+                  'table_id'=>$request->id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
+        }
+
 
       break;
 

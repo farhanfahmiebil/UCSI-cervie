@@ -30,28 +30,53 @@
                   </thead>
                   <tbody>
                     @foreach ($data['main']['cervie']['researcher']['ongoing'] as $grant)
-                    <tr>
-                        <td>{{ $grant['grant_title'] }}</td>
-                        <td class="col-md-8">
-                            <div class="progress" style="height: 30px;">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                     role="progressbar"
-                                     style="width: {{ $grant['progress'] }}%;"
-                                     aria-valuenow="{{ $grant['progress'] }}"
-                                     aria-valuemin="0"
-                                     aria-valuemax="100"
-                                     data-bs-toggle="tooltip"
-                                     data-bs-placement="top"
-                                     title="Progress: {{ $grant['progress'] }}%<br>Start Date: {{ \Carbon\Carbon::parse($grant['date_start'])->format('Y-m-d') }}"
-                                     data-bs-html="true">
-                                </div>
+                                   <tr>
+                                     <td>{{ $grant['grant_title'] }}</td>
+                                     <td class="col-md-8">
+                                       <div class="progress" style="height: 30px;">
+                                         <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                              role="progressbar"
+                                              style="width: {{ $grant['progress'] }}%;"
+                                              aria-valuenow="{{ $grant['progress'] }}"
+                                              aria-valuemin="0"
+                                              aria-valuemax="100"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              title="Progress: {{ $grant['progress'] }}%<br>Start Date: {{ \Carbon\Carbon::parse($grant['date_start'])->format('Y-m-d') }}<br>End Date: {{ \Carbon\Carbon::parse($grant['date_end'])->format('Y-m-d') }}"
+                                              data-bs-html="true">
+                                         </div>
+                                       </div>
+                                     </td>
+                                     <td>{{ $grant['progress'] }}%</td>
+                                     <!-- <td>{{ \Carbon\Carbon::parse($grant['date_start'])->format('d M Y') }}</td>
+                                     <td>{{ \Carbon\Carbon::parse($grant['date_end'])->format('d M Y') }}</td> -->
+                                   </tr>
+                                 @endforeach
+
+                    <!-- <div class="container mt-5">
+                      @foreach ($data['main']['cervie']['researcher']['ongoing'] as $grant)
+                        <div class="mb-3">
+                          <div class="d-flex justify-content-between mb-1">
+                            <span>{{ $grant['grant_title'] }}</span>
+                            <span>{{ $grant['progress'] }}%</span>
+                          </div>
+                          <div class="progress" style="height: 30px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                 role="progressbar"
+                                 style="width: 0%;"
+                                 aria-valuenow="{{ $grant['progress'] }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"
+                                 data-bs-toggle="tooltip"
+                                 data-bs-placement="top"
+                                 title="Progress: {{ $grant['progress'] }}%<br>Start Date: {{ \Carbon\Carbon::parse($grant['date_start'])->format('Y-m-d') }}<br>End Date: {{ \Carbon\Carbon::parse($grant['date_end'])->format('Y-m-d') }}"
+                                 data-bs-html="true">
                             </div>
-                        </td>
-                        <td>{{ $grant['progress'] }}%</td>
-                        <!-- Optionally display start date -->
-                        <td>{{ \Carbon\Carbon::parse($grant['date_start'])->format('d M Y') }}</td>
-                    </tr>
-                    @endforeach
+                          </div>
+                        </div>
+                      @endforeach
+
+                    </div> -->
 
                   </tbody>
                 </table>

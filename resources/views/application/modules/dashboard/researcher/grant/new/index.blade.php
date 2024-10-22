@@ -67,8 +67,8 @@
                 <!-- project role -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_role_id">Project Role</label>
-                    <select class="form-control select2" id="representation_role_id" name="representation_role_id">
+                    <label for="project_representation_role_id">Project Role</label>
+                    <select class="form-control select2" id="project_representation_role_id" name="project_representation_role_id">
                       <option value="">-- Please Select --</option>
 
                       {{-- Check General Representation Role Exist --}}
