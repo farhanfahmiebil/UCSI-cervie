@@ -55,7 +55,7 @@
             <div class="card-body">
 
               <!-- card title -->
-              <h4 class="card-title">Patent Information</h4>
+              <h4 class="card-title">Commercialization Information</h4>
               <!-- end card title -->
 
               <!-- error -->
@@ -73,95 +73,103 @@
               <!-- row 1 -->
               <div class="row">
 
-                <!-- patent title -->
+                <!-- title -->
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label for="patent_title">Patent Title</label>
-                    <input type="text" class="form-control" id="patent_title" name="patent_title" value="{{ $data['main']->patent_title }}" placeholder="">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="commercialization_title" name="commercialization_title" value="{{ $data['main']->commercialization_title }}" placeholder="">
                   </div>
                 </div>
-                <!-- end patent title -->
+                <!-- end title -->
 
               </div>
               <!-- end row 1 -->
 
-              <!-- row 2-->
+              <!-- row 2 -->
               <div class="row">
-
-                <!-- patent no -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="patent_no">Patent No.</label>
-                    <input type="text" class="form-control" id="patent_no" name="patent_no" value="{{ $data['main']->patent_no }}" placeholder="">
-                  </div>
-                </div>
-                <!-- end patent no -->
-
-                <!-- field invention -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="patent_field_invention_category_id">Field Invention</label>
-                    <select class="form-control select2" id="patent_field_invention_category_id" name="patent_field_invention_category_id">
-                      <option value="">--Please Select--</option>
-                      {{-- Check General Patent Field Invention Category Exist --}}
-                      @if(count($data['general']['patent']['field']['invention']['category'])>0)
-
-                        {{-- Get General Patent Field Invention Category Data --}}
-                        @foreach($data['general']['patent']['field']['invention']['category'] as $key=>$value)
-                          <option value="{{ $value->patent_field_invention_category_id }}" {{ (($data['main']->patent_field_invention_category_id == $value->patent_field_invention_category_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Patent Field Invention Category Data --}}
-
-                      @endif
-                      {{-- End Check General Patent Field Invention Category Exist --}}
-                    </select>
-                  </div>
-                </div>
-                <!-- end field invention -->
-
-              </div>
-              <!-- end row 2 -->
-
-              <!-- row 3 -->
-              <div id="group_patent_field_invention_category_other" class="row">
-
-                <!-- patent field invention category other -->
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="patent_field_invention_category_other">Other - Field Invention (Please State)</label>
-                    <input type="text" class="form-control" id="patent_field_invention_category_other" name="patent_field_invention_category_other" value="{{ $data['main']->patent_field_invention_category_other }}" placeholder="">
-                  </div>
-                </div>
-                <!-- end patent field invention category other -->
-
-              </div>
-              <!-- end row 3 -->
-
-              <!-- row 4 -->
-              <div class="row">
-
-                <!-- date filing -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="date_filing">Date Filing</label>
-                    <input type="date" class="form-control" id="date_filing" name="date_filing" value="{{ \Carbon\Carbon::parse($data['main']->date_filing)->format('Y-m-d') }}" placeholder="">
-                  </div>
-                </div>
-                <!-- end date filing -->
 
                 <!-- date approval -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_approval">Date Approval</label>
+                    <label for="date_start">Date Approval</label>
                     <input type="date" class="form-control" id="date_approval" name="date_approval" value="{{ \Carbon\Carbon::parse($data['main']->date_approval)->format('Y-m-d') }}" placeholder="">
                   </div>
                 </div>
                 <!-- end date approval -->
 
-              </div>
-              <!-- end row 4 -->
+                <!-- date filing -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="date_end">Date Filing</label>
+                    <input type="date" class="form-control" id="date_filing" name="date_filing" value="{{ \Carbon\Carbon::parse($data['main']->date_filing)->format('Y-m-d') }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end date filing -->
 
-              <!-- row 5 -->
+              </div>
+              <!-- end row 2 -->
+
+              <!-- row 3 -->
+              <div class="row">
+
+                <!-- representation category -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="representation_category_id">Commercialization Level</label>
+                    <select class="form-control select2" id="representation_category_id" name="representation_category_id">
+                      <option value="">--Please Select--</option>
+                      {{-- Check General Representation Category Exist --}}
+                      @if(count($data['general']['representation']['category'])>0)
+
+                        {{-- Get General Representation Category Data --}}
+                        @foreach($data['general']['representation']['category'] as $key=>$value)
+                        <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
+                        @endforeach
+                        {{-- End Get General Representation Category Data --}}
+
+                      @endif
+                      {{-- End Check General Representation Category Exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end representation category -->
+
+                <!-- Country -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="country">Country</label>
+                    <select class="form-control select2" name="country[]" multiple>
+                      <option value="">--Please Select--</option>
+
+                      {{-- Check General Country Exist --}}
+                      @if(count($data['general']['country']) > 0)
+
+                          @php
+                            // Explode Country from the main data (comma-separated string)
+                            $selected_country = explode(',',$data['main']->country);
+                          @endphp
+
+                          {{-- Get General Country Data --}}
+                          @foreach($data['general']['country'] as $key=>$value)
+                            <option value="{{ $value->country_id }}"
+                              {{ in_array($value->country_id,$selected_country) ? 'selected' : '' }}>
+                              {{ $value->country }}
+                            </option>
+                          @endforeach
+                          {{-- End Get General Country Data --}}
+
+                      @endif
+                      {{-- End Check General Country Exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end Country -->
+
+
+              </div>
+              <!-- end row 3 -->
+
+              <!-- row 4 -->
               <div class="row">
 
                 <!-- currency code -->
@@ -175,7 +183,7 @@
 
                         {{-- Get General Currency Code Data --}}
                         @foreach($data['general']['currency']['code'] as $key=>$value)
-                          <option value="{{ $value->currency_code_id }}" {{ (($data['main']->currency_code_id == $value->currency_code_id)?'selected':'') }}>({{ $value->code }}) {{ $value->name }}</option>
+                        <option value="{{ $value->currency_code_id }}" {{ (($data['main']->currency_code_id == $value->currency_code_id)?'selected':'') }}>{{ $value->name }}</option>
                         @endforeach
                         {{-- End Get General Currency Code Data --}}
 
@@ -186,77 +194,43 @@
                 </div>
                 <!-- end currency code -->
 
-                <!-- patent amount -->
+                <!-- Amount 1 -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="amount">Patent Amount</label>
-                    <input type="text" class="form-control" id="amount" name="amount" value="{{ $data['main']->amount }}" placeholder="">
+                    <label for="amount_1">Amount 1</label>
+                    <input type="text" class="form-control" id="amount_1" name="amount_1" value="{{ $data['main']->amount_1 }}" placeholder="">
                   </div>
                 </div>
-                <!-- end patent amount -->
+                <!-- end Amount 1 -->
+
+              </div>
+              <!-- end row 4 -->
+
+              <!-- row 5 -->
+              <div class="row">
+
+                <!-- amount 2 -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="amount_2">Amount 2</label>
+                    <input type="text" class="form-control" id="amount_2" name="amount_2" value="{{ $data['main']->amount_2 }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end amount 2 -->
+
+                <!-- amount 3 -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="amount_3">Amount 3</label>
+                    <input type="text" class="form-control" id="amount_3" name="amount_3" value="{{ $data['main']->amount_3 }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end amount 3 -->
 
               </div>
               <!-- end row 5 -->
 
               <!-- row 6 -->
-              <div class="row">
-
-                <!-- representation category -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="representation_category_id">Patent Level</label>
-                    <select class="form-control select2" id="representation_category_id" name="representation_category_id">
-                      <option value="">--Please Select--</option>
-                      {{-- Check General Representation Category Exist --}}
-                      @if(count($data['general']['representation']['category'])>0)
-
-                        {{-- Get General Representation Category Data --}}
-                        @foreach($data['general']['representation']['category'] as $key=>$value)
-                          <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Representation Category Data --}}
-
-                      @endif
-                      {{-- End Check General Representation Category Exist --}}
-                    </select>
-                  </div>
-                </div>
-                <!-- end representation category -->
-
-                <!-- country -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="country_id">Country</label>
-                    <select class="form-control select2" id="country_id" name="country_id[]">
-                      <option value="">--Please Select--</option>
-                      {{-- Check if Country exist --}}
-                      @if(count($data['general']['country']) > 0)
-
-                        @php
-                          // Get old values for Country (array) if they exist
-                          $selected_sdg = old('country_id', []);
-                        @endphp
-
-                        {{-- Iterate through available Country --}}
-                        @foreach($data['general']['country'] as $key=>$value)
-                          <option value="{{ $value->country_id }}"
-                            {{-- Check if this value was previously selected --}}
-                            {{ in_array($value->country_id,$selected_sdg) ? 'selected' : '' }}>
-                            {{ $value->country }}
-                          </option>
-                        @endforeach
-
-                      @endif
-                    </select>
-
-                  </div>
-                </div>
-                <!-- end country -->
-
-              </div>
-              <!-- end row 6 -->
-
-              <!-- row 7 -->
               <div class="row">
 
                 <!-- currency code -->
@@ -266,11 +240,11 @@
                     <select class="form-control select2" name="status_id">
                       <option value="">--Please Select--</option>
                       {{-- Check General Status Exist --}}
-                      @if(count($data['general']['status'])>0)
+                      @if(count($data['education']['status'])>0)
 
                         {{-- Get General Status Data --}}
-                        @foreach($data['general']['status'] as $key=>$value)
-                          <option value="{{ $value->status_id }}" {{ (($data['main']->status_id == $value->status_id)?'selected':'') }}>{{ ucwords($value->status_name) }}</option>
+                        @foreach($data['education']['status'] as $key=>$value)
+                        <option value="{{ $value->status_id }}" {{ (($data['main']->status_id == $value->status_id)?'selected':'') }}>{{ ucwords($value->status_name) }}</option>
                         @endforeach
                         {{-- End Get General Status Data --}}
 
@@ -282,7 +256,7 @@
                 <!-- end currency code -->
 
               </div>
-              <!-- end row 7 -->
+              <!-- end row 6 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)
@@ -382,7 +356,7 @@
                                 <!-- end hyperlink -->
 
                                 <!-- remove file -->
-                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->patent_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->commercialization_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                                 </a>
                                 <!-- end remove file -->
@@ -536,7 +510,7 @@
 
                 <div class="col-md-12">
                   <a href="{{ route($hyperlink['page']['list']) }}" class="btn btn-light"><i class="mdi mdi-arrow-left"></i>Back</a>
-                  <input type="hidden" id="id" name="id" value="{{ $data['main']->patent_id }}">
+                  <input type="hidden" id="id" name="id" value="{{ $data['main']->commercialization_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>

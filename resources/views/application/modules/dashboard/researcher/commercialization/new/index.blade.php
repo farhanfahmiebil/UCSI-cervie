@@ -22,7 +22,7 @@
             <div class="card-body">
 
               <!-- card title -->
-              <h4 class="card-title">Consultantcies Information</h4>
+              <h4 class="card-title">Commercialization Information</h4>
               <!-- end card title -->
 
               <!-- error -->
@@ -105,7 +105,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="country_id">Country</label>
-                    <select class="form-control select2" id="country_id" name="country_id[]" multiple>
+                    <select class="form-control select2" id="country" name="country[]" multiple>
                       <option value="">--Please Select--</option>
                       {{-- Check if Country exist --}}
                       @if(count($data['general']['country']) > 0)

@@ -17,14 +17,14 @@ use App\Http\Controllers\Controller;
 
 //Model View
 use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
-use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherAward AS CervieResearcherAwardView;
+use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherCommercialization AS CervieResearcherCommercializationView;
 use App\Models\UCSI_V2_General\MSSQL\View\CurrencyCode AS CurrencyCodeView;
 use App\Models\UCSI_V2_General\MSSQL\View\Country AS CountryView;
 use App\Models\UCSI_V2_Education\MSSQL\View\Status AS StatusView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
-use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherAward AS CervieResearcherAwardProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherCommercialization AS CervieResearcherCommercializationProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 
 //Get Request
@@ -48,7 +48,7 @@ class IndexController extends Controller{
   //Path Header
 	protected $header = [
 		'application'=>'Dashboard',
-    'category'=>'Award',
+    'category'=>'commercialization',
 		'module'=>'',
 		'module_sub'=>'',
     'item'=>'',
@@ -116,10 +116,10 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
-    //Set Model General Award Type
+    //Set Model General commercialization Type
     $model['general']['representation']['category'] = new RepresentationCategoryView();
 
-    //Get General Award Type
+    //Get General commercialization Type
     $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
       [
         'column'=>[
@@ -195,20 +195,33 @@ class IndexController extends Controller{
 
     //Define Validation Rules
     $rules = [
+      'commercialization_title'=>['required'],
+      'status_id'=>['required'],
       'representation_category_id'=>['required'],
-      'conferring_body'=>['required'],
-      'title'=>['required'],
-      'date_award' => ['required','date'],
+      'country'=>['required'],
+      'currency_code_id'=>['required'],
+      'amount_1'=>['required'],
+      'amount_2'=>['required'],
+      'amount_3'=>['required'],
+      'date_approval' => ['required','date'],
+      'date_filing' => ['required','date'],
       'document.*'=>['required','mimes:pdf','max:3072'], // Validate each file in the array
       'document_name.*'=>['required'], // Validate that each file has an associated name
     ];
 
     //Custom Validation Messages
     $messages = [
-      'representation_category_id.required'=>'Award Type is required',
-      'conferring_body.required'=>'Conferring Body is required',
-      'title.required'=>'Award Title is required',
-      'date_award.required'=>'Date Award is Required',
+      'commercialization_title.required'=>'Title is required',
+      'status_id.required'=>'Status is required',
+      'representation_category_id.required'=>'Commercialization Level is required',
+      'country.required'=>'Country is Required',
+      'currency_code_id.required'=>'Currency Code is Required',
+      'amount_1.required'=>'Amount 1 is Required',
+      'amount_2.required'=>'Amount 2 is Required',
+      'amount_3.required'=>'Amount 3 is Required',
+      'date_approval.required'=>'Date Approval is Required',
+      'date_filing.required'=>'Date Filing is Required',
+
     ];
 
     //If Document Name Exist
@@ -246,7 +259,7 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Get Award Type
+    //Get commercialization Type
     $this->getValidateData($request);
 
     //If Form Token Exist
@@ -258,18 +271,28 @@ class IndexController extends Controller{
       //Create
       case 'create':
 
+      //Convert array to string with commas separating the values
+      $country = implode(',',$request->country);
+
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['commercialization'] = new CervieResearcherCommercializationProcedure();
 
         //Create Main
-        $result['main']['create'] = $model['cervie']['researcher']['award']->createRecord(
+        $result['main']['create'] = $model['cervie']['researcher']['commercialization']->createRecord(
           [
             'column'=>[
               'employee_id'=>Auth::id(),
+              'commercialization_title'=>($request->has('commercialization_title')?$request->commercialization_title:null),
               'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
-              'conferring_body'=>($request->has('conferring_body')?$request->conferring_body:null),
-              'title'=>($request->has('title')?$request->title:null),
-              'date_award'=>($request->has('date_award')?$request->date_award:null),
+              'date_approval'=>($request->has('date_approval')?$request->date_approval:null),
+              'date_filing'=>($request->has('date_filing')?$request->date_filing:null),
+              'status_id'=>($request->has('status_id')?$request->status_id:null),
+              'country'=>$country,
+              'amount_1'=>($request->has('amount_1')?$request->amount_1:null),
+              'amount_2'=>($request->has('amount_2')?$request->amount_2:null),
+              'amount_3'=>($request->has('amount_3')?$request->amount_3:null),
+              'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -293,7 +316,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set Path Folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$result['main']['create']->last_insert_id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/commercialization/'.$result['main']['create']->last_insert_id.'/';
 
             //Set Modified File Name Without Extension (Using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($key+1);
@@ -325,7 +348,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_award',
+                  'table_name'=>'cervie_researcher_commercialization',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -353,7 +376,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Award Added');
+                     ->with('message','Commercialization Added');
 
   }
 
@@ -389,15 +412,14 @@ class IndexController extends Controller{
     //Get General Representation Category Select Box
     $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox();
 
+    //Set Model commercialization
+    $model['cervie']['researcher']['commercialization'] = new CervieResearcherCommercializationView();
 
-    //Set Model Award
-    $model['cervie']['researcher']['award'] = new CervieResearcherAwardView();
-
-    //Get General Award Type
+    //Get General commercialization Type
     foreach($data['general']['representation']['category'] as $key=>$value){
 
       //Set Main Data Researcher Publication
-      $data['main']['cervie']['researcher']['award'][$value->representation_category_id] = $model['cervie']['researcher']['award']->getList(
+      $data['main']['cervie']['researcher']['commercialization'][$value->representation_category_id] = $model['cervie']['researcher']['commercialization']->getList(
         [
           'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
           'column'=>[
@@ -408,16 +430,14 @@ class IndexController extends Controller{
       );
 
       //Set Table Researcher Publication
-      $data['table']['column']['cervie']['researcher']['award'][$value->representation_category_id] = $this->getDataTable(
+      $data['table']['column']['cervie']['researcher']['commercialization'][$value->representation_category_id] = $this->getDataTable(
         [
           'category'=>$value->representation_category_id
         ]
       );
 
     }
-    // dd($data['main']['cervie']['researcher']['professional']['membership']);
-// dd($data['main']['cervie']['researcher']['award']);
-    // dd(count($data['main']['cervie']['researcher']['position']));
+
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
 
@@ -447,20 +467,20 @@ class IndexController extends Controller{
       case 'delete':
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['commercialization'] = new CervieResearcherCommercializationProcedure();
 
         //Delete Main
-        $result['main']['delete'] = $model['cervie']['researcher']['award']->deleteRecord(
+        $result['main']['delete'] = $model['cervie']['researcher']['commercialization']->deleteRecord(
           [
             'column'=>[
-              'award_id'=>$request->id,
+              'commercialization_id'=>$request->id,
               'employee_id'=>Auth::id()
             ]
           ]
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/commercialization/'.$request->id.'/';
 
         //Check If The Folder Already Exists In Storage
         $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
@@ -476,21 +496,22 @@ class IndexController extends Controller{
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'table_name'=>'cervie_researcher_award',
+              'table_name'=>'cervie_researcher_commercialization',
               'table_id'=>$request->id
             ]
           ]
         );
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['commercialization'] = new CervieResearcherCommercializationProcedure();
 
         //Delete Evidence
-        $data['main']['verification'] = $model['cervie']['researcher']['award']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['commercialization']->needVerification(
           [
             'column'=>[
-              'award_id'=>$request->id,
+              'commercialization_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -503,7 +524,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Award Deleted');
+                     ->with('message','commercialization Deleted');
 
   }
 
@@ -541,7 +562,7 @@ class IndexController extends Controller{
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$data['evidence']->table_id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/commercialization/'.$data['evidence']->table_id.'/';
 
         //Set Modified File Name Without Extension (Using last_insert_id)
         $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
@@ -569,14 +590,15 @@ class IndexController extends Controller{
         );
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['commercialization'] = new CervieResearcherCommercializationProcedure();
 
         //Set Main Verification
-        $data['main']['verification'] = $model['cervie']['researcher']['award']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['commercialization']->needVerification(
           [
             'column'=>[
-              'award_id'=>$data['evidence']->table_id,
+              'commercialization_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -626,26 +648,51 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_award'
+          'table_control_id'=>'cervie_researcher_commercialization'
         ]
       ]
     );
 
-    //Set Model General Award Type
+    //Set Model General commercialization Type
     $model['general']['representation']['category'] = new RepresentationCategoryView();
 
-    //Get General Award Type
+    //Get General commercialization Type
     $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox();
 
+    //Set Model General Country
+    $model['general']['country'] = new CountryView();
+
+    //Get General Country
+    $data['general']['country'] = $model['general']['country'] ->selectBox();
+
+    //Set Model General Currency Code
+    $model['general']['currency']['code'] = new CurrencyCodeView();
+
+    //Get General Currency Code
+    $data['general']['currency']['code'] = $model['general']['currency']['code'] ->selectBox();
+
+    //Set Model General Status
+    $model['education']['status'] = new StatusView();
+
+    //Get General Status
+    $data['education']['status'] = $model['education']['status'] ->selectBox(
+      [
+        'column'=>[
+          'table'=>'cervie_researcher_commercialization'
+        ]
+      ]
+    );
+
+
     //Set Model
-    $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+    $model['cervie']['researcher']['commercialization'] = new CervieResearcherCommercializationProcedure();
 
     //Read Main
-    $data['main'] = $model['cervie']['researcher']['award']->readRecord(
+    $data['main'] = $model['cervie']['researcher']['commercialization']->readRecord(
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'award_id'=>$request->id
+          'commercialization_id'=>$request->id
         ]
       ]
     );
@@ -658,7 +705,7 @@ class IndexController extends Controller{
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'table_name'=>'cervie_researcher_award',
+          'table_name'=>'cervie_researcher_commercialization',
           'table_id'=>$request->id
         ]
       ]
@@ -682,10 +729,10 @@ class IndexController extends Controller{
     ];
 
     //Set Asset
-    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
+    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/commercialization/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/commercialization/'.$request->id.'/';
 // dd($hyperlink['document'] );
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -715,22 +762,32 @@ class IndexController extends Controller{
       //Create
       case 'update':
 
-        //Get Award Type
+        //Convert array to string with commas separating the values
+        $country = implode(',',$request->country);
+
+        //Get commercialization Type
         $this->getValidateData($request);
 
         //Set Model
-        $model['cervie']['researcher']['award'] = new CervieResearcherAwardProcedure();
+        $model['cervie']['researcher']['commercialization'] = new CervieResearcherCommercializationProcedure();
 
         //Create Main
-        $result['main']['update'] = $model['cervie']['researcher']['award']->updateRecord(
+        $result['main']['update'] = $model['cervie']['researcher']['commercialization']->updateRecord(
           [
             'column'=>[
-              'award_id'=>$request->id,
+              'commercialization_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'commercialization_title'=>($request->has('commercialization_title')?$request->commercialization_title:null),
               'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
-              'conferring_body'=>($request->has('conferring_body')?$request->conferring_body:null),
-              'title'=>($request->has('title')?$request->title:null),
-              'date_award'=>($request->has('date_award')?$request->date_award:null),
+              'date_approval'=>($request->has('date_approval')?$request->date_approval:null),
+              'date_filing'=>($request->has('date_filing')?$request->date_filing:null),
+              'status_id'=>($request->has('status_id')?$request->status_id:null),
+              'country'=>$country,
+              'amount_1'=>($request->has('amount_1')?$request->amount_1:null),
+              'amount_2'=>($request->has('amount_2')?$request->amount_2:null),
+              'amount_3'=>($request->has('amount_3')?$request->amount_3:null),
+              'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -752,7 +809,7 @@ class IndexController extends Controller{
               [
                 'column'=>[
                   'employee_id'=>Auth::id(),
-                  'table_name'=>'cervie_researcher_award',
+                  'table_name'=>'cervie_researcher_commercialization',
                   'table_id'=>$request->id
                 ]
               ]
@@ -771,7 +828,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set path folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/commercialization/'.$request->id.'/';
 
             //Set modified file name without extension (using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($counter+1);
@@ -803,7 +860,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_award',
+                  'table_name'=>'cervie_researcher_commercialization',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -823,7 +880,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Award Saved');
+                     ->with('message','commercialization Saved');
 
   }
 
@@ -843,18 +900,14 @@ class IndexController extends Controller{
         'name'=>' Title',
       ],
       2=>[
-        'icon'=>'<i class="mdi person-supervisor-circle"></i>',
-        'name'=>' Conferring Body',
+        'icon'=>'<i class="mdi mdi-calendar"></i>',
+        'name'=>' Date Commercialization',
       ],
       3=>[
-        'icon'=>'<i class="mdi mdi-certificate"></i>',
-        'name'=>' Date Award',
-      ],
-      4=>[
         'icon'=>'<i class="mdi mdi-shield-check"></i>',
         'name'=>' Verfication',
       ],
-      5=>[
+      4=>[
         'icon'=>'<i class="mdi mdi-settings"></i>',
         'name'=>' Control',
       ]
