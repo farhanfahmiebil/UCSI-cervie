@@ -173,6 +173,8 @@ class Controller extends BaseController{
                 'grant'=>config('routing.application.modules.dashboard.researcher.name').'.grant.list',
                 'linkages'=>config('routing.application.modules.dashboard.researcher.name').'.linkage.list',
                 'postgraduate_supervision'=>config('routing.application.modules.dashboard.researcher.name').'.postgraduate_supervision.list',
+                'community_engagement'=>config('routing.application.modules.dashboard.researcher.name').'.community_engagement.list',
+                'commercialization'=>config('routing.application.modules.dashboard.researcher.name').'.commercialization.list',
 
               ],
               'home'=>config('routing.application.modules.dashboard.employee.name').'.home',

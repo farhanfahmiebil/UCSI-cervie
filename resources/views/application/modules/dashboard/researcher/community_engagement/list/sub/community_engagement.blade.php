@@ -11,7 +11,7 @@
       <div class="d-flex align-items-center justify-content-between">
 
         <!-- title -->
-				<h4 class="card-title mb-2">Community Engagment</h4>
+				<h4 class="card-title mb-2">Community Engagement</h4>
         <!-- end title -->
 
         <!-- dropdown -->

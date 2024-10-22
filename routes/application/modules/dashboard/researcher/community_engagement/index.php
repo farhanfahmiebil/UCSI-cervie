@@ -36,6 +36,10 @@ Route::prefix('community/engagement')->group(function(){
   **************************************************************************************/
   Route::get('/evidence/delete', config('routing.application.modules.dashboard.researcher.controller') . '\CommunityEngagement\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name') . '.community_engagement.evidence.delete');
 
+  /*  Delete Team Member
+  **************************************************************************************/
+  Route::get('/team/member/delete', config('routing.application.modules.dashboard.researcher.controller').'\CommunityEngagement\IndexController@deleteTeamMember')->name(config('routing.application.modules.dashboard.researcher.name').'.community_engagement.team_member.delete');
+
   /*  View
   **************************************************************************************/
   Route::get('/view/{id}', config('routing.application.modules.dashboard.researcher.controller') . '\CommunityEngagement\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name') . '.community_engagement.view');

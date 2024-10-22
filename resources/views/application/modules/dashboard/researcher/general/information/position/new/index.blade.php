@@ -257,7 +257,7 @@
                           new_row += '</td>';
                           new_row += '<td>';
                           new_row += '<a href="#" class="btn btn-danger remove-file">';
-                          new_row += '<i class="mdi mdi-trash-can text-white"></i>';
+                          new_row += '<i class="mdi mdi-alpha-x text-white"></i>';
                           new_row += '</a>';
                           new_row += '</td>';
                           new_row += '</tr>';

@@ -488,6 +488,211 @@
               @endif
               {{-- End Evidence Need --}}
 
+              {{-- Team Member Need --}}
+              @if($data['cervie']['researcher']['table']['control']->team_member_need)
+
+              <hr>
+
+              <!-- card title -->
+              <h4 class="card-title">Team Member</h4>
+              <!-- end card title -->
+
+              <!-- row 1 -->
+              <div class="row">
+
+                  <!-- table responsive -->
+                  <div class="table-responsive">
+
+                      <!-- table -->
+                      <table class="table table-bordered" id="team-member-table">
+
+                          <!-- thead -->
+                          <thead>
+                              @php
+                                  // Set Checkbox Status
+                                  $checkbox['status'] = false;
+                              @endphp
+
+                              {{-- Check Table Column Exist --}}
+                              @if(isset($data['table']['column']['cervie']['researcher']['team']['member']) && count($data['table']['column']['cervie']['researcher']['team']['member']) >= 1)
+                                  {{-- Get Table Column Data --}}
+                                  @foreach($data['table']['column']['cervie']['researcher']['team']['member'] as $key => $value)
+                                      {{-- Check if the column is of category 'checkbox' --}}
+                                      @if(isset($value['category']) && $value['category'] == 'checkbox')
+                                          @php
+                                              // Set Checkbox Status
+                                              $checkbox['status'] = true;
+                                          @endphp
+                                          <th>{!! $value['checkbox'] !!}</th>
+                                      @else
+                                          <th class="{{ isset($value['class']) ? $value['class'] : '' }}">
+                                              {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                                              {{ isset($value['name']) ? $value['name'] : '' }}
+                                          </th>
+                                      @endif
+                                  @endforeach
+                              @else
+                                  <th>Column Not Defined</th>
+                              @endif
+                          </thead>
+                          <!-- end thead -->
+
+                          {{-- Check Data Team Members Exist --}}
+                        @if($data['team_member'])
+                        {{-- Get Data Team Members --}}
+                  @foreach($data['team_member'] as $key => $value)
+                      <tr id="{{ $value->team_member_id }}">
+                          <td>{{ ($key + 1) }}</td>
+                          <td>{{ $value->name }}</td>
+                          <td>{{ $value->representation_role_name }}</td>
+                          <td>
+                              @if($key != 0)
+                                  <a href="#" class="btn btn-warning remove-team-member">
+                                      <i class="mdi mdi-alpha-x text-white"></i>
+                                  </a>
+                              @endif
+                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->grant_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                                  <i class="mdi mdi-trash-can"></i>
+                              </a>
+                          </td>
+                      </tr>
+                  @endforeach
+                  {{-- End Get Data Team Members --}}
+                        @else
+                            <tr>
+                                <td class="row-number">1</td>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <label for="team_member_name">Name</label>
+                                        <input type="text" class="form-control" name="team_member_name[]">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="representation_role_id">Role</label>
+                                        <select class="form-control select2" name="representation_role_id[]">
+                                            <option value="">-- Please Select --</option>
+                                            @if(count($data['general']['representation']['role']) > 0)
+                                                @foreach($data['general']['representation']['role'] as $role)
+                                                    <option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        @endif
+                        {{-- End Check Data Team Members Exist --}}
+
+
+
+                      </table>
+                      <!-- end table -->
+
+                      <div class="row text-center pt-3">
+                          <div class="col-12">
+                              <button type="button" class="btn btn-primary add-new-team-member">
+                                  <i class="mdi mdi-plus"></i> Add New Team Member
+                              </button>
+                          </div>
+                      </div>
+
+                  </div>
+                  <!-- end table responsive -->
+
+              </div>
+              <!-- end row 1 -->
+
+              <!-- script for dynamic row numbering and team member operations -->
+              <script type="text/javascript">
+                  $(document).ready(function() {
+                    /* Add New Team Member Row */
+                  $('.add-new-team-member').click(function() {
+                      var new_row = '';
+                      new_row += '<tr>';
+                      new_row += '<td class="row-number"></td>';
+                      new_row += '<td colspan="2">';
+                      new_row += '<div class="form-group">';
+                      new_row += '<label for="team_member_name">Name</label>';
+                      new_row += '<input type="text" class="form-control" name="team_member_name[]">';
+                      new_row += '</div>';
+                      new_row += '<div class="form-group">';
+                      new_row += '<label for="representation_role_id">Role</label>';
+                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
+                      new_row += '<option value="">-- Please Select --</option>';
+                      @if(count($data['general']['representation']['role']) > 0)
+                          @foreach($data['general']['representation']['role'] as $role)
+                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
+                          @endforeach
+                      @endif
+                      new_row += '</select>';
+                      new_row += '</div>';
+                      new_row += '</td>';
+                      new_row += '<td>';
+                      new_row += '<a href="#" class="btn btn-warning remove-team-member">';
+                      new_row += '<i class="mdi-alpha-x text-white"></i>';
+                      new_row += '</a>';
+                      new_row += '<a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['id'=>$data['main']->grant_id,'team_member_id'=>0,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">';
+                      new_row += '<i class="mdi mdi-trash-can"></i>';
+                      new_row += '</a>';
+                      new_row += '</td>';
+                      new_row += '</tr>';
+
+                      $('#team-member-table tbody').append(new_row);
+                      recalculateRowNumbers();
+                      checkTeamMemberCount();
+                      initializeSelect2();
+                  });
+
+                      /* Remove Team Member Row */
+                      $(document).on('click', '.remove-team-member', function(e) {
+                          e.preventDefault();
+                          $(this).closest('tr').remove();
+                          recalculateRowNumbers();
+                          checkTeamMemberCount();
+
+                      });
+
+                      /* Recalculate Row Numbers */
+                      function recalculateRowNumbers() {
+                          $('#team-member-table tbody tr').each(function(index) {
+                              $(this).find('.row-number').text(index + 1);
+                          });
+                      }
+
+                      /* Initialize Select2 */
+                      function initializeSelect2() {
+                          $('.select2').select2({
+                              width: '100%', // Adjust width as needed
+                              placeholder: '-- Please Select --',
+                              allowClear: true
+                          });
+                      }
+
+                      /* Check File Count and Hide/Show Add Button */
+                      function checkTeamMemberCount() {
+                          var team_member_count = $('#team-member-table tbody tr').length;
+                          var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
+
+                          if (team_member_count >= limit) {
+                              $('.add-new-team-member').hide();
+                          } else {
+                              $('.add-new-team-member').show();
+                          }
+                      }
+
+                      // Initial Select2 Initialization
+                      initializeSelect2();
+                      // Initial recalculation in case of pre-existing rows
+                      recalculateRowNumbers();
+                      checkTeamMemberCount();
+
+                  });
+              </script>
+              <!-- end script for dynamic row numbering and team member operations -->
+
+              @endif
+              {{-- End Team Member Need --}}
+
             </div>
             <!-- card body -->
 
@@ -622,6 +827,42 @@
 
           });
           });
+
+          /**************************************************************************************
+          Modal Delete
+          **************************************************************************************/
+          $('[class*="btn-delete-team-member"]').on('click',function(event){
+
+          //Set Parent Row
+          var parent_row = $(this).closest('tr').attr('id');
+
+          //Set Alert
+          Swal.fire({
+          title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+          showDenyButton:true,
+          confirmButtonText:'Yes',
+          denyButtonText:'Cancel',
+          icon:'error'
+          }).then((result) => {
+
+          //If Confirmed
+          if(result.isConfirmed){
+
+            //Redirect
+            window.location.href = $(this).data('href');
+
+          }else
+
+          //If Denied
+          if(result.isDenied){
+
+            //Alert Message
+            Swal.fire('Cancel','','');
+          }
+
+          });
+          });
+
 
           });
           </script>

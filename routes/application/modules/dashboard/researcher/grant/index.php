@@ -36,6 +36,10 @@ Route::prefix('grant')->group(function(){
   **************************************************************************************/
   Route::get('/evidence/delete', config('routing.application.modules.dashboard.researcher.controller').'\Grant\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.researcher.name').'.grant.evidence.delete');
 
+  /*  Delete Team Member
+  **************************************************************************************/
+  Route::get('/team/member/delete', config('routing.application.modules.dashboard.researcher.controller').'\Grant\IndexController@deleteTeamMember')->name(config('routing.application.modules.dashboard.researcher.name').'.grant.team_member.delete');
+
   /*  View
   **************************************************************************************/
   Route::get('/view/{id}', config('routing.application.modules.dashboard.researcher.controller').'\Grant\IndexController@view')->name(config('routing.application.modules.dashboard.researcher.name').'.grant.view');

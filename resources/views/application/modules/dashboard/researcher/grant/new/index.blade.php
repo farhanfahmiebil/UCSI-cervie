@@ -264,7 +264,7 @@
                     <label for="file" class="form-label"><strong>File Upload Must be (.pdf)</strong></label>
 
                     <!-- table -->
-                    <table class="table">
+                    <table class="table" id="evidence-table">
 
                       <!-- thead -->
                       <thead>
@@ -396,7 +396,7 @@
                           new_row += '</td>';
                           new_row += '</tr>';
 
-                      $('table tbody').append(new_row);
+                          $('#evidence-table tbody').append(new_row); // Use the correct ID here
 
                       // Recalculate row numbers and check the file count
                       recalculateRowNumbers();
@@ -450,8 +450,192 @@
               @endif
               {{-- End Evidence Need --}}
 
+              {{-- Team Member Need --}}
+              @if($data['cervie']['researcher']['table']['control']->team_member_need)
+
+              <hr>
+
+              <!-- card title -->
+              <h4 class="card-title">Team Member</h4>
+              <!-- end card title -->
+
+              <!-- row 1 -->
+              <div class="row">
+
+                  <!-- table responsive -->
+                  <div class="table-responsive">
+
+                      <!-- table -->
+                      <table class="table" id="team-member-table">
+
+                          <!-- thead -->
+                          <thead>
+                              @php
+                                  // Set Checkbox Status
+                                  $checkbox['status'] = false;
+                              @endphp
+
+                              {{-- Check Table Column Exist --}}
+                              @if(isset($data['table']['column']['cervie']['researcher']['team']['member']) && count($data['table']['column']['cervie']['researcher']['team']['member']) >= 1)
+                                  {{-- Get Table Column Data --}}
+                                  @foreach($data['table']['column']['cervie']['researcher']['team']['member'] as $key => $value)
+                                      {{-- Check if the column is of category 'checkbox' --}}
+                                      @if(isset($value['category']) && $value['category'] == 'checkbox')
+                                          @php
+                                              // Set Checkbox Status
+                                              $checkbox['status'] = true;
+                                          @endphp
+                                          <td>{!! $value['checkbox'] !!}</td>
+                                      @else
+                                          <td class="{{ isset($value['class']) ? $value['class'] : '' }}">
+                                              {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                                              {{ isset($value['name']) ? $value['name'] : '' }}
+                                          </td>
+                                      @endif
+                                  @endforeach
+                              @else
+                                  <th>Column Not Defined</th>
+                              @endif
+                          </thead>
+                          <!-- end thead -->
+
+                          <!-- tbody -->
+                          <tbody>
+                              <tr>
+                                  <td class="row-number">1</td>
+                                  <td>
+                                      <div class="form-group">
+                                          <label for="team_member_name">Name</label>
+                                          <input type="text" class="form-control" name="team_member_name[]">
+                                      </div>
+                                      <div class="form-group">
+                                          <label for="representation_role_id">Role</label><br>
+                                          <select style="width:100%;" class="form-control select2" name="representation_role_id[]">
+                                              <option value="">-- Please Select --</option>
+                                              {{-- Check General Representation Category Exist --}}
+                                              @if(count($data['general']['representation']['role']) > 0)
+                                                  {{-- Get General Representation Category Data --}}
+                                                  @foreach($data['general']['representation']['role'] as $key=>$value)
+                                                      <option value="{{ $value->representation_role_id }}">{{ $value->name }}</option>
+                                                  @endforeach
+                                              @endif
+                                          </select>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      &nbsp;
+                                  </td>
+                              </tr>
+                          </tbody>
+                          <!-- end tbody -->
+
+                      </table>
+                      <!-- end table -->
+
+                      <div class="row text-center pt-3">
+                          <div class="col-12">
+                              <button type="button" class="btn btn-primary add-new-team-member">Add New Team Member</button>
+                          </div>
+                      </div>
+
+                  </div>
+                  <!-- end table responsive -->
+
+              </div>
+              <!-- end row 1 -->
+
+              <!-- script for dynamic row numbering and team member operations -->
+              <script type="text/javascript">
+                  $(document).ready(function() {
+                    /* Add New Team Member Row */
+                  $('.add-new-team-member').click(function() {
+                      var new_row = '';
+                      new_row += '<tr>';
+                      new_row += '<td class="row-number"></td>';
+                      new_row += '<td>';
+                      new_row += '<div class="form-group">';
+                      new_row += '<label for="team_member_name">Name</label>';
+                      new_row += '<input type="text" class="form-control" name="team_member_name[]">';
+                      new_row += '</div>';
+                      new_row += '<div class="form-group">';
+                      new_row += '<label for="representation_role_id">Role</label>';
+                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
+                      new_row += '<option value="">-- Please Select --</option>';
+                      @if(count($data['general']['representation']['role']) > 0)
+                          @foreach($data['general']['representation']['role'] as $role)
+                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
+                          @endforeach
+                      @endif
+                      new_row += '</select>';
+                      new_row += '</div>';
+                      new_row += '</td>';
+                      new_row += '<td>';
+                      new_row += '<a href="#" class="btn btn-warning remove-team-member">';
+                      new_row += '<i class="mdi-alpha-x text-white"></i>';
+                      new_row += '</a>';
+                      new_row += '</td>';
+                      new_row += '</tr>';
+
+                      $('#team-member-table tbody').append(new_row);
+                      recalculateRowNumbers();
+                      checkTeamMemberCount();
+                      initializeSelect2();
+                  });
+
+                      /* Remove Team Member Row */
+                      $(document).on('click', '.remove-team-member', function(e) {
+                          e.preventDefault();
+                          $(this).closest('tr').remove();
+                          recalculateRowNumbers();
+                          checkTeamMemberCount();
+
+                      });
+
+                      /* Recalculate Row Numbers */
+                      function recalculateRowNumbers() {
+                          $('#team-member-table tbody tr').each(function(index) {
+                              $(this).find('.row-number').text(index + 1);
+                          });
+                      }
+
+                      /* Initialize Select2 */
+                      function initializeSelect2() {
+                          $('.select2').select2({
+                              width: '100%', // Adjust width as needed
+                              placeholder: '-- Please Select --',
+                              allowClear: true
+                          });
+                      }
+
+                      /* Check File Count and Hide/Show Add Button */
+                      function checkTeamMemberCount() {
+                          var team_member_count = $('#team-member-table tbody tr').length;
+                          var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
+
+                          if (team_member_count >= limit) {
+                              $('.add-new-team-member').hide();
+                          } else {
+                              $('.add-new-team-member').show();
+                          }
+                      }
+
+                      // Initial Select2 Initialization
+                      initializeSelect2();
+                      // Initial recalculation in case of pre-existing rows
+                      recalculateRowNumbers();
+                      checkTeamMemberCount();
+
+                  });
+              </script>
+              <!-- end script for dynamic row numbering and team member operations -->
+
+              @endif
+              {{-- End Team Member Need --}}
+
+
             </div>
             <!-- card body -->
+
 
             <!-- card footer -->
             <div class="card-footer">

@@ -242,6 +242,9 @@ class RouteServiceProvider extends ServiceProvider{
                 //Consultancies
                 require base_path($this->path['dashboard']['researcher'].'consultancies/index.php');
 
+                //Consultancies
+                require base_path($this->path['dashboard']['researcher'].'commercialization/index.php');
+
              }); //End Dashboard
 
            }); //End Employee
