@@ -272,7 +272,7 @@
             @endphp
 
             {{-- Get General Sustainable Development Goal Data --}}
-            @foreach($data['general']['sustainable']['development']['goal'] as $key=>value)
+            @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
               <option value="{{ $value->sustainable_development_goal_id }}"
                 {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
                 {{ $value->code }} - {{ $value->name }}

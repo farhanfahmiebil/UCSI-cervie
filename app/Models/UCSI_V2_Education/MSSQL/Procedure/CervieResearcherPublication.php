@@ -43,7 +43,7 @@ class CervieResearcherPublication extends Model{
                                         ?,?,?,?,?,
                                         ?,?,?,?,?,
                                         ?,?,?,?,?,
-                                        ?, @id OUTPUT;
+                                        ?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -71,6 +71,7 @@ class CervieResearcherPublication extends Model{
         $data['column']['chapter_no'],
         $data['column']['sustainable_development_goal'],
         $data['column']['hyperlink'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -170,7 +171,7 @@ class CervieResearcherPublication extends Model{
                                     ?,?,?,?,?,
                                     ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?,?';
+                                    ?,?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -198,6 +199,7 @@ class CervieResearcherPublication extends Model{
         $data['column']['chapter_no'],
         $data['column']['sustainable_development_goal'],
         $data['column']['hyperlink'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -264,12 +266,13 @@ class CervieResearcherPublication extends Model{
     $table = 'update_cervie_researcher_publication_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['publication_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

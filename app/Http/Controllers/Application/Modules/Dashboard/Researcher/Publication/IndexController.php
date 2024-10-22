@@ -435,6 +435,7 @@ class IndexController extends Controller{
               'chapter_no'=>($request->has('chapter_no')?$request->chapter_no:null),
               'sustainable_development_goal'=>$sustainable_development_goal,
               'hyperlink'=>($request->has('hyperlink')?$request->hyperlink:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -665,6 +666,7 @@ class IndexController extends Controller{
             'column'=>[
               'publication_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -751,6 +753,7 @@ class IndexController extends Controller{
             'column'=>[
               'publication_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -828,7 +831,7 @@ class IndexController extends Controller{
 
     //Get General General Sustainable Development Goal
     $data['general']['sustainable']['development']['goal'] = $model['general']['sustainable']['development']['goal']->selectBox();
-
+// dd($data['general']['sustainable']['development']['goal']);
     //Set Model
     $model['cervie']['researcher']['publication'] = new CervieResearcherPublicationProcedure();
 
@@ -944,6 +947,7 @@ class IndexController extends Controller{
               'chapter_no'=>($request->has('chapter_no')?$request->chapter_no:null),
               'sustainable_development_goal'=>$sustainable_development_goal,
               'hyperlink'=>($request->has('hyperlink')?$request->hyperlink:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

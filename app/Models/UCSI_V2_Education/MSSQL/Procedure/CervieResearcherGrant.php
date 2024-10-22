@@ -39,7 +39,7 @@ class CervieResearcherGrant extends Model{
     // Set Query
     $this->query = 'DECLARE @id INT;
                     EXEC ' . $table . ' ?,?,?,?,?,?,?,
-                                        ?,?,?,?,?,?,?, @id OUTPUT;
+                                        ?,?,?,?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -52,9 +52,10 @@ class CervieResearcherGrant extends Model{
         $data['column']['is_ongoing'],
         $data['column']['currency_code_id'],
         $data['column']['quantum'],
-        $data['column']['project_role_id'],
+        $data['column']['representation_role_id'],
         $data['column']['status_id'],
         $data['column']['sustainable_development_goal'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -171,7 +172,8 @@ class CervieResearcherGrant extends Model{
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?,?,?,?,?';
+                                    ?,?,?,?,?,
+                                    ?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -184,9 +186,10 @@ class CervieResearcherGrant extends Model{
         $data['column']['is_ongoing'],
         $data['column']['currency_code_id'],
         $data['column']['quantum'],
-        $data['column']['project_role_id'],
+        $data['column']['representation_role_id'],
         $data['column']['status_id'],
         $data['column']['sustainable_development_goal'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -253,12 +256,13 @@ class CervieResearcherGrant extends Model{
     $table = 'update_cervie_researcher_grant_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['grant_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

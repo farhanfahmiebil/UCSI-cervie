@@ -38,8 +38,8 @@ class CervieResearcherPostGraduateSupervision extends Model{
 
     // Set Query
     $this->query = 'DECLARE @id INT;
-                    EXEC ' . $table . ' ?,?,?,?,?,?,
-                                        ?,?,?,?,?,?,? @id OUTPUT;
+                    EXEC ' . $table . ' ?,?,?,?,?,?,?,
+                                        ?,?,?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -51,9 +51,10 @@ class CervieResearcherPostGraduateSupervision extends Model{
         $data['column']['date_end'],
         $data['column']['is_ongoing'],
         $data['column']['student_name'],
-        $data['column']['organization_id'],
+        $data['column']['organization'],
         $data['column']['programme'],
         $data['column']['project_title'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -147,7 +148,7 @@ class CervieResearcherPostGraduateSupervision extends Model{
 // dd($data);
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,
-                                    ?,?,?,?,?,?,?';
+                                    ?,?,?,?,?,?,?,?';
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['postgraduate_supervision_id'],
@@ -158,9 +159,10 @@ class CervieResearcherPostGraduateSupervision extends Model{
         $data['column']['date_end'],
         $data['column']['is_ongoing'],
         $data['column']['student_name'],
-        $data['column']['organization_id'],
+        $data['column']['organization'],
         $data['column']['programme'],
         $data['column']['project_title'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by'],
@@ -227,12 +229,13 @@ class CervieResearcherPostGraduateSupervision extends Model{
     $table = 'update_cervie_researcher_postgraduate_supervision_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['postgraduate_supervision_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

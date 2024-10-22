@@ -180,6 +180,7 @@ class IndexController extends Controller{
               'year_start'=>$request->year_start,
               'year_end'=>$request->year_end,
               'is_working_here'=>(($request->is_working_here)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -330,6 +331,7 @@ class IndexController extends Controller{
             'column'=>[
               'work_experience_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -417,6 +419,7 @@ class IndexController extends Controller{
             'column'=>[
               'work_experience_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -551,6 +554,7 @@ class IndexController extends Controller{
               'year_start'=>$request->year_start,
               'year_end'=>$request->year_end,
               'is_working_here'=>(($request->is_working_here)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

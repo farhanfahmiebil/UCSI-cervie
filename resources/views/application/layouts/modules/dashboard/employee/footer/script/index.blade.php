@@ -10,3 +10,4 @@
 <!-- theme - ruby -->
 <script type="text/javascript" src="{{ asset('js/theme/ruby/1.0/main.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/theme/ruby/1.0/index.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/theme/ruby/1.0/default.js') }}"></script>

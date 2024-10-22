@@ -197,6 +197,7 @@ class IndexController extends Controller{
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
               'is_current_position'=>(($request->is_current_position)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -341,6 +342,7 @@ class IndexController extends Controller{
             'column'=>[
               'position_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -427,6 +429,7 @@ class IndexController extends Controller{
             'column'=>[
               'position_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -565,7 +568,7 @@ class IndexController extends Controller{
         $data['main'] = $model['cervie']['researcher']['position']->updateRecord(
           [
             'column'=>[
-              'position_id'=>$request->position_id,
+              'position_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'name'=>$request->name,
               'organization_id'=>$request->organization_id,
@@ -574,6 +577,7 @@ class IndexController extends Controller{
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
               'is_current_position'=>(($request->is_current_position)?1:0),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

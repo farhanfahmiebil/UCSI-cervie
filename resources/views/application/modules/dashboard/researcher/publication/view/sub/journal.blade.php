@@ -253,14 +253,13 @@
               $selected_sdg = explode(',',$data['main']->sustainable_development_goal);
             @endphp
 
-            {{-- Get General Sustainable Development Goal Data --}}
-            @foreach($data['general']['sustainable']['development']['goal'] as $key=>value)
+
+            @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
               <option value="{{ $value->sustainable_development_goal_id }}"
                 {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
                 {{ $value->code }} - {{ $value->name }}
               </option>
             @endforeach
-            {{-- End Get General Sustainable Development Goal Data --}}
 
           @endif
           {{-- End Check General Sustainable Development Goal Exist --}}

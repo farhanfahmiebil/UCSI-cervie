@@ -1,5 +1,5 @@
 <!-- form -->
-<form action="{{ route($hyperlink['page']['create'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" enctype="multipart/form-data" method="POST">
+<form action="{{ route($hyperlink['page']['update'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" enctype="multipart/form-data" method="POST">
 @csrf
 
   <!-- content -->
@@ -7,6 +7,39 @@
 
     <!-- row -->
     <div class="row">
+
+      <!-- alert -->
+      <div class="col-12">
+
+        {{-- Check Table Control Evidence Need Exist --}}
+        @if($data['cervie']['researcher']['table']['control']->evidence_need)
+
+          {{-- Check Data Evidence Exist --}}
+          @if(!$data['evidence'])
+
+          <div class="alert alert-warning" role="alert">
+            There is no Evidence to be displayed as Public, This Record will be mark as Pending
+          </div>
+
+          @endif
+          {{-- End Check Data Evidence Exist --}}
+
+        @endif
+        {{-- End Check Table Control Evidence Need Exist --}}
+
+
+        {{-- Check Data Main --}}
+        @if($data['main']->need_verification)
+
+        <div class="alert alert-warning" role="alert">
+          This Record is still Pending for Administrator to make Verification
+        </div>
+
+        @endif
+        {{-- End Check Data Main --}}
+
+      </div>
+      <!-- end alert -->
 
       <!-- col -->
       <div class="col-12 grid-margin stretch-card">
@@ -42,7 +75,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="name">Position</label>
-                  <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Name">
+                  <input type="text" class="form-control" id="name" name="name" value="{{ $data['main']->name }}" placeholder="Name">
                 </div>
               </div>
               <!-- end position -->
@@ -59,7 +92,7 @@
 
                       {{-- Get General Organization Data --}}
                       @foreach($data['general']['organization'] as $key=>$value)
-                        <option value="{{ $value->organization_id }}" {{ ((old('organization_id') == $value->organization_id)?'selected':'') }}>{{ $value->name }}</option>
+                        <option value="{{ $value->organization_id }}" {{ (($data['main']->organization_id == $value->organization_id)?'selected':'') }}>{{ $value->name }}</option>
                       @endforeach
                       {{-- End Get General Organization Data --}}
 
@@ -75,13 +108,13 @@
             <!-- end row 1 -->
 
             <!-- row 2 -->
-            <div class="row pt-3">
+            <div class="row py-3">
 
               <!-- date start -->
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="date_start">Date Start</label>
-                  <input type="date" class="form-control" id="date_start" name="date_start" value="{{ old('date_start') }}" placeholder=""="">
+                  <input type="date" class="form-control" id="date_start" name="date_start" value="{{ \Carbon\Carbon::parse($data['main']->date_start)->format('Y-m-d') }}" placeholder="">
                 </div>
               </div>
               <!-- end date start -->
@@ -95,13 +128,13 @@
                     </div>
                     <div class="bd-highlight">
                       <label for="is_current_position" class="form-check-label">
-                        <input type="checkbox" class="form-check-input" id="is_current_position" name="is_current_position" value="1" {{ old('is_current_position') ? 'checked' : ''}}>
+                        <input type="checkbox" class="form-check-input" id="is_current_position" name="is_current_position" value="1" {{ (($data['main']->is_current_position) ?'checked':'') }}>
                         Is Current Position
                         <i class="input-helper"></i>
                       </label>
                     </div>
                   </div>
-                  <input type="date" class="form-control" id="date_end" name="date_end" value="{{ old('date_end') }}" placeholder="">
+                  <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):'') }}" placeholder="">
                 </div>
               </div>
               <!-- end date end -->
@@ -129,7 +162,7 @@
                   <label for="file" class="form-label"><strong>File Upload Must be (.pdf)</strong></label>
 
                   <!-- table -->
-                  <table class="table">
+                  <table class="table table-bordered">
 
                     <!-- thead -->
                     <thead>
@@ -157,22 +190,22 @@
 
                               @endphp
 
-                              <td>{!! $value['checkbox'] !!}</td>
+                              <th>{!! $value['checkbox'] !!}</th>
 
                             @else
 
                               {{-- Check if 'class' is set and apply it --}}
                               @if(isset($value['class']) && !empty($value['class']))
-                                <td class="{{ $value['class'] }}">
+                                <th class="{{ $value['class'] }}">
                               @else
-                                <td>
+                                <th>
                               @endif
 
-                                {{-- Output the icon and name --}}
-                                {!! isset($value['icon']) ? $value['icon'] : '' !!}
-                                {{ isset($value['name']) ? $value['name'] : '' }}
+                                  {{-- Output the icon and name --}}
+                                  {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                                  {{ isset($value['name']) ? $value['name'] : '' }}
 
-                              </td>
+                                </th>
 
                             @endif
                             {{-- End Check if the column is of category 'checkbox' --}}
@@ -188,25 +221,60 @@
                     </thead>
                     <!-- end thead -->
 
-                    <!-- tbody -->
-                    <tbody>
-                      <tr>
-                        <td class="row-number">1</td>
-                        <td>
-                          <div class="form-group">
-                            <label for="document_name">File Name for Evidence</label>
-                            <input type="text" class="form-control" name="document_name[]">
-                          </div>
-                          <div class="form-group py-3">
-                            <input type="file" class="form-control" name="document[]">
-                          </div>
-                        </td>
-                        <td>
-                        &nbsp;
-                        </td>
-                      </tr>
-                    </tbody>
-                    <!-- end tbody -->
+                    {{-- Check Data Evidence Exist --}}
+                    @if($data['evidence'])
+
+                      {{-- Get Data Evidence --}}
+                      @foreach($data['evidence'] as $key=>$value)
+
+                        <tr id="{{ $value->evidence_id }}">
+
+                          <td>{{ ($key+1) }}</td>
+                          <td>{{ $value->file_name.'.'.$value->file_extension }}</td>
+                          <td>
+                            @if(Storage::exists($asset['document'].$value->file_id.'.'.$value->file_extension))
+
+                              <!-- hyperlink -->
+                              <a href="{{ $hyperlink['document'].$value->file_id.'.'.$value->file_extension }}" class="btn btn-info" target="_blank">
+                                <i class="bi bi-link"></i>
+                              </a>
+                              <!-- end hyperlink -->
+
+                              <!-- remove file -->
+                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->position_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                                <i class="bi bi-trash"></i>
+                              </a>
+                              <!-- end remove file -->
+
+                            @else
+                            <p>-</p>
+                            @endif
+                          </td>
+
+                        </tr>
+
+                      @endforeach
+
+                    @else
+
+                    <tr>
+                      <td class="row-number">1</td>
+                      <td>
+                        <div class="form-group">
+                          <label for="document_name">File Name for Evidence</label>
+                          <input type="text" class="form-control" name="document_name[]">
+                        </div>
+                        <div class="form-group">
+                          <input type="file" class="form-control" name="document[]">
+                        </div>
+                      </td>
+                      <td>
+                      &nbsp;
+                      </td>
+                    </tr>
+
+                    @endif
+                    {{-- End Check Data Evidence Exist --}}
 
                   </table>
                   <!-- end table -->
@@ -289,20 +357,18 @@
 
                   /*  Check File Count and Hide/Show Add Button
                   **************************************************************************************/
-                  function checkFileCount(){
-                    var file_count = $('table tbody tr').length;
+                  function checkFileCount() {
+                    console.log($('table tbody tr').length);
+                    var fileCount = $('table tbody tr').length;
                     var is_single = '{{ $data['cervie']['researcher']['table']['control']->evidence_single_only }}';
                     var limit = '{{ $data['cervie']['researcher']['table']['control']->evidence_upload_count }}';
 
                     if(is_single !== 1){
-
-                      if(file_count >= limit){
-                        // console.log(file_count +'-'+ limit);
+                      if(fileCount >= limit){
                         $('.add-new-file').hide(); // Hide the add button if file count is 2 or more
                       }else{
                         $('.add-new-file').show(); // Show the add button if file count is less than 2
                       }
-
                     }
                   }
 
@@ -328,12 +394,11 @@
 
               <div class="col-md-12">
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
-                <input type="hidden" name="employee_id" value="{{ request()->employee_id }}">
-                <input type="hidden" name="organization_id" value="{{ request()->organization_id }}">
-                <input type="hidden" name="form_token" value="{{ $form_token['create'] }}">
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-plus"></i>Create</button>
+                <input type="hidden" id="id" name="id" value="{{ $data['main']->position_id }}">
+                <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
               </div>
-
             </div>
             <!-- end form control -->
 
@@ -355,12 +420,102 @@
 </form>
 <!-- end form -->
 
+<!-- Script for dynamic row numbering and file operations -->
 <script type="text/javascript">
 
   /**************************************************************************************
     Document On Load
   **************************************************************************************/
   $(document).ready(function(){
+
+    /**************************************************************************************
+      Session
+    **************************************************************************************/
+    @if(Session('message'))
+      Swal.fire({
+        title: '{{ ucwords(Session::get('alert_type')) }}',
+        text: '{{ ucwords(Session::get('message')) }}',
+        icon: '{{ strtolower(Session::get('alert_type')) }}'
+      });
+    @endif
+
+    /**************************************************************************************
+      Modal Delete
+    **************************************************************************************/
+    $('[class*="btn-delete-main"]').on('click',function(event){
+
+      //Set Parent Row
+      var id = $('#id').val();
+// console.log(id)
+      //Set Form Token
+      var form_token = '{{ $form_token["delete"] }}';
+
+      //Set Hyperlink
+      var hyperlink  = $(this).data('href');
+          hyperlink += '?id='+id;
+          hyperlink += '&form_token='+form_token;
+
+      //Set Alert
+      Swal.fire({
+        title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+        showDenyButton:true,
+        confirmButtonText:'Yes',
+        denyButtonText:'Cancel',
+        icon:'error'
+      }).then((result) => {
+
+        //If Confirmed
+        if(result.isConfirmed){
+
+          //Redirect
+          window.location.href = hyperlink;
+
+        }else
+
+        //If Denied
+        if(result.isDenied){
+
+          //Alert Message
+          Swal.fire('Cancel','','');
+        }
+
+      });
+    });
+
+    /**************************************************************************************
+      Modal Delete
+    **************************************************************************************/
+    $('[class*="btn-delete-evidence"]').on('click',function(event){
+
+      //Set Parent Row
+      var parent_row = $(this).closest('tr').attr('id');
+
+      //Set Alert
+      Swal.fire({
+        title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+        showDenyButton:true,
+        confirmButtonText:'Yes',
+        denyButtonText:'Cancel',
+        icon:'error'
+      }).then((result) => {
+
+        //If Confirmed
+        if(result.isConfirmed){
+
+          //Redirect
+          window.location.href = $(this).data('href');
+
+        }else
+
+        //If Denied
+        if(result.isDenied){
+
+          //Alert Message
+          Swal.fire('Cancel','','');
+        }
+
+      });
+    });
 
     /**************************************************************************************
       Is Current Position
@@ -375,18 +530,5 @@
       }
     });
 
-    /**************************************************************************************
-      Date End
-    **************************************************************************************/
-    $('#date_end').on('input',function(){
-      if($(this).val()){
-        // If a date is entered, uncheck the 'Is Lifetime' checkbox
-        $('#is_current_position').prop('checked', false);
-      }else{
-        // If Date End is cleared, allow 'Is Lifetime' to be checked
-        $('#is_current_position').prop('checked', true);
-      }
-    });
   });
-
 </script>
