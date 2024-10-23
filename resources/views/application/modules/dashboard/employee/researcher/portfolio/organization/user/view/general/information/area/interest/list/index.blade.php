@@ -337,10 +337,10 @@
           @endphp
 
           {{-- Check Table Column Exist --}}
-          @if(isset($data['table']['column']['cervie']['researcher']['position']) && count($data['table']['column']['cervie']['researcher']['position']) >= 1)
+          @if(isset($data['table']['column']['cervie']['researcher']['area']['interest']) && count($data['table']['column']['cervie']['researcher']['area']['interest']) >= 1)
 
               {{-- Get Table Column Data --}}
-              @foreach($data['table']['column']['cervie']['researcher']['position'] as $key => $value)
+              @foreach($data['table']['column']['cervie']['researcher']['area']['interest'] as $key => $value)
 
                   {{-- Check if the column is of category 'checkbox' --}}
                   @if(isset($value['category']) && $value['category'] == 'checkbox')
@@ -390,34 +390,33 @@
         <tbody>
 
           {{-- Check Researcher Position Exist --}}
-          @if(count($data['main']['cervie']['researcher']['position']) > 0)
+          @if(count($data['main']['cervie']['researcher']['area']['interest']) > 0)
 
             {{-- Get Researcher Position Data --}}
-            @foreach($data['main']['cervie']['researcher']['position'] as $key=>$value)
+            @foreach($data['main']['cervie']['researcher']['area']['interest'] as $key=>$value)
 
-              <tr id="{{ $value->position_id }}" class="bg-danger">
+              <tr id="{{ $value->area_interest_id }}" class="bg-danger">
 
                 {{-- Check if Checkbox Status True --}}
                 @if($checkbox['status'])
                   <td>
                     <div class="form-check">
-                      <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->position_id }}"/>
+                      <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->area_interest_id }}"/>
                     </div>
                   </td>
                 @endif
                 {{-- End Check if Checkbox Status True --}}
 
                 <td>{{ ($key+1) }}</td>
-                <td>{{ $value->position_id }}</td>
-                <td>{{ $value->organization_name }}</td>
-                <td>{{ \Carbon\Carbon::parse($value->date_start)->format('d F Y') }} - {{ \Carbon\Carbon::parse($value->date_end)->format('d F Y') }}</td>
+                <td>{{ $value->area_interest_id }}</td>
+                <td>{{ $value->name }}</td>
                 <td><span class="badge shade-{{ (($value->need_verification)?'yellow':'green') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
                 <td>
-                  <a href="{{ route($hyperlink['page']['view'],['organization_id'=>request()->route('organization_id'),'employee_id'=>request()->route('employee_id'),'id'=>$value->position_id]) }}" class="btn btn-sm btn-secondary">
+                  <a href="{{ route($hyperlink['page']['view'],['organization_id'=>request()->route('organization_id'),'employee_id'=>request()->route('employee_id'),'id'=>$value->area_interest_id]) }}" class="btn btn-sm btn-secondary">
                     <i class="bi bi-pencil"></i>
                   </a>
 
-                  <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->route('organization_id'),'employee_id'=>request()->route('employee_id'),'id'=>$value->position_id]) }}" class="btn-delete-main btn btn-sm btn-danger">
+                  <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->route('organization_id'),'employee_id'=>request()->route('employee_id'),'id'=>$value->area_interest_id]) }}" class="btn-delete-main btn btn-sm btn-danger">
                     <i class="bi bi-trash text-white"></i>
                   </a>
 
@@ -430,7 +429,7 @@
           @else
 
             <tr>
-              <td colspan="{{ count($data['table']['column']['cervie']['researcher']['position']) }}">No Data</td>
+              <td colspan="{{ count($data['table']['column']['cervie']['researcher']['area']['interest']) }}">No Data</td>
             </tr>
 
           @endif
@@ -446,10 +445,10 @@
       <div class="col-12 pt-3">
 
         {{-- Check Main Data Exist --}}
-        @if(count($data['main']['cervie']['researcher']['position']) >= 1)
+        @if(count($data['main']['cervie']['researcher']['area']['interest']) >= 1)
 
           <!-- paginate -->
-          {{ $data['main']['cervie']['researcher']['position']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+          {{ $data['main']['cervie']['researcher']['area']['interest']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
           <!-- end paginate -->
 
         @endif

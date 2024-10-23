@@ -103,6 +103,36 @@ Route::prefix('researcher')->group(function(){
 
                     }); //End Position
 
+                    /* Area Interest
+                    **************************************************************************************/
+                    Route::prefix('area/interest')->group(function(){
+
+                      /*  New
+                      **************************************************************************************/
+                      Route::get('/new', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Area\Interest\IndexController@new')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.area.interest.new');
+
+                      /*  Create
+                      **************************************************************************************/
+                      Route::post('/create', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Area\Interest\IndexController@create')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.area.interest.create');
+
+                      /*  List
+                      **************************************************************************************/
+                      Route::get('/list', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Area\Interest\IndexController@list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.area.interest.list');
+
+                      /*  Delete
+                      **************************************************************************************/
+                      Route::get('/delete', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Area\Interest\IndexController@delete')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.area.interest.delete');
+
+                      /*  View
+                      **************************************************************************************/
+                      Route::get('/view/{id}', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Area\Interest\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.area.interest.view');
+
+                      /*  Update
+                      **************************************************************************************/
+                      Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\General\Information\Area\Interest\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.general.information.area.interest.update');
+
+                    }); //End Area Interest
+
                   }); //End Information
 
                 }); //End General
