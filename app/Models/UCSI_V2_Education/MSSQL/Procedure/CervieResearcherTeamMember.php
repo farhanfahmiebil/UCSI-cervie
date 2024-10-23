@@ -38,7 +38,7 @@ class CervieResearcherTeamMember extends Model{
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 // dd($data);
     //Get Result
@@ -46,6 +46,7 @@ class CervieResearcherTeamMember extends Model{
         $data['column']['employee_id'],
         $data['column']['name'],
         $data['column']['representation_role_id'],
+        $data['column']['role'],
         $data['column']['table_name'],
         $data['column']['table_id'],
         $data['column']['remark'],

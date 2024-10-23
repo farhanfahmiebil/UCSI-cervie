@@ -30,10 +30,10 @@
       <div class="table-responsive pt-5">
 
         <!-- table -->
-        <table class="table table-bordered">
+        <table class="table">
 
           <!-- thead -->
-          <thead>
+          <thead class="bg-danger text-white mx-3">
 
             @php
 

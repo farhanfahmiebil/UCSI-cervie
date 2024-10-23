@@ -267,7 +267,7 @@
                     <table class="table" id="evidence-table">
 
                       <!-- thead -->
-                      <thead>
+                      <thead class="bg-danger text-white mx-3">
 
                         @php
 
@@ -469,7 +469,7 @@
                       <table class="table" id="team-member-table">
 
                           <!-- thead -->
-                          <thead>
+                          <thead class="bg-danger text-white mx-3">
                               @php
                                   // Set Checkbox Status
                                   $checkbox['status'] = false;

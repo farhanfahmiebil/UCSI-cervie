@@ -161,12 +161,13 @@ class Controller extends BaseController{
             'sidebar'=>[
               'right'=>[
                 'home'=> config('routing.application.modules.dashboard.researcher.name').'.home',
+                'insight'=> config('routing.application.modules.dashboard.researcher.name').'.insight.home',
                 'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general.information.home.list',
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.home.list',
                 'publication'=>config('routing.application.modules.dashboard.researcher.name').'.publication.list',
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.home.list',
                 'intellectual_property'=>config('routing.application.modules.dashboard.researcher.name').'.intellectual.property.home.list',
-                // 'commercialization'=>config('routing.application.modules.dashboard.researcher.name').'.commercialization.list',
+                'consultancies'=>config('routing.application.modules.dashboard.researcher.name').'.consultancies.list',
                 'award'=>config('routing.application.modules.dashboard.researcher.name').'.award.list',
                 'stewardship'=>config('routing.application.modules.dashboard.researcher.name').'.stewardship.list',
                 'recognition'=>config('routing.application.modules.dashboard.researcher.name').'.recognition.list',

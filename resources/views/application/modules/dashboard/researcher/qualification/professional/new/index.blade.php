@@ -73,7 +73,7 @@
                     <table class="table">
 
                       <!-- thead -->
-                      <thead>
+                      <thead class="bg-danger text-white mx-3">
 
                         @php
 

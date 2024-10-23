@@ -182,7 +182,7 @@
                       <table class="table" id="evidence-table">
 
                           <!-- thead -->
-                          <thead>
+                          <thead class="bg-danger text-white mx-3">
                               @php
                                   // Set Checkbox Status
                                   $checkbox['status'] = false;
@@ -238,6 +238,10 @@
                       </table>
                       <!-- end table -->
 
+                  </div>
+                  <!-- end table responsive -->
+
+              </div>
               <!-- end row 1 -->
 
               {{-- Script for dynamic row numbering and file operations --}}
@@ -327,7 +331,7 @@
                       <table class="table" id="team-member-table">
 
                           <!-- thead -->
-                          <thead>
+                          <thead class="bg-danger text-white mx-3">
                               @php
                                   // Set Checkbox Status
                                   $checkbox['status'] = false;
@@ -367,17 +371,8 @@
                                           <input type="text" class="form-control" name="team_member_name[]">
                                       </div>
                                       <div class="form-group">
-                                          <label for="representation_role_id">Role</label><br>
-                                          <select class="form-control select2" name="representation_role_id[]">
-                                              <option value="">-- Please Select --</option>
-                                              {{-- Check General Representation Category Exist --}}
-                                              @if(count($data['general']['representation']['role']) > 0)
-                                                  {{-- Get General Representation Category Data --}}
-                                                  @foreach($data['general']['representation']['role'] as $key=>$value)
-                                                      <option value="{{ $value->representation_role_id }}">{{ $value->name }}</option>
-                                                  @endforeach
-                                              @endif
-                                          </select>
+                                          <label for="role">Role</label><br>
+                                          <input type="text" class="form-control" name="role[]">
                                       </div>
                                   </td>
                                   <td>
@@ -410,26 +405,19 @@
                       var new_row = '';
                       new_row += '<tr>';
                       new_row += '<td class="row-number"></td>';
-                      new_row += '<td colspan="2">';
+                      new_row += '<td>';
                       new_row += '<div class="form-group">';
                       new_row += '<label for="team_member_name">Name</label>';
                       new_row += '<input type="text" class="form-control" name="team_member_name[]">';
                       new_row += '</div>';
                       new_row += '<div class="form-group">';
-                      new_row += '<label for="representation_role_id">Role</label>';
-                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
-                      new_row += '<option value="">-- Please Select --</option>';
-                      @if(count($data['general']['representation']['role']) > 0)
-                          @foreach($data['general']['representation']['role'] as $role)
-                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
-                          @endforeach
-                      @endif
-                      new_row += '</select>';
+                      new_row += '<label for="role">Role</label>';
+                      new_row += '<input type="text" class="form-control" name="role[]">';
                       new_row += '</div>';
                       new_row += '</td>';
                       new_row += '<td>';
-                      new_row += '<a href="#" class="btn btn-warning remove-team-member">';
-                      new_row += '<i class="mdi-alpha-x text-white"></i>';
+                      new_row += '<a href="#" class="btn btn-danger remove-team-member">';
+                      new_row += '<i class="mdi mdi-trash-can text-white"></i>';
                       new_row += '</a>';
                       new_row += '</td>';
                       new_row += '</tr>';

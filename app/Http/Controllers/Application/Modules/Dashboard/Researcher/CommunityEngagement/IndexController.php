@@ -357,6 +357,7 @@ class IndexController extends Controller{
                   'employee_id'=>Auth::id(),
                   'name'=>$value,
                   'representation_role_id'=>(isset($request->representation_role_id[$key]) ? $request->representation_role_id[$key]:null),
+                  'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
@@ -890,6 +891,7 @@ class IndexController extends Controller{
                   'employee_id'=>Auth::id(),
                   'name'=>$value,
                   'representation_role_id'=>(isset($request->representation_role_id[$key]) ? $request->representation_role_id[$key]:null),
+                  'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),
@@ -915,7 +917,7 @@ class IndexController extends Controller{
   }
 
   /**************************************************************************************
-    Delete
+    Delete Team Member
   **************************************************************************************/
   public function deleteTeamMember(Request $request){
 
@@ -979,7 +981,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Team Member Deleted');
+                     ->with('message','Community Engagement Involvement Deleted');
 
   }
 

@@ -180,10 +180,10 @@
                     <label for="file" class="form-label"><strong>File Upload Must be (.pdf)</strong></label>
 
                     <!-- table -->
-                    <table class="table table-bordered">
+                    <table class="table">
 
                       <!-- thead -->
-                      <thead>
+                      <thead class="bg-danger text-white mx-3">
 
                         @php
 
@@ -446,10 +446,10 @@
                   <div class="table-responsive">
 
                       <!-- table -->
-                      <table class="table table-bordered" id="team-member-table">
+                      <table class="table" id="team-member-table">
 
                           <!-- thead -->
-                          <thead>
+                          <thead class="bg-danger text-white mx-3">
                               @php
                                   // Set Checkbox Status
                                   $checkbox['status'] = false;
@@ -481,25 +481,20 @@
 
                           {{-- Check Data Team Members Exist --}}
                         @if($data['team_member'])
-                        {{-- Get Data Team Members --}}
-                  @foreach($data['team_member'] as $key => $value)
-                      <tr id="{{ $value->team_member_id }}">
-                          <td>{{ ($key + 1) }}</td>
-                          <td>{{ $value->name }}</td>
-                          <td>{{ $value->representation_role_name }}</td>
-                          <td>
-                              @if($key != 0)
-                                  <a href="#" class="btn btn-warning remove-team-member">
-                                      <i class="mdi mdi-alpha-x text-white"></i>
-                                  </a>
-                              @endif
-                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->consultancies_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
-                                  <i class="mdi mdi-trash-can"></i>
-                              </a>
-                          </td>
-                      </tr>
-                  @endforeach
-                  {{-- End Get Data Team Members --}}
+                          {{-- Get Data Team Members --}}
+                          @foreach($data['team_member'] as $key => $value)
+                              <tr id="{{ $value->team_member_id }}">
+                                  <td>{{ ($key + 1) }}</td>
+                                  <td>{{ $value->name }}</td>
+                                  <td>{{ $value->representation_role_name }}</td>
+                                  <td>
+                                      <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->consultancies_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                                          <i class="mdi mdi-trash-can"></i>
+                                      </a>
+                                  </td>
+                              </tr>
+                          @endforeach
+                          {{-- End Get Data Team Members --}}
                         @else
                             <tr>
                                 <td class="row-number">1</td>
@@ -509,15 +504,8 @@
                                         <input type="text" class="form-control" name="team_member_name[]">
                                     </div>
                                     <div class="form-group">
-                                        <label for="representation_role_id">Role</label>
-                                        <select class="form-control select2" name="representation_role_id[]">
-                                            <option value="">-- Please Select --</option>
-                                            @if(count($data['general']['representation']['role']) > 0)
-                                                @foreach($data['general']['representation']['role'] as $role)
-                                                    <option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
+                                        <label for="role">Role</label>
+                                        <input type="text" class="form-control" name="role[]">
                                     </div>
                                 </td>
                                 <td>&nbsp;</td>
@@ -558,15 +546,8 @@
                       new_row += '<input type="text" class="form-control" name="team_member_name[]">';
                       new_row += '</div>';
                       new_row += '<div class="form-group">';
-                      new_row += '<label for="representation_role_id">Role</label>';
-                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
-                      new_row += '<option value="">-- Please Select --</option>';
-                      @if(count($data['general']['representation']['role']) > 0)
-                          @foreach($data['general']['representation']['role'] as $role)
-                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
-                          @endforeach
-                      @endif
-                      new_row += '</select>';
+                      new_row += '<label for="role">Role</label>';
+                      new_row += '<input type="text" class="form-control" name="role[]">';
                       new_row += '</div>';
                       new_row += '</td>';
                       new_row += '<td>';

@@ -252,12 +252,13 @@ class CervieResearcherGrant extends Model{
     $table = 'update_cervie_researcher_grant_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['grant_id'],
         $data['column']['employee_id'],
+        $data['column']['grant_id'],
         $data['column']['updated_by']
       ]
     );

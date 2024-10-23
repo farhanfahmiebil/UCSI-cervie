@@ -160,10 +160,10 @@
                     <label for="file" class="form-label"><strong>File Upload Must be (.pdf)</strong></label>
 
                     <!-- table -->
-                    <table class="table table-bordered">
+                    <table class="table">
 
                       <!-- thead -->
-                      <thead>
+                      <thead class="bg-danger text-white mx-3">
 
                         @php
 
@@ -429,7 +429,7 @@
                       <table class="table table-bordered" id="team-member-table">
 
                           <!-- thead -->
-                          <thead>
+                          <thead class="bg-danger text-white mx-3">
                               @php
                                   // Set Checkbox Status
                                   $checkbox['status'] = false;

@@ -422,6 +422,7 @@ class IndexController extends Controller{
                  'employee_id'=>Auth::id(),
                  'name'=>$value,
                  'representation_role_id'=>$request->representation_role_id[$key],
+                 'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                  'table_name'=>'cervie_researcher_grant',
                  'table_id'=>$result['main']['create']->last_insert_id,
                  'remark'=>(($request->remark)?$request->remark:null),
@@ -759,6 +760,75 @@ foreach ($ongoingGrants as $grant) {
   }
 
   /**************************************************************************************
+    Delete Team Member
+  **************************************************************************************/
+  public function deleteTeamMember(Request $request){
+
+    //Get Route Path
+    $this->routePath();
+
+    //Set Hyperlink
+    $hyperlink = $this->hyperlink;
+
+    //If Form Token Exist
+    if(!$request->has('form_token')){abort(555,'Form Token Missing');}
+
+    //Check Type Request
+    switch($this->encrypter->decrypt($request->form_token)){
+
+      //Create
+      case 'delete':
+
+        //Set Model
+        $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+        //Set Main
+        $data['team_member'] = $model['cervie']['researcher']['team']['member']->readRecord(
+          [
+            'column'=>[
+              'team_member_id'=>$request->team_member_id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Delete Record
+        $result['team_member']['delete'] = $model['cervie']['researcher']['team']['member']->deleteRecord(
+          [
+            'column'=>[
+              'team_member_id'=>$data['team_member']->team_member_id,
+              'employee_id'=>Auth::id()
+            ]
+          ]
+        );
+
+        //Set Model
+        $model['cervie']['researcher']['grant'] = new CervieResearcherGrantProcedure();
+
+        //Set Main Verification
+        $data['main']['verification'] = $model['cervie']['researcher']['grant']->needVerification(
+          [
+            'column'=>[
+              'grant_id'=>$data['team_member']->table_id,
+              'employee_id'=>Auth::id(),
+              'need_verification'=>1,
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+      break;
+
+    }
+
+    //Return to Selected Tab Category Route
+    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+                     ->with('alert_type','success')
+                     ->with('message','Team Member Deleted');
+
+  }
+
+  /**************************************************************************************
  		View
  	**************************************************************************************/
 	public function view(Request $request){
@@ -1086,6 +1156,7 @@ foreach ($ongoingGrants as $grant) {
                   'employee_id'=>Auth::id(),
                   'name'=>$value,
                   'representation_role_id'=>$request->representation_role_id[$key],
+                  'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),

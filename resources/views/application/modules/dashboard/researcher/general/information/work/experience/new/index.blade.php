@@ -110,7 +110,6 @@
 
               <hr>
 
-
                 <!-- card title -->
                 <h4 class="card-title">Evidence</h4>
                 <!-- end card title -->
@@ -127,7 +126,7 @@
                     <table class="table">
 
                       <!-- thead -->
-                      <thead>
+                      <thead class="bg-danger text-white mx-3">
 
                         @php
 

@@ -284,6 +284,7 @@ class IndexController extends Controller{
               'description'=>($request->has('description')?$request->description:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -367,7 +368,8 @@ class IndexController extends Controller{
                 'column'=>[
                   'employee_id'=>Auth::id(),
                   'name'=>$value,
-                  'representation_role_id'=>$request->representation_role_id[$key],
+                  'representation_role_id'=>(isset($request->representation_role_id[$key]) ? $request->representation_role_id[$key]:null),
+                  'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_consultancies',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
@@ -515,6 +517,7 @@ class IndexController extends Controller{
             'column'=>[
               'consultancies_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -601,6 +604,7 @@ class IndexController extends Controller{
             'column'=>[
               'consultancies_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -669,6 +673,7 @@ class IndexController extends Controller{
             'column'=>[
               'consultancies_id'=>$data['team_member']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -878,6 +883,7 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'country'=>$country,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -978,7 +984,8 @@ class IndexController extends Controller{
                 'column'=>[
                   'employee_id'=>Auth::id(),
                   'name'=>$value,
-                  'representation_role_id'=>$request->representation_role_id[$key],
+                  'representation_role_id'=>(isset($request->representation_role_id[$key]) ? $request->representation_role_id[$key]:null),
+                  'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_consultancies',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),

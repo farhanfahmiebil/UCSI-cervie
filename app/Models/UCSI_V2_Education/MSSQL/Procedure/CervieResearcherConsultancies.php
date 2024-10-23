@@ -39,7 +39,7 @@ class CervieResearcherConsultancies extends Model{
     // Set Query
     $this->query = 'DECLARE @id INT;
                     EXEC ' . $table . ' ?,?,?,?,?,?,?,
-                                        ?,?,?,?,?, @id OUTPUT;
+                                        ?,?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -53,6 +53,7 @@ class CervieResearcherConsultancies extends Model{
         $data['column']['date_start'],
         $data['column']['date_end'],
         $data['column']['country'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -149,7 +150,7 @@ class CervieResearcherConsultancies extends Model{
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?,?,?';
+                                    ?,?,?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -163,6 +164,7 @@ class CervieResearcherConsultancies extends Model{
       $data['column']['date_start'],
       $data['column']['date_end'],
       $data['column']['country'],
+      $data['column']['need_verification'],
       $data['column']['remark'],
       $data['column']['remark_user'],
       $data['column']['updated_by']
@@ -229,12 +231,13 @@ class CervieResearcherConsultancies extends Model{
     $table = 'update_cervie_researcher_consultancies_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['consultancies_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

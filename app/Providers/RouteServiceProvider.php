@@ -206,6 +206,9 @@ class RouteServiceProvider extends ServiceProvider{
                 //Home
                 require base_path($this->path['dashboard']['researcher'].'home/index.php');
 
+                //Insight
+                require base_path($this->path['dashboard']['researcher'].'insight/index.php');
+
                 //General Information
                 require base_path($this->path['dashboard']['researcher'].'general/information/index.php');
 
@@ -242,7 +245,7 @@ class RouteServiceProvider extends ServiceProvider{
                 //Consultancies
                 require base_path($this->path['dashboard']['researcher'].'consultancies/index.php');
 
-                //Consultancies
+                //Commercialization
                 require base_path($this->path['dashboard']['researcher'].'commercialization/index.php');
 
              }); //End Dashboard

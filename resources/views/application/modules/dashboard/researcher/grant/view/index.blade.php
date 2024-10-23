@@ -266,10 +266,10 @@
                     <label for="file" class="form-label"><strong>File Upload Must be (.pdf)</strong></label>
 
                     <!-- table -->
-                    <table class="table table-bordered">
+                    <table class="table">
 
                       <!-- thead -->
-                      <thead>
+                      <thead class="bg-danger text-white mx-3">
 
                         @php
 
@@ -504,10 +504,10 @@
                   <div class="table-responsive">
 
                       <!-- table -->
-                      <table class="table table-bordered" id="team-member-table">
+                      <table class="table" id="team-member-table">
 
                           <!-- thead -->
-                          <thead>
+                          <thead class="bg-danger text-white mx-3">
                               @php
                                   // Set Checkbox Status
                                   $checkbox['status'] = false;
@@ -631,9 +631,7 @@
                       new_row += '<a href="#" class="btn btn-danger remove-team-member">';
                       new_row += '<i class="mdi mdi-trash-can text-white"></i>';
                       new_row += '</a>';
-                      new_row += '<a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['id'=>$data['main']->grant_id,'team_member_id'=>0,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">';
-                      new_row += '<i class="mdi mdi-trash-can"></i>';
-                      new_row += '</a>';
+        
                       new_row += '</td>';
                       new_row += '</tr>';
 
@@ -795,7 +793,7 @@
           });
 
           /**************************************************************************************
-          Modal Delete
+            Modal Delete
           **************************************************************************************/
           $('[class*="btn-delete-evidence"]').on('click',function(event){
 
@@ -804,29 +802,66 @@
 
           //Set Alert
           Swal.fire({
-          title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
-          showDenyButton:true,
-          confirmButtonText:'Yes',
-          denyButtonText:'Cancel',
-          icon:'error'
+            title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+            showDenyButton:true,
+            confirmButtonText:'Yes',
+            denyButtonText:'Cancel',
+            icon:'error'
           }).then((result) => {
 
-          //If Confirmed
-          if(result.isConfirmed){
+            //If Confirmed
+            if(result.isConfirmed){
 
-            //Redirect
-            window.location.href = $(this).data('href');
+              //Redirect
+              window.location.href = $(this).data('href');
 
-          }else
+            }else
 
-          //If Denied
-          if(result.isDenied){
+            //If Denied
+            if(result.isDenied){
 
-            //Alert Message
-            Swal.fire('Cancel','','');
-          }
+              //Alert Message
+              Swal.fire('Cancel','','');
+            }
+
+            });
 
           });
+
+          /**************************************************************************************
+            Modal Delete
+          **************************************************************************************/
+          $('[class*="btn-delete-team-member"]').on('click',function(event){
+
+          //Set Parent Row
+          var parent_row = $(this).closest('tr').attr('id');
+
+          //Set Alert
+          Swal.fire({
+            title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+            showDenyButton:true,
+            confirmButtonText:'Yes',
+            denyButtonText:'Cancel',
+            icon:'error'
+          }).then((result) => {
+
+            //If Confirmed
+            if(result.isConfirmed){
+
+              //Redirect
+              window.location.href = $(this).data('href');
+
+            }else
+
+            //If Denied
+            if(result.isDenied){
+
+              //Alert Message
+              Swal.fire('Cancel','','');
+            }
+
+            });
+
           });
 
           /**************************************************************************************
