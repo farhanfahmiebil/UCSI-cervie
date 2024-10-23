@@ -7,7 +7,7 @@
 
     <!-- row 1 -->
     <div class="row">
-
+      
       {{-- Award --}}
       @include($page['sub'].'.award')
 
@@ -16,9 +16,6 @@
 
   </div>
   <!-- end content -->
-
-  {{-- Pop Alert --}}
-  @include($hyperlink['navigation']['layout']['dashboard']['researcher']['modal']['pop_alert'])
 
   <script type="text/javascript">
 

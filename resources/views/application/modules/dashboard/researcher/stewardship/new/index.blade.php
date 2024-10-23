@@ -43,7 +43,7 @@
                 <!-- representation category id -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_category_id">Award Type</label>
+                    <label for="representation_category_id">Stewardship Type</label>
                     <select class="form-control select2" id="representation_category_id" name="representation_category_id">
                       <option value="">-- Please Select --</option>
 
@@ -67,7 +67,7 @@
                 <!-- date award -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_award">Date Award</label>
+                    <label for="date_award">Date Stewardship Received</label>
                     <input type="date" class="form-control" id="date_award" name="date_award" value="{{ old('date_award') }}" placeholder="">
                   </div>
                 </div>
@@ -91,7 +91,7 @@
                 <!-- title -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="title">Award Title</label>
+                    <label for="title">Stewardship Title</label>
                     <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="Award Title">
                   </div>
                 </div>

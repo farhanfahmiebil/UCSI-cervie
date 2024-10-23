@@ -38,7 +38,7 @@ class CervieResearcherAward extends Model{
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 
     //Get Result
@@ -48,6 +48,7 @@ class CervieResearcherAward extends Model{
         $data['column']['conferring_body'],
         $data['column']['title'],
         $data['column']['date_award'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -143,7 +144,7 @@ class CervieResearcherAward extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -153,6 +154,7 @@ class CervieResearcherAward extends Model{
         $data['column']['conferring_body'],
         $data['column']['title'],
         $data['column']['date_award'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -219,12 +221,13 @@ class CervieResearcherAward extends Model{
     $table = 'update_cervie_researcher_award_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['award_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

@@ -22,7 +22,7 @@
             <div class="card-body">
 
               <!-- card title -->
-              <h4 class="card-title">Grant Information</h4>
+              <h4 class="card-title">Community Engagement Information</h4>
               <!-- end card title -->
 
               <!-- error -->
@@ -40,58 +40,53 @@
               <!-- row 1 -->
               <div class="row">
 
-                <!-- representation category id -->
+                <!-- organization -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_category_id">Grant Category</label>
-                    <select class="form-control select2" id="representation_category_id" name="representation_category_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Representation Category Exist --}}
-                      @if(count($data['general']['representation']['category']) > 0)
-
-                        {{-- Get General Grant Category Data --}}
-                        @foreach($data['general']['representation']['category'] as $key=>$value)
-                          <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Grant Category Level Data --}}
-
-                      @endif
-                      {{-- End Check General Grant Category Level Exist --}}
-
-                    </select>
+                    <label for="organization">Organization</label>
+                    <input type="text" class="form-control" id="organization" name="organization" value="{{ $data['main']->organization }}" placeholder="">
                   </div>
                 </div>
-                <!-- end grant category id -->
+                <!-- end organization -->
 
-                <!-- project role -->
+                <!-- project name -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_role_id">Project Role</label>
-                    <select class="form-control select2" id="project_representation_role_id" name="project_representation_role_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Representation Role Exist --}}
-                      @if(count($data['general']['representation']['role']) > 0)
-
-                        {{-- Get General Representation Role Data --}}
-                        @foreach($data['general']['representation']['role'] as $key=>$value)
-                          <option value="{{ $value->representation_role_id }}" {{ (($data['main']->representation_role_id == $value->representation_role_id)?'selected':'') }}>{{ $value->name }}</option>
-                        @endforeach
-                        {{-- End Get General Representation Role Level Data --}}
-
-                      @endif
-                      {{-- End Check General Representation Role Level Exist --}}
-
-                    </select>
+                    <label for="project_name">Project Name</label>
+                    <input type="text" class="form-control" id="project_name" name="project_name" value="{{ $data['main']->project_name }}" placeholder="">
                   </div>
                 </div>
-                <!-- end project role -->
+                <!-- end project name -->
 
               </div>
               <!-- end row 1 -->
 
               <!-- row 2 -->
+              <div class="row">
+
+                <!-- sponsor -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="sponsor">Sponsor</label>
+                    <input type="text" class="form-control" id="sponsor" name="sponsor" value="{{ $data['main']->sponsor }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end sponsor -->
+
+                <!-- amount -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" class="form-control" id="amount" name="amount" value="{{ $data['main']->amount }}" placeholder="">
+                  </div>
+                </div>
+                <!-- end amount -->
+
+              </div>
+              <!-- end row 2 -->
+
+
+              <!-- row 3 -->
               <div class="row">
 
                 <!-- date start -->
@@ -106,146 +101,45 @@
                 <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <div class="d-flex bd-highlight">
-                      <div class="flex-grow-1 bd-highlight">
-                        <label for="date_end">Date End</label>
-                      </div>
-                      <div class="bd-highlight">
-                        <label for="is_ongoing" class="form-check-label">
-                          <input type="checkbox" class="form-check-input" id="is_ongoing" name="is_ongoing" value="1" {{ (($data['main']->is_ongoing) ?'checked':'') }}>
-                          Is On Going
-                          <i class="input-helper"></i>
-                        </label>
-                      </div>
-                    </div>
-                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):null) }}" placeholder="">
+                    <label for="date_end">Date End</label>
+                    <input type="date" class="form-control" id="date_end" name="date_end" value="{{ \Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d') }}" placeholder="">
                   </div>
                 </div>
                 <!-- end date end -->
 
                 </div>
-                <!-- end row 2 -->
+                <!-- end row 3 -->
 
-              <!-- row 3 -->
-              <div class="row">
+                <!-- row 4 -->
+                <div class="row">
 
-                <!-- title  -->
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->grant_title }}" placeholder="">
+                  <!-- description -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="description">Description</label>
+                      <input type="text" class="form-control" id="description" name="description" value="{{ $data['main']->description }}" placeholder="">
+                    </div>
                   </div>
-                </div>
-                <!-- end title -->
+                  <!-- end description -->
 
-              </div>
-              <!-- end row 3 -->
-
-              <!-- row 4 -->
-              <div class="row">
-
-                <!-- currency code  -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="title">Currency</label>
-                    <select class="form-control select2" id="currency_code_id" name="currency_code_id">
-                      <option value="">-- Please Select --</option>
-
-                      {{-- Check General Currency Code Exist --}}
-                      @if(count($data['general']['currency']['code']) > 0)
-
-                        {{-- Get General Currency Code Data --}}
-                        @foreach($data['general']['currency']['code'] as $key=>$value)
-                          <option value="{{ $value->currency_code_id }}" {{ (($data['main']->currency_code_id == $value->currency_code_id)?'selected':'') }}>{{ $value->name . ' (' . $value->currency_code_id . ')'}}</option>
-                        @endforeach
-                        {{-- End Get General Currency Code Data --}}
-
-                      @endif
-                      {{-- End Check General Currency Code Exist --}}
-
-                    </select>
-
+                  <!-- Star Rating -->
+                  <div class="col-md-6">
+                      <div class="form-group">
+                          <label for="amount">Star Rating</label>
+                          <div id="star-rating" class="text-warning mb-3">
+                              @for($i = 1; $i <= 5; $i++)
+                              <i class="star mdi mdi-star {{ isset($data['main']->star_rating) && $data['main']->star_rating >= $i ? 'text-warning' : '' }}" data-value="{{ $i }}"></i>
+                              @endfor
+                          </div>
+                          <input type="hidden" name="star_rating" id="rating-input" value="{{ $data['main']->star_rating }}">
+                      </div>
                   </div>
+                  <!-- end Star Rating -->
+
+
                 </div>
-                <!-- end currency code -->
+                <!-- end row 4 -->
 
-                <!-- quantum  -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="title">Quantum</label>
-                    <input type="number" class="form-control" id="quantum" name="quantum" value="{{ $data['main']->quantum }}" placeholder="">
-                  </div>
-                </div>
-                <!-- end quantum -->
-
-              </div>
-              <!-- end row 4 -->
-
-              <!-- row 5 -->
-              <div class="row">
-
-                <!-- sustainable development goal -->
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="sustainable_development_goal_id">Sustainable Development Goal</label>
-                    <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
-                      <option value="">--Please Select--</option>
-
-                      {{-- Check General Sustainable Development Goal Exist --}}
-                      @if(count($data['general']['sustainable']['development']['goal']) > 0)
-
-                          @php
-                            // Explode Sustainable Development Goal from the main data (comma-separated string)
-                            $selected_sdg = explode(',',$data['main']->sustainable_development_goal);
-                          @endphp
-
-                          {{-- Get General Sustainable Development Goal Data --}}
-                          @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
-                            <option value="{{ $value->sustainable_development_goal_id }}"
-                              {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
-                              {{ $value->code }} - {{ $value->name }}
-                            </option>
-                          @endforeach
-                          {{-- End Get General Sustainable Development Goal Data --}}
-
-                      @endif
-                      {{-- End Check General Sustainable Development Goal Exist --}}
-                    </select>
-                  </div>
-                </div>
-                <!-- end sustainable development goal -->
-
-
-              </div>
-              <!-- end row 5 -->
-
-              <!-- row 6 -->
-              <div class="row">
-
-                <!-- status  -->
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="status_id">Status</label>
-                    <select class="form-control select2" name="status_id">
-                      <option value="">--Please Select--</option>
-                      {{-- Check General Status Exist --}}
-                      @if(count($data['general']['status'])>0)
-
-                        {{-- Get General Status Data --}}
-                        @foreach($data['general']['status'] as $key=>$value)
-                          <option value="{{ $value->status_id }}" {{ (($data['main']->status_id == $value->status_id)?'selected':'') }}>{{ ucwords($value->status_name) }}</option>
-                        @endforeach
-                        {{-- End Get General Status Data --}}
-
-                      @endif
-                      {{-- End Check General Status Exist --}}
-                    </select>
-                  </div>
-                </div>
-                <!-- end status -->
-
-              </div>
-              <!-- end row 6 -->
 
 
               {{-- Evidence Need --}}
@@ -345,7 +239,7 @@
                                 <!-- end hyperlink -->
 
                                 <!-- remove file -->
-                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->grant_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                                <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->community_engagement_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                                 </a>
                                 <!-- end remove file -->
@@ -405,6 +299,34 @@
                     Document On Load
                   **************************************************************************************/
                   $(document).ready(function(){
+
+                    const stars = $('.star');
+                    const ratingInput = $('#rating-input');
+                    let selectedRating = ratingInput.val() || 0; // Initialize from hidden input
+
+                    updateStars(selectedRating); // Set initial stars based on existing value
+
+                    stars.on('click', function() {
+                        selectedRating = $(this).data('value');
+                        updateStars(selectedRating);
+                        ratingInput.val(selectedRating); // Update hidden input with selected rating
+                    });
+
+                    stars.on('mouseenter', function() {
+                        const hoverRating = $(this).data('value');
+                        updateStars(hoverRating);
+                    });
+
+                    stars.on('mouseleave', function() {
+                        updateStars(selectedRating);
+                    });
+
+                    function updateStars(rating = 0) {
+                        stars.each(function() {
+                            const starValue = $(this).data('value');
+                            $(this).toggleClass('text-warning', starValue <= rating);
+                        });
+                    }
 
                     // Initial check to hide the button if there are already 2 rows
                     checkFileCount();
@@ -551,7 +473,7 @@
                                       <i class="mdi mdi-alpha-x text-white"></i>
                                   </a>
                               @endif
-                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->grant_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->community_engagement_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                               </a>
                           </td>
@@ -627,11 +549,8 @@
                       new_row += '</select>';
                       new_row += '</div>';
                       new_row += '</td>';
-                      new_row += '<td>';
-                      new_row += '<a href="#" class="btn btn-danger remove-team-member">';
-                      new_row += '<i class="mdi mdi-trash-can text-white"></i>';
-                      new_row += '</a>';
-                      new_row += '<a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['id'=>$data['main']->grant_id,'team_member_id'=>0,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">';
+                      new_row += '<td>';      
+                      new_row += '<a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['id'=>$data['main']->community_engagement_id,'team_member_id'=>0,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">';
                       new_row += '<i class="mdi mdi-trash-can"></i>';
                       new_row += '</a>';
                       new_row += '</td>';
@@ -693,7 +612,6 @@
               @endif
               {{-- End Team Member Need --}}
 
-
             </div>
             <!-- card body -->
 
@@ -705,7 +623,7 @@
 
                 <div class="col-md-12">
                   <a href="{{ route($hyperlink['page']['list']) }}" class="btn btn-light"><i class="mdi mdi-arrow-left"></i>Back</a>
-                  <input type="hidden" id="id" name="id" value="{{ $data['main']->grant_id }}">
+                  <input type="hidden" id="id" name="id" value="{{ $data['main']->community_engagement_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>
@@ -830,30 +748,40 @@
           });
 
           /**************************************************************************************
-            Is Ongoing
+          Modal Delete
           **************************************************************************************/
-          $('#is_ongoing').on('click',function(){
-            if($(this).is(':checked')){
-              //If the checkbox is checked, clear the Date End input and disable it
-              $('#date_end').val('').attr('disabled', true);
-            }else{
-              //If the checkbox is unchecked, enable the Date End input
-              $('#date_end').attr('disabled', false);
-            }
+          $('[class*="btn-delete-team-member"]').on('click',function(event){
+
+          //Set Parent Row
+          var parent_row = $(this).closest('tr').attr('id');
+
+          //Set Alert
+          Swal.fire({
+          title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+          showDenyButton:true,
+          confirmButtonText:'Yes',
+          denyButtonText:'Cancel',
+          icon:'error'
+          }).then((result) => {
+
+          //If Confirmed
+          if(result.isConfirmed){
+
+            //Redirect
+            window.location.href = $(this).data('href');
+
+          }else
+
+          //If Denied
+          if(result.isDenied){
+
+            //Alert Message
+            Swal.fire('Cancel','','');
+          }
+
+          });
           });
 
-          /**************************************************************************************
-            Date End
-          **************************************************************************************/
-          $('#date_end').on('input',function(){
-            if($(this).val()){
-              // If a date is entered, uncheck the 'Is Ongoing' checkbox
-              $('#is_ongoing').prop('checked', false);
-            }else{
-              // If Date End is cleared, allow 'Is Ongoing' to be checked
-              $('#is_ongoing').prop('checked', true);
-            }
-          });
 
           });
           </script>

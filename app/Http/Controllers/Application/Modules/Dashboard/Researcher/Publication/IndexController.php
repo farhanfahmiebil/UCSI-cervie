@@ -147,7 +147,7 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_professional_qualification'
+          'table_control_id'=>'cervie_researcher_publication'
         ]
       ]
     );
@@ -159,7 +159,7 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -867,7 +867,7 @@ class IndexController extends Controller{
       ],
       1=>[
         'class'=>'col-8',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[

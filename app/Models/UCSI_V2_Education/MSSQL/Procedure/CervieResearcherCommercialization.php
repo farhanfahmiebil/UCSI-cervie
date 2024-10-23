@@ -38,8 +38,10 @@ class CervieResearcherCommercialization extends Model{
 
     // Set Query
     $this->query = 'DECLARE @id INT;
-                EXEC ' . $table . ' ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
-                SELECT @id AS id;';
+                    EXEC ' . $table . ' ?,?,?,?,?,
+                                        ?,?,?,?,?,
+                                        ?,?,?,?,?, @id OUTPUT;
+                    SELECT @id AS id;';
 
     $result = DB::connection($this->connection)->select($this->query, [
       $data['column']['employee_id'],
@@ -147,7 +149,8 @@ class CervieResearcherCommercialization extends Model{
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?,?,?,?,?,?';
+                                    ?,?,?,?,?,
+                                    ?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[

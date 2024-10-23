@@ -127,7 +127,7 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -176,6 +176,7 @@ class IndexController extends Controller{
             'column'=>[
               'employee_id'=>Auth::id(),
               'qualification'=>$request->qualification,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -325,6 +326,7 @@ class IndexController extends Controller{
             'column'=>[
               'professional_qualification_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -412,6 +414,7 @@ class IndexController extends Controller{
             'column'=>[
               'professional_qualification_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -486,7 +489,7 @@ class IndexController extends Controller{
       ],
       1=>[
         'class'=>'col-8',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -542,6 +545,7 @@ class IndexController extends Controller{
               'professional_qualification_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'qualification'=>$request->qualification,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

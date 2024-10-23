@@ -38,7 +38,7 @@ class CervieResearcherAcademicQualification extends Model{
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 
     //Get Result
@@ -50,6 +50,7 @@ class CervieResearcherAcademicQualification extends Model{
         $data['column']['year_start'],
         $data['column']['year_end'],
         $data['column']['is_current_progress'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -146,7 +147,7 @@ class CervieResearcherAcademicQualification extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -158,6 +159,7 @@ class CervieResearcherAcademicQualification extends Model{
         $data['column']['year_start'],
         $data['column']['year_end'],
         $data['column']['is_current_progress'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -224,12 +226,13 @@ class CervieResearcherAcademicQualification extends Model{
     $table = 'update_cervie_researcher_academic_qualification_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['academic_qualification_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

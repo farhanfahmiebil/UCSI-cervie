@@ -303,7 +303,7 @@
                           new_row += '</td>';
                           new_row += '<td>';
                           new_row += '<a href="#" class="btn btn-danger remove-file">';
-                          new_row += '<i class="mdi-alpha-x text-white"></i>';
+                          new_row += '<i class="mdi mdi-trash-can text-white"></i>';
                           new_row += '</a>';
                           new_row += '</td>';
                           new_row += '</tr>';
@@ -368,7 +368,7 @@
               <hr>
 
               <!-- card title -->
-              <h4 class="card-title">Team Member</h4>
+              <h4 class="card-title">Community Involvement</h4>
               <!-- end card title -->
 
               <!-- row 1 -->
@@ -420,19 +420,6 @@
                                           <label for="team_member_name">Name</label>
                                           <input type="text" class="form-control" name="team_member_name[]">
                                       </div>
-                                      <div class="form-group">
-                                          <label for="representation_role_id">Role</label><br>
-                                          <select style="width:100%;" class="form-control select2" name="representation_role_id[]">
-                                              <option value="">-- Please Select --</option>
-                                              {{-- Check General Representation Category Exist --}}
-                                              @if(count($data['general']['representation']['role']) > 0)
-                                                  {{-- Get General Representation Category Data --}}
-                                                  @foreach($data['general']['representation']['role'] as $key=>$value)
-                                                      <option value="{{ $value->representation_role_id }}">{{ $value->name }}</option>
-                                                  @endforeach
-                                              @endif
-                                          </select>
-                                      </div>
                                   </td>
                                   <td>
                                       &nbsp;
@@ -446,7 +433,7 @@
 
                       <div class="row text-center pt-3">
                           <div class="col-12">
-                              <button type="button" class="btn btn-primary add-new-team-member">Add New Team Member</button>
+                              <button type="button" class="btn btn-primary add-new-team-member">Add New Community Involvement</button>
                           </div>
                       </div>
 
@@ -469,21 +456,10 @@
                       new_row += '<label for="team_member_name">Name</label>';
                       new_row += '<input type="text" class="form-control" name="team_member_name[]">';
                       new_row += '</div>';
-                      new_row += '<div class="form-group">';
-                      new_row += '<label for="representation_role_id">Role</label>';
-                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
-                      new_row += '<option value="">-- Please Select --</option>';
-                      @if(count($data['general']['representation']['role']) > 0)
-                          @foreach($data['general']['representation']['role'] as $role)
-                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
-                          @endforeach
-                      @endif
-                      new_row += '</select>';
-                      new_row += '</div>';
                       new_row += '</td>';
                       new_row += '<td>';
-                      new_row += '<a href="#" class="btn btn-warning remove-team-member">';
-                      new_row += '<i class="mdi-alpha-x text-white"></i>';
+                      new_row += '<a href="#" class="btn btn-danger remove-team-member">';
+                      new_row += '<i class="mdi mdi-trash-can text-white"></i>';
                       new_row += '</a>';
                       new_row += '</td>';
                       new_row += '</tr>';

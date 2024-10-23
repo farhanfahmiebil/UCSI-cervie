@@ -159,7 +159,7 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -270,6 +270,7 @@ class IndexController extends Controller{
               'country_id'=>($request->has('country_id')?$request->country_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -471,6 +472,7 @@ class IndexController extends Controller{
             'column'=>[
               'linkage_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -557,6 +559,7 @@ class IndexController extends Controller{
             'column'=>[
               'linkage_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -676,7 +679,7 @@ class IndexController extends Controller{
       ],
       1=>[
         'class'=>'col-8',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -740,6 +743,7 @@ class IndexController extends Controller{
               'country_id'=>($request->has('country_id')?$request->country_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

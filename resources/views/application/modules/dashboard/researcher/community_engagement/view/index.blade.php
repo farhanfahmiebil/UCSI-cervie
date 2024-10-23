@@ -416,7 +416,7 @@
               <hr>
 
               <!-- card title -->
-              <h4 class="card-title">Team Member</h4>
+              <h4 class="card-title">Community Involvement</h4>
               <!-- end card title -->
 
               <!-- row 1 -->
@@ -461,51 +461,32 @@
 
                           {{-- Check Data Team Members Exist --}}
                         @if($data['team_member'])
-                        {{-- Get Data Team Members --}}
-                  @foreach($data['team_member'] as $key => $value)
-                      <tr id="{{ $value->team_member_id }}">
-                          <td>{{ ($key + 1) }}</td>
-                          <td>{{ $value->name }}</td>
-                          <td>{{ $value->representation_role_name }}</td>
-                          <td>
-                              @if($key != 0)
-                                  <a href="#" class="btn btn-warning remove-team-member">
-                                      <i class="mdi mdi-alpha-x text-white"></i>
-                                  </a>
-                              @endif
-                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->community_engagement_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
-                                  <i class="mdi mdi-trash-can"></i>
-                              </a>
-                          </td>
-                      </tr>
-                  @endforeach
-                  {{-- End Get Data Team Members --}}
+                          {{-- Get Data Team Members --}}
+                          @foreach($data['team_member'] as $key => $value)
+                              <tr id="{{ $value->team_member_id }}">
+                                  <td>{{ ($key + 1) }}</td>
+                                  <td>{{ $value->name }}</td>
+                                  <td>
+                                    <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->community_engagement_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                                        <i class="mdi mdi-trash-can"></i>
+                                    </a>
+                                  </td>
+                              </tr>
+                          @endforeach
+                          {{-- End Get Data Team Members --}}
                         @else
-                            <tr>
-                                <td class="row-number">1</td>
-                                <td colspan="2">
-                                    <div class="form-group">
-                                        <label for="team_member_name">Name</label>
-                                        <input type="text" class="form-control" name="team_member_name[]">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="representation_role_id">Role</label>
-                                        <select class="form-control select2" name="representation_role_id[]">
-                                            <option value="">-- Please Select --</option>
-                                            @if(count($data['general']['representation']['role']) > 0)
-                                                @foreach($data['general']['representation']['role'] as $role)
-                                                    <option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                    </div>
-                                </td>
-                                <td>&nbsp;</td>
-                            </tr>
+                          <tr>
+                            <td class="row-number">1</td>
+                            <td colspan="2">
+                              <div class="form-group">
+                                <label for="team_member_name">Name</label>
+                                <input type="text" class="form-control" name="team_member_name[]">
+                              </div>
+                            </td>
+                            <td>&nbsp;</td>
+                          </tr>
                         @endif
                         {{-- End Check Data Team Members Exist --}}
-
-
 
                       </table>
                       <!-- end table -->
@@ -513,7 +494,7 @@
                       <div class="row text-center pt-3">
                           <div class="col-12">
                               <button type="button" class="btn btn-primary add-new-team-member">
-                                  <i class="mdi mdi-plus"></i> Add New Team Member
+                                  <i class="mdi mdi-plus"></i> Add New Community Involvement
                               </button>
                           </div>
                       </div>
@@ -537,22 +518,8 @@
                       new_row += '<label for="team_member_name">Name</label>';
                       new_row += '<input type="text" class="form-control" name="team_member_name[]">';
                       new_row += '</div>';
-                      new_row += '<div class="form-group">';
-                      new_row += '<label for="representation_role_id">Role</label>';
-                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
-                      new_row += '<option value="">-- Please Select --</option>';
-                      @if(count($data['general']['representation']['role']) > 0)
-                          @foreach($data['general']['representation']['role'] as $role)
-                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
-                          @endforeach
-                      @endif
-                      new_row += '</select>';
-                      new_row += '</div>';
                       new_row += '</td>';
                       new_row += '<td>';
-                      new_row += '<a href="#" class="btn btn-warning remove-team-member">';
-                      new_row += '<i class="mdi-alpha-x text-white"></i>';
-                      new_row += '</a>';
                       new_row += '<a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['id'=>$data['main']->community_engagement_id,'team_member_id'=>0,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">';
                       new_row += '<i class="mdi mdi-trash-can"></i>';
                       new_row += '</a>';

@@ -176,7 +176,7 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -238,6 +238,7 @@ class IndexController extends Controller{
               'representation_category_id'=>$request->representation_category_id,
               'country'=>$country,
               'status_id'=>$request->status_id,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -387,6 +388,7 @@ class IndexController extends Controller{
             'column'=>[
               'patent_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -474,6 +476,7 @@ class IndexController extends Controller{
             'column'=>[
               'patent_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -590,7 +593,7 @@ class IndexController extends Controller{
       ],
       1=>[
         'class'=>'col-8',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -638,7 +641,7 @@ class IndexController extends Controller{
 
         //Convert array to string with commas separating the values
         $country = implode(',',$request->country_id);
-        
+
         //Set Model
         $model['cervie']['researcher']['patent'] = new CervieResearcherPatentProcedure();
 
@@ -659,8 +662,7 @@ class IndexController extends Controller{
               'representation_category_id'=>$request->representation_category_id,
               'country'=>$country,
               'status_id'=>$request->status_id,
-              'remark'=>(($request->remark)?$request->remark:null),
-              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()

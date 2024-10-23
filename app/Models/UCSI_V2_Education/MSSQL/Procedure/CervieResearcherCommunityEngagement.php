@@ -39,7 +39,8 @@ class CervieResearcherCommunityEngagement extends Model{
     // Set Query
     $this->query = 'DECLARE @id INT;
                     EXEC ' . $table . ' ?,?,?,?,?,?,
-                                        ?,?,?,?,?,?, @id OUTPUT;
+                                        ?,?,?,?,?,?,
+                                        ?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -53,6 +54,7 @@ class CervieResearcherCommunityEngagement extends Model{
         $data['column']['sponsor'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -145,7 +147,7 @@ class CervieResearcherCommunityEngagement extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,
                                     ?,?,?,?,?,?,?';
 
     //Get Result
@@ -160,6 +162,7 @@ class CervieResearcherCommunityEngagement extends Model{
         $data['column']['sponsor'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by'],
@@ -229,12 +232,13 @@ class CervieResearcherCommunityEngagement extends Model{
     $table = 'update_cervie_researcher_community_engagement_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['community_engagement_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

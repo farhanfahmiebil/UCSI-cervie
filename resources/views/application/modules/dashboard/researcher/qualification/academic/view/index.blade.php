@@ -119,7 +119,7 @@
               <div class="row">
 
                 <!-- institution -->
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <div class="form-group">
                     <label for="institution_name">University/College/Other</label>
                     <input type="text" class="form-control" id="institution_name" name="institution_name" value="{{ $data['main']->institution_name }}" placeholder="Name">

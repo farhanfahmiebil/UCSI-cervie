@@ -147,7 +147,7 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -163,7 +163,7 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-account-group"></i>',
         'name'=>' Member',
       ],
       3=>[
@@ -272,13 +272,13 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
             ]
           ]
         );
-
 
         //If Files Exist
         if($request->has('document')){
@@ -328,6 +328,35 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
+                  'table_name'=>'cervie_researcher_community_engagement',
+                  'table_id'=>$result['main']['create']->last_insert_id,
+                  'remark'=>(($request->remark)?$request->remark:null),
+                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+                  'created_by'=>Auth::id(),
+                ]
+              ]
+            );
+
+          }
+
+        }
+
+        //If Files Exist
+        if($request->has('team_member_name')){
+
+          //Get File Loop
+          foreach($request->team_member_name as $key=>$value){
+
+            //Set Model Evidence
+            $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+            //Create Evidence
+            $result['team']['member']['create'] = $model['cervie']['researcher']['team']['member']->createRecord(
+              [
+                'column'=>[
+                  'employee_id'=>Auth::id(),
+                  'name'=>$value,
+                  'representation_role_id'=>(isset($request->representation_role_id[$key]) ? $request->representation_role_id[$key]:null),
                   'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
@@ -474,6 +503,7 @@ class IndexController extends Controller{
             'column'=>[
               'community_engagement_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -560,6 +590,7 @@ class IndexController extends Controller{
             'column'=>[
               'community_engagement_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -667,6 +698,8 @@ class IndexController extends Controller{
       ]
     );
 
+    // dd($data['team_member']);
+
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
       0=>[
@@ -675,7 +708,7 @@ class IndexController extends Controller{
       ],
       1=>[
         'class'=>'col-8',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -691,14 +724,9 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'class'=>'col-4',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'class'=>'col-9',
+        'icon'=>'<i class="mdi mdi-account-group"></i>',
         'name'=>' Name',
-      ],
-      2=>[
-        'class'=>'col-4',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
-        'name'=>' Role',
       ],
       3=>[
         'icon'=>'<i class="mdi mdi-settings"></i>',
@@ -710,7 +738,7 @@ class IndexController extends Controller{
     $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$request->id.'/';
+    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/community_engagement/'.$request->id.'/';
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -760,6 +788,7 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -860,7 +889,7 @@ class IndexController extends Controller{
                 'column'=>[
                   'employee_id'=>Auth::id(),
                   'name'=>$value,
-                  'representation_role_id'=>$request->representation_role_id[$key],
+                  'representation_role_id'=>(isset($request->representation_role_id[$key]) ? $request->representation_role_id[$key]:null),
                   'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),
@@ -937,6 +966,7 @@ class IndexController extends Controller{
             'column'=>[
               'community_engagement_id'=>$data['team_member']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]

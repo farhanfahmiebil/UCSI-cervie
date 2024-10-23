@@ -136,7 +136,7 @@ class IndexController extends Controller{
         'name'=>'No',
       ],
       1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -190,6 +190,7 @@ class IndexController extends Controller{
               'year_start'=>$request->year_start,
               'year_end'=>$request->year_end,
               'is_current_progress'=>$request->is_current_progress,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -273,7 +274,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Researcher Academic Qualification Added');
+                     ->with('message','Academic Qualification Added');
 
   }
 
@@ -339,6 +340,7 @@ class IndexController extends Controller{
             'column'=>[
               'academic_qualification_id'=>$request->id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -426,6 +428,7 @@ class IndexController extends Controller{
             'column'=>[
               'academic_qualification_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -506,7 +509,7 @@ class IndexController extends Controller{
       ],
       1=>[
         'class'=>'col-8',
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
+        'icon'=>'<i class="mdi mdi-file-account"></i>',
         'name'=>' File',
       ],
       2=>[
@@ -567,6 +570,7 @@ class IndexController extends Controller{
               'year_start'=>$request->year_start,
               'year_end'=>$request->year_end,
               'is_current_progress'=>$request->is_current_progress,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -697,7 +701,7 @@ class IndexController extends Controller{
       foreach($request->document_name as $key=>$value){
 
         $rules['document.' . $key] = ['required', 'mimes:pdf', 'max:3072'];
-        
+
         $messages['document.'.$key.'.required'] = 'Evidence item '.($key + 1).': File is required';
         $messages['document.'.$key.'.mimes'] = 'Evidence item '.($key + 1).': File must be a PDF';
         $messages['document.'.$key.'.max'] = 'Evidence item '.($key + 1).': File size cannot exceed 3MB';

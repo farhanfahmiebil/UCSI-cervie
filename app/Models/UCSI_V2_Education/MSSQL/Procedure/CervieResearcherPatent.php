@@ -41,6 +41,7 @@ class CervieResearcherPatent extends Model{
               EXEC '.$table.' ?,?,?,?,?,
                               ?,?,?,?,?,
                               ?,?,?,?,?,
+                              ?,
                               @id OUTPUT;
               SELECT @id AS id;';
 
@@ -58,6 +59,7 @@ class CervieResearcherPatent extends Model{
         $data['column']['representation_category_id'],
         $data['column']['country'],
         $data['column']['status_id'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -155,7 +157,7 @@ class CervieResearcherPatent extends Model{
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,
                                     ?,?,?,?,?,
                                     ?,?,?,?,?,
-                                    ?;';
+                                    ?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -172,6 +174,7 @@ class CervieResearcherPatent extends Model{
         $data['column']['representation_category_id'],
         $data['column']['country'],
         $data['column']['status_id'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by']
@@ -215,12 +218,13 @@ class CervieResearcherPatent extends Model{
     $table = 'update_cervie_researcher_patent_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['patent_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

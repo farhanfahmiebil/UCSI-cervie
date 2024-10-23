@@ -38,7 +38,7 @@ class CervieResearcherLinkage extends Model{
 
     // Set Query
     $this->query = 'DECLARE @id INT;
-                    EXEC ' . $table . ' ?,?,?,?,?,?,
+                    EXEC ' . $table . ' ?,?,?,?,?,?,?,
                                         ?,?,?,?,?,?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
@@ -54,6 +54,7 @@ class CervieResearcherLinkage extends Model{
         $data['column']['country_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by'],
@@ -147,7 +148,7 @@ class CervieResearcherLinkage extends Model{
 // dd($data);
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,
-                                    ?,?,?,?,?,?,?';
+                                    ?,?,?,?,?,?,?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -162,6 +163,7 @@ class CervieResearcherLinkage extends Model{
         $data['column']['country_id'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['updated_by'],
@@ -228,12 +230,13 @@ class CervieResearcherLinkage extends Model{
     $table = 'update_cervie_researcher_linkage_verification';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['linkage_id'],
         $data['column']['employee_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

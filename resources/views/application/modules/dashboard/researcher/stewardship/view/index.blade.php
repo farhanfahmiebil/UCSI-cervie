@@ -12,6 +12,39 @@
       <!-- row -->
       <div class="row">
 
+        <!-- alert -->
+        <div class="col-12">
+
+          {{-- Check Table Control Evidence Need Exist --}}
+          @if($data['cervie']['researcher']['table']['control']->evidence_need)
+
+            {{-- Check Data Evidence Exist --}}
+            @if(!$data['evidence'])
+
+            <div class="alert alert-warning" role="alert">
+              There is no Evidence to be displayed as Public, This Record will be mark as Pending
+            </div>
+
+            @endif
+            {{-- End Check Data Evidence Exist --}}
+
+          @endif
+          {{-- End Check Table Control Evidence Need Exist --}}
+
+
+          {{-- Check Data Main --}}
+          @if($data['main']->need_verification)
+
+          <div class="alert alert-warning" role="alert">
+            This Record is still Pending for Administrator to make Verification
+          </div>
+
+          @endif
+          {{-- End Check Data Main --}}
+
+        </div>
+        <!-- end alert -->
+
         <!-- col -->
         <div class="col-12 grid-margin stretch-card">
 
@@ -43,7 +76,7 @@
                 <!-- representation category id -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="representation_category_id">Award Type</label>
+                    <label for="representation_category_id">Stewardship Type</label>
                     <select class="form-control select2" id="representation_category_id" name="representation_category_id">
                       <option value="">-- Please Select --</option>
 
@@ -67,7 +100,7 @@
                 <!-- date award -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="date_award">Date Award</label>
+                    <label for="date_award">Date Stewardship Received</label>
                     <input type="date" class="form-control" id="date_award" name="date_award" value="{{ \Carbon\Carbon::parse($data['main']->date_award)->format('Y-m-d') }}" placeholder="">
                   </div>
                 </div>
@@ -91,7 +124,7 @@
                 <!-- title -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="title">Award Title</label>
+                    <label for="title">Stewardship Title</label>
                     <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->title }}" placeholder="Award Title">
                   </div>
                 </div>
