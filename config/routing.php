@@ -27,10 +27,16 @@ return[
                               **************************************************************************************/
                               'landing'=>[
 
-                                          'controller'=>'Application\Modules\Landing',
-                                          'view'=>'application.modules.landing',
-                                          'name'=>'application.modules.landing',
-                                          'layout'=>'application.layouts.modules.landing',
+                                  /* CERVIE
+                                  **************************************************************************************/
+                                  'cervie'=>[
+
+                                        'controller'=>'Application\Modules\Landing\Cervie',
+                                        'view'=>'application.modules.landing.cervie',
+                                        'name'=>'application.modules.landing.cervie',
+                                        'layout'=>'application.layouts.modules.landing.cervie',
+
+                                  ], //End CERVIE
 
                               ], //End Landing
 
