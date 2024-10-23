@@ -407,7 +407,14 @@ class IndexController extends Controller{
         ]
       ]
     );
-
+// dd([
+//   'column'=>[
+//     'category'=>'PORTAL',
+//     'user_type'=>strtoupper('administrator'),
+//     'navigation_category_code'=>'GENERAL_INFORMATION',
+//     'domain_url'=>$request->root()
+//   ]
+// ]);
     //Set Model Researcher - Employee Profile
     $model['employee']['profile'] = new EmployeeProfileProcedure();
 

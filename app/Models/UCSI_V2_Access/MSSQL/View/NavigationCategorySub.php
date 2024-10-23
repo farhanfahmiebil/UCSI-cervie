@@ -45,7 +45,8 @@ class NavigationCategorySub extends Model{
     $result = DB::connection($this->connection)->table($this->table)
                                                ->where($this->table.'.category',$data['column']['category'])
                                                ->where($this->table.'.user_type',$data['column']['user_type'])
-                                               ->where($this->table.'.remark',$data['column']['domain_url'])
+                                               // ->where($this->table.'.remark',$data['column']['domain_url'])
+                                               ->where($this->table.'.domain_url',$data['column']['domain_url'])
                                                ->orderBy($this->table.'.ordering','ASC');
                                                // dd($data);
 // print_r($result->toSql());exit();
