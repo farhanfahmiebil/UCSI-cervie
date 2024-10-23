@@ -116,6 +116,8 @@ class RouteServiceProvider extends ServiceProvider{
           require base_path($this->path['configuration'].'web.php');
           require base_path($this->path['configuration'].'ajax.php');
 
+          require base_path($this->path['landing'].'cervie/index.php');
+
           /* Authorization
           **************************************************************************************/
           Route::prefix('authorization')->group(function(){

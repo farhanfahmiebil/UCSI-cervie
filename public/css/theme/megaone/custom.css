@@ -1,0 +1,17 @@
+.stats-box .serial-box{
+    height:auto;
+    background: transparent;
+    -webkit-box-shadow:none;
+    box-shadow:none;
+}
+
+  /* Apply nth-child to the column (parent) */
+.stats-box:nth-child(odd) .serial-box:hover {
+    background: transparent;
+    box-shadow: 10px 10px rgba(21, 140, 147, 1);
+}
+
+.stats-box:nth-child(even) .serial-box:hover {
+    background: transparent;
+    box-shadow: 10px 10px rgba(210, 215, 227, 1) !important;
+}
