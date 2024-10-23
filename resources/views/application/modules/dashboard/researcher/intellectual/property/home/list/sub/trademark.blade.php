@@ -11,14 +11,14 @@
       <div class="d-flex align-items-center justify-content-between">
 
         <!-- title -->
-				<h4 class="card-title mb-2">Researcher Position</h4>
+				<h4 class="card-title mb-2">Trademark</h4>
         <!-- end title -->
 
         <!-- dropdown -->
 				<div class="dropdown">
-          <a href="{{ route($hyperlink['page']['position']['new']) }}" class="btn btn-light px-1">
+          <a href="{{ route($hyperlink['page']['trademark']['new']) }}" class="btn btn-light px-1">
             <i class="mdi mdi-plus text-dark"></i>
-            New Position
+            New Trademark
           </a>
 				</div>
         <!-- end dropdown -->
@@ -43,51 +43,48 @@
             @endphp
 
             {{-- Check Table Column Exist --}}
-            @if(isset($data['table']['column']['cervie']['researcher']['position']) && count($data['table']['column']['cervie']['researcher']['position']) >= 1)
+            @if(isset($data['table']['column']['cervie']['researcher']['trademark']) && count($data['table']['column']['cervie']['researcher']['trademark']) >= 1)
 
-                {{-- Get Table Column Data --}}
-                @foreach($data['table']['column']['cervie']['researcher']['position'] as $key => $value)
+              {{-- Get Table Column Data --}}
+              @foreach($data['table']['column']['cervie']['researcher']['trademark'] as $key => $value)
 
-                    {{-- Check if the column is of category 'checkbox' --}}
-                    @if(isset($value['category']) && $value['category'] == 'checkbox')
+                  {{-- Check if the column is of category 'checkbox' --}}
+                  @if(isset($value['category']) && $value['category'] == 'checkbox')
 
-                      <td>{!! $value['checkbox'] !!}</td>
+                    @php
 
+                      //Set Checkbox Status
+                      $checkbox['status'] = true;
+
+                    @endphp
+
+                    <td>{!! $value['checkbox'] !!}</td>
+
+                  @else
+
+                    {{-- Check if 'class' is set and apply it --}}
+                    @if(isset($value['class']) && !empty($value['class']))
+                      <td class="{{ $value['class'] }}">
                     @else
-
-                      {{-- Check if 'class' is set and apply it --}}
-                      @if(isset($value['class']) && !empty($value['class']))
-
-                        @php
-
-                          //Set Checkbox Status
-                          $checkbox['status'] = true;
-
-                        @endphp
-
-                        <td class="{{ $value['class'] }}">
-
-                      @else
-                        <td>
-                      @endif
-
-                        {{-- Output the icon and name --}}
-                        {!! isset($value['icon']) ? $value['icon'] : '' !!}
-                        {{ isset($value['name']) ? $value['name'] : '' }}
-
-                      </td>
-
+                      <td>
                     @endif
-                    {{-- End Check if the column is of category 'checkbox' --}}
 
-                @endforeach
-                {{-- End Get Table Column Data --}}
+                      {{-- Output the icon and name --}}
+                      {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                      {{ isset($value['name']) ? $value['name'] : '' }}
+
+                    </td>
+
+                  @endif
+                  {{-- End Check if the column is of category 'checkbox' --}}
+
+              @endforeach
+              {{-- End Get Table Column Data --}}
 
             @else
-                <th>Column Not Defined</th>
+              <th>Column Not Defined</th>
             @endif
             {{-- End Check Table Column Data Exist --}}
-
 
           </thead>
           <!-- end thead -->
@@ -95,36 +92,35 @@
           <!-- tbody -->
           <tbody>
 
-            {{-- Check Researcher Position Exist --}}
-            @if(count($data['main']['cervie']['researcher']['position']) > 0)
+            {{-- Check Researcher Trademark Exist --}}
+            @if(count($data['main']['cervie']['researcher']['trademark'])>0)
 
-              {{-- Get Researcher Position Data --}}
-              @foreach($data['main']['cervie']['researcher']['position'] as $key=>$value)
+              {{-- Get Researcher Trademark Data --}}
+              @foreach($data['main']['cervie']['researcher']['trademark'] as $key=>$value)
 
-                <tr id="{{ $value->position_id }}">
+                <tr id="{{ $value->trademark_id }}">
 
                   {{-- Check if Checkbox Status True --}}
                   @if($checkbox['status'])
                     <td>
                       <div class="form-check-label">
-                        <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->position_id }}"/>
-                      </div>
+                        <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->trademark_id }}"/>
+  										</div>
                     </td>
                   @endif
                   {{-- End Check if Checkbox Status True --}}
 
                   <td>{{ ($key+1) }}</td>
-                  <td>{{ $value->name }}</td>
-                  <td>{{ $value->organization_name }}</td>
-                  <td>{{ \Carbon\Carbon::parse($value->date_start)->format('d F Y') }} - {{ \Carbon\Carbon::parse($value->date_end)->format('d F Y') }}</td>
+                  <td>{{ $value->title }}</td>
+                  <td>{{ \Carbon\Carbon::parse($value->date_filing)->format('d F Y') }}</td>
                   <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
                   <td>
 
-                    <a href="{{ route($hyperlink['page']['position']['view'],['id'=>$value->position_id]) }}" class="btn btn-sm btn-secondary">
+                    <a href="{{ route($hyperlink['page']['trademark']['view'],['id'=>$value->trademark_id]) }}" class="btn btn-sm btn-secondary">
                       <i class="mdi mdi-pencil"></i>
                     </a>
 
-                    <a data-href="{{ route($hyperlink['page']['position']['delete']) }}" class="modal-delete-position btn btn-sm btn-danger">
+                    <a data-href="{{ route($hyperlink['page']['trademark']['delete']) }}" class="btn-delete-trademark btn-sm btn btn-danger">
                       <i class="mdi mdi-trash-can text-white"></i>
                     </a>
 
@@ -132,16 +128,16 @@
                 </tr>
 
               @endforeach
-              {{-- End Get Researcher Position Data --}}
+              {{-- End Get Researcher Trademark Data --}}
 
             @else
 
-              <tr>
-                <td colspan="{{ count($data['table']['column']['cervie']['researcher']['position']) }}">No Data</td>
+              <tr class="text-center">
+                <td colspan="{{ count($data['table']['column']['cervie']['researcher']['trademark']) }}">No Data</td>
               </tr>
 
             @endif
-            {{-- End Check Researcher Position Exist --}}
+            {{-- End Check Researcher Trademark Exist --}}
 
           </tbody>
           <!-- end tbody -->
@@ -153,10 +149,10 @@
         <div class="col-12 pt-3">
 
           {{-- Check Main Data Exist --}}
-          @if(count($data['main']['cervie']['researcher']['position']) >= 1)
+          @if(count($data['main']['cervie']['researcher']['trademark']) >= 1)
 
             <!-- paginate -->
-            {{ $data['main']['cervie']['researcher']['position']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+            {{ $data['main']['cervie']['researcher']['trademark']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
             <!-- end paginate -->
 
           @endif
@@ -187,7 +183,7 @@
     /**************************************************************************************
       Modal Delete
     **************************************************************************************/
-    $('[class*="modal-delete-position"]').on('click',function(event){
+    $('[class*="btn-delete-trademark"]').on('click',function(event){
 
       //Set Parent Row
       var parent_row = $(this).closest('tr').attr('id');

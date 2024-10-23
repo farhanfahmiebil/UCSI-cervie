@@ -18,13 +18,12 @@ use App\Http\Controllers\Controller;
 //Model View
 use App\Models\UCSI_V2_General\MSSQL\View\CurrencyCode AS CurrencyCodeView;
 use App\Models\UCSI_V2_General\MSSQL\View\Country AS CountryView;
-use App\Models\UCSI_V2_General\MSSQL\View\PatentFieldInventionCategory AS PatentFieldInventionCategoryView;
 use App\Models\UCSI_V2_General\MSSQL\View\RepresentationCategory AS RepresentationCategoryView;
 use App\Models\UCSI_V2_Education\MSSQL\View\Status AS StatusView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
-use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherPatent AS CervieResearcherPatentProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLicensing AS CervieResearcherLicensingProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 
 //Get Request
@@ -49,7 +48,7 @@ class IndexController extends Controller{
 	protected $header = [
 		'application'=>'Dashboard',
     'category'=>'Intellectual Property',
-		'module'=>'Patent',
+		'module'=>'Licensing',
 		'module_sub'=>'',
     'item'=>'',
 		'gate'=>''
@@ -70,8 +69,8 @@ class IndexController extends Controller{
 	public function routePath(){
 
 		//Set Route View
-		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.intellectual.property.patent.';
-    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.intellectual.property.patent.';
+		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.intellectual.property.licensing.';
+    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.intellectual.property.licensing.';
 
     //Set Navigation
 		$this->page['sub'] = $this->route['view'];
@@ -116,12 +115,6 @@ class IndexController extends Controller{
 		$data['title'] = array($this->header['category'],$this->header['module']);
 
     //Set Model General Currency Code
-    $model['general']['patent']['field']['invention']['category'] = new PatentFieldInventionCategoryView();
-
-    //Get General Currency Code
-    $data['general']['patent']['field']['invention']['category'] = $model['general']['patent']['field']['invention']['category']->selectBox();
-
-    //Set Model General Currency Code
     $model['general']['currency']['code'] = new CurrencyCodeView();
 
     //Get General Currency Code
@@ -134,7 +127,7 @@ class IndexController extends Controller{
     $data['general']['representation']['category'] = $model['general']['representation']['category'] ->selectBox(
       [
         'column'=>[
-          'category'=>'PATENT'
+          'category'=>'LICENSING'
         ]
       ]
     );
@@ -152,7 +145,7 @@ class IndexController extends Controller{
     $data['general']['status'] = $model['general']['status'] ->selectBox(
       [
         'column'=>[
-          'table'=>'cervie_researcher_patent'
+          'table'=>'cervie_researcher_licensing'
         ]
       ]
     );
@@ -164,7 +157,7 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_patent'
+          'table_control_id'=>'cervie_researcher_licensing'
         ]
       ]
     );
@@ -217,27 +210,25 @@ class IndexController extends Controller{
         $this->getValidateData($request);
 
         //Convert array to string with commas separating the values
-        $country = implode(',',$request->country_id);
+        $country = implode(',',$request->country);
 
         //Set Model
-        $model['cervie']['researcher']['patent'] = new CervieResearcherPatentProcedure();
+        $model['cervie']['researcher']['licensing'] = new CervieResearcherLicensingProcedure();
 
         //Create Main
-        $result['main']['create'] = $model['cervie']['researcher']['patent']->createRecord(
+        $result['main']['create'] = $model['cervie']['researcher']['licensing']->createRecord(
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'patent_title'=>$request->patent_title,
-              'patent_no'=>$request->patent_no,
-              'patent_field_invention_category_id'=>$request->patent_field_invention_category_id,
-              'patent_field_invention_category_other'=>(($request->has('patent_field_invention_category_other'))?$request->patent_field_invention_category_other:null),
-              'date_filing'=>$request->date_filing,
-              'date_approval'=>$request->date_approval,
-              'currency_code_id'=>$request->currency_code_id,
+              'technology_name'=>$request->technology_name,
+              'licensing_name'=>$request->licensing_name,
+              'date_start'=>$request->date_start,
+              'date_end'=>$request->date_end,
               'amount'=>$request->amount,
               'representation_category_id'=>$request->representation_category_id,
               'country'=>$country,
               'status_id'=>$request->status_id,
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -261,7 +252,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set Path Folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/patent/'.$result['main']['create']->last_insert_id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/licensing/'.$result['main']['create']->last_insert_id.'/';
 
             //Set Modified File Name Without Extension (Using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($key+1);
@@ -293,7 +284,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_patent',
+                  'table_name'=>'cervie_researcher_licensing',
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -321,7 +312,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Patent Added');
+                     ->with('message','Licensing Added');
 
   }
 
@@ -346,20 +337,20 @@ class IndexController extends Controller{
       case 'delete':
 
         //Set Model
-        $model['cervie']['researcher']['patent'] = new CervieResearcherPatentProcedure();
+        $model['cervie']['researcher']['licensing'] = new CervieResearcherLicensingProcedure();
 
         //Delete Main
-        $result['main']['delete'] = $model['cervie']['researcher']['patent']->deleteRecord(
+        $result['main']['delete'] = $model['cervie']['researcher']['licensing']->deleteRecord(
           [
             'column'=>[
-              'patent_id'=>$request->id,
+              'licensing_id'=>$request->id,
               'employee_id'=>Auth::id()
             ]
           ]
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/patent/'.$request->id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/licensing/'.$request->id.'/';
 
         //Check If The Folder Already Exists In Storage
         $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
@@ -375,19 +366,20 @@ class IndexController extends Controller{
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'table_name'=>'cervie_researcher_patent',
+              'table_name'=>'cervie_researcher_licensing',
               'table_id'=>$request->id
             ]
           ]
         );
 
         //Set Main Verification
-        $data['main']['verification'] = $model['cervie']['researcher']['patent']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['licensing']->needVerification(
           [
             'column'=>[
-              'patent_id'=>$request->id,
+              'licensing_id'=>$request->id,
               'employee_id'=>Auth::id(),
-              'updated_by'=>Auth::id()
+              'updated_by'=>Auth::id(),
+              'need_verification'=>1
             ]
           ]
         );
@@ -399,7 +391,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'])
                      ->with('alert_type','success')
-                     ->with('message','Patent Deleted');
+                     ->with('message','Licensing Deleted');
 
   }
 
@@ -438,7 +430,7 @@ class IndexController extends Controller{
         );
 
         //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/patent/'.$data['evidence']->table_id.'/';
+        $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/licensing/'.$data['evidence']->table_id.'/';
 
         //Set Modified File Name Without Extension (Using last_insert_id)
         $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
@@ -466,14 +458,15 @@ class IndexController extends Controller{
         );
 
         //Set Model
-        $model['cervie']['researcher']['patent'] = new CervieResearcherPatentProcedure();
+        $model['cervie']['researcher']['licensing'] = new CervieResearcherLicensingProcedure();
 
         //Set Main Verification
-        $data['main']['verification'] = $model['cervie']['researcher']['patent']->needVerification(
+        $data['main']['verification'] = $model['cervie']['researcher']['licensing']->needVerification(
           [
             'column'=>[
-              'patent_id'=>$data['evidence']->table_id,
+              'licensing_id'=>$data['evidence']->table_id,
               'employee_id'=>Auth::id(),
+              'need_verification'=>1,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -501,18 +494,6 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Set Model General Currency Code
-    $model['general']['patent']['field']['invention']['category'] = new PatentFieldInventionCategoryView();
-
-    //Get General Currency Code
-    $data['general']['patent']['field']['invention']['category'] = $model['general']['patent']['field']['invention']['category']->selectBox();
-
-    //Set Model General Currency Code
-    $model['general']['currency']['code'] = new CurrencyCodeView();
-
-    //Get General Currency Code
-    $data['general']['currency']['code'] = $model['general']['currency']['code'] ->selectBox();
-
     //Set Model General Representation Category
     $model['general']['representation']['category'] = new RepresentationCategoryView();
 
@@ -520,7 +501,7 @@ class IndexController extends Controller{
     $data['general']['representation']['category'] = $model['general']['representation']['category'] ->selectBox(
       [
         'column'=>[
-          'category'=>'PATENT'
+          'category'=>'LICENSING'
         ]
       ]
     );
@@ -538,7 +519,7 @@ class IndexController extends Controller{
     $data['general']['status'] = $model['general']['status'] ->selectBox(
       [
         'column'=>[
-          'table'=>'cervie_researcher_patent'
+          'table'=>'cervie_researcher_licensing'
         ]
       ]
     );
@@ -550,19 +531,19 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_patent'
+          'table_control_id'=>'cervie_researcher_licensing'
         ]
       ]
     );
 
     //Set Model
-    $model['cervie']['researcher']['patent'] = new CervieResearcherPatentProcedure();
+    $model['cervie']['researcher']['licensing'] = new CervieResearcherLicensingProcedure();
 
     //Set Main
-    $data['main'] = $model['cervie']['researcher']['patent']->readRecord(
+    $data['main'] = $model['cervie']['researcher']['licensing']->readRecord(
       [
         'column'=>[
-          'patent_id'=>$request->id,
+          'licensing_id'=>$request->id,
           'employee_id'=>Auth::id(),
         ]
       ]
@@ -576,7 +557,7 @@ class IndexController extends Controller{
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'table_name'=>'cervie_researcher_patent',
+          'table_name'=>'cervie_researcher_licensing',
           'table_id'=>$request->id
         ]
       ]
@@ -600,10 +581,10 @@ class IndexController extends Controller{
     ];
 
     //Set Asset
-    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/patent/'.$request->id.'/';
+    $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/licensing/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/patent/'.$request->id.'/';
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/licensing/'.$request->id.'/';
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
@@ -637,30 +618,26 @@ class IndexController extends Controller{
         $this->getValidateData($request);
 
         //Convert array to string with commas separating the values
-        $country = implode(',',$request->country_id);
+        $country = implode(',',$request->country);
 
         //Set Model
-        $model['cervie']['researcher']['patent'] = new CervieResearcherPatentProcedure();
+        $model['cervie']['researcher']['licensing'] = new CervieResearcherLicensingProcedure();
 
         //Update Main
-        $result['main']['update'] = $model['cervie']['researcher']['patent']->updateRecord(
+        $result['main']['update'] = $model['cervie']['researcher']['licensing']->updateRecord(
           [
             'column'=>[
-              'patent_id'=>$request->id,
+              'licensing_id'=>$request->id,
               'employee_id'=>Auth::id(),
-              'patent_title'=>$request->patent_title,
-              'patent_no'=>$request->patent_no,
-              'patent_field_invention_category_id'=>$request->patent_field_invention_category_id,
-              'patent_field_invention_category_other'=>(($request->has('patent_field_invention_category_other'))?$request->patent_field_invention_category_other:null),
-              'date_filing'=>$request->date_filing,
-              'date_approval'=>$request->date_approval,
-              'currency_code_id'=>$request->currency_code_id,
+              'technology_name'=>$request->technology_name,
+              'licensing_name'=>$request->licensing_name,
+              'date_start'=>$request->date_start,
+              'date_end'=>$request->date_end,
               'amount'=>$request->amount,
               'representation_category_id'=>$request->representation_category_id,
               'country'=>$country,
               'status_id'=>$request->status_id,
-              'remark'=>(($request->remark)?$request->remark:null),
-              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -682,7 +659,7 @@ class IndexController extends Controller{
               [
                 'column'=>[
                   'employee_id'=>Auth::id(),
-                  'table_name'=>'cervie_researcher_patent',
+                  'table_name'=>'cervie_researcher_licensing',
                   'table_id'=>$request->id
                 ]
               ]
@@ -701,7 +678,7 @@ class IndexController extends Controller{
             $file['extension'] = $value->getClientOriginalExtension();
 
             //Set path folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/patent/'.$request->id.'/';
+            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/licensing/'.$request->id.'/';
 
             //Set modified file name without extension (using last_insert_id)
             $file['name']['modified']['without']['extension'] = ($counter+1);
@@ -733,7 +710,7 @@ class IndexController extends Controller{
                   'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_patent',
+                  'table_name'=>'cervie_researcher_licensing',
                   'table_id'=>$request->id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -753,7 +730,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Patent Saved');
+                     ->with('message','Licensing Saved');
 
   }
 
@@ -764,32 +741,26 @@ class IndexController extends Controller{
 
     //Define validation rules
     $rules = [
-      'patent_title'=>['required'],
-      'patent_no'=>['required'],
-      'patent_field_invention_category_id'=>['required'],
-      'patent_field_invention_category_other'=>['required_if:patent_field_invention_category_id,21'],
-      'date_filing'=>['required'],
-      'date_approval'=>['required'],
-      'currency_code_id'=>['required'],
+      'technology_name'=>['required'],
+      'licensing_name'=>['required'],
+      'date_start'=>['required'],
+      'date_end'=>['required'],
       'amount'=>['required'],
       'representation_category_id'=>['required'],
-      'country_id'=>['required'],
+      'country'=>['required'],
       'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
       'document_name.*'=>['required'], // Validate that each file has an associated name
     ];
 
     //Custom validation messages
     $messages = [
-      'patent_title.required'=>'Patent Title is required',
-      'patent_no.required'=>'Patent No is required',
-      'patent_field_invention_category_id.required'=>'Patent Field Invention is required',
-      'patent_field_invention_category_other.required_if'=>'Please specify the Field Invention for Other Category.', // Custom message for the conditional validation
-      'date_filing.required'=>'Date Filing is required',
-      'date_approval.required'=>'Date Approval is required',
-      'currency_code_id.required'=>'Currency Code is required',
-      'amount.required'=>'Patent Amount is required',
-      'representation_category_id.required'=>'Patent Level is required',
-      'country_id.required'=>'Country is required',
+      'technology_name.required'=>'Technology Name is required',
+      'licensing_name.required'=>'Licensing Name is required',
+      'date_start.required'=>'Date Start is required',
+      'date_end.required'=>'Date End is required',
+      'amount.required'=>'Amount is required',
+      'representation_category_id.required'=>'Licensing Level is required',
+      'country.required'=>'Country is required',
     ];
 
     //If Document Name Exist

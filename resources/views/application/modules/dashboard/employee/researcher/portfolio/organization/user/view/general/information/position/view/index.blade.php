@@ -431,13 +431,13 @@
     /**************************************************************************************
       Session
     **************************************************************************************/
-    @if(Session('message'))
-      Swal.fire({
-        title: '{{ ucwords(Session::get('alert_type')) }}',
-        text: '{{ ucwords(Session::get('message')) }}',
-        icon: '{{ strtolower(Session::get('alert_type')) }}'
-      });
-    @endif
+    // @if(Session('message'))
+    //   Swal.fire({
+    //     title: '{{ ucwords(Session::get('alert_type')) }}',
+    //     text: '{{ ucwords(Session::get('message')) }}',
+    //     icon: '{{ strtolower(Session::get('alert_type')) }}'
+    //   });
+    // @endif
 
     /**************************************************************************************
       Modal Delete

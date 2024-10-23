@@ -17,8 +17,8 @@
     <!-- row 2 -->
     <div class="row">
 
-      {{-- Licensing
-      @include($page['sub'].'.licensing') --}}
+      {{-- Licensing --}}
+      @include($page['sub'].'.licensing')
 
     </div>
     <!-- end row 2 -->
@@ -26,8 +26,8 @@
     <!-- row 3 -->
     <div class="row">
 
-      {{-- Copyright
-      @include($page['sub'].'.copyright') --}}
+      {{-- Copyright --}}
+      @include($page['sub'].'.copyright')
 
     </div>
     <!-- end row 3 -->
@@ -35,8 +35,8 @@
     <!-- row 4 -->
     <div class="row">
 
-      {{-- Trademark
-      @include($page['sub'].'.trademark') --}}
+      {{-- Trademark --}}
+      @include($page['sub'].'.trademark')
 
     </div>
     <!-- end row 4 -->

@@ -283,6 +283,7 @@ class IndexController extends Controller{
               'user_position_id'=>null,
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
+              'need_verification'=>0,
               'is_current_position'=>(($request->is_current_position)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -659,7 +660,7 @@ class IndexController extends Controller{
     }
 
     //Return to Selected Tab Category Route
-    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+    return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id,'id'=>$request->id])
                      ->with('alert_type','success')
                      ->with('message','Evidence Deleted');
 
@@ -798,7 +799,7 @@ class IndexController extends Controller{
     $asset['document'] = '/public/resources/researcher/'.$request->employee_id.'/document/position/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.$request->employee_id.'/document/position/'.$request->id.'/';
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.$request->employee_id.'/document/position/'.$request->id.'/';
 
 
     //Get Form Token
@@ -849,6 +850,7 @@ class IndexController extends Controller{
               'user_position_id'=>null,
               'date_start'=>$request->date_start,
               'date_end'=>$request->date_end,
+              'need_verification'=>0,
               'is_current_position'=>(($request->is_current_position)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),

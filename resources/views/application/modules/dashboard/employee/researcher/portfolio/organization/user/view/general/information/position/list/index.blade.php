@@ -12,12 +12,12 @@
       <!-- end title -->
 
       <!-- dropdown -->
-      <div class="dropdown">
+      <!-- <div class="dropdown">
         <a href="{{ route($hyperlink['page']['new'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light px-1">
           <i class="bi bi-plus text-dark"></i>
           New Position
         </a>
-      </div>
+      </div> -->
       <!-- end dropdown -->
 
     </div>

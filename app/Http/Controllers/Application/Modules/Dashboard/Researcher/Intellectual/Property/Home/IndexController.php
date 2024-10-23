@@ -142,17 +142,17 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
-    /*  Researcher Position
+    /*  Researcher Patent
    	**************************************************************************************/
 
-    //Set Table Researcher Position
+    //Set Table Researcher Patent
     $data['table']['column']['cervie']['researcher']['patent'] = $this->getDataTable(
       [
         'category'=>'patent'
       ]
     );
 
-    //Set Main Data Researcher Position
+    //Set Main Data Researcher Patent
     $data['main']['cervie']['researcher']['patent'] = $this->getData(
       [
         'eloquent'=>'pagination',
@@ -160,74 +160,61 @@ class IndexController extends Controller{
       ]
     );
 
-    /*  Researcher Area Interest
+    /*  Researcher Licensing
    	**************************************************************************************/
 
-    //Set Table Researcher Area Interest
-    // $data['table']['column']['cervie']['researcher']['area']['interest'] = $this->getDataTable(
-    //   [
-    //     'category'=>'area_interest'
-    //   ]
-    // );
+    // Set Table Researcher Licensing
+    $data['table']['column']['cervie']['researcher']['licensing'] = $this->getDataTable(
+      [
+        'category'=>'licensing'
+      ]
+    );
 
-    //Set Main Data Researcher Area Interest
-    // $data['main']['cervie']['researcher']['area']['interest'] = $this->getData(
-    //   [
-    //     'eloquent'=>'pagination',
-    //     'category'=>'area_interest'
-    //   ]
-    // );
+    // Set Main Data Researcher Licensing
+    $data['main']['cervie']['researcher']['licensing'] = $this->getData(
+      [
+        'eloquent'=>'pagination',
+        'category'=>'licensing'
+      ]
+    );
 
-    /*  Researcher Work Experience
+    /*  Researcher Copyright
    	**************************************************************************************/
 
-    //Set Table Researcher Work Experience
-    // $data['table']['column']['cervie']['researcher']['work']['experience'] = $this->getDataTable(
-    //   [
-    //     'category'=>'work_experience'
-    //   ]
-    // );
+    //Set Table Researcher Copyright
+    $data['table']['column']['cervie']['researcher']['copyright'] = $this->getDataTable(
+      [
+        'category'=>'copyright'
+      ]
+    );
 
-    //Set Main Data Researcher Area Interest
-    // $data['main']['cervie']['researcher']['work']['experience'] = $this->getData(
-    //   [
-    //     'eloquent'=>'pagination',
-    //     'category'=>'work_experience'
-    //   ]
-    // );
+    // Set Main Data Researcher Copyright
+    $data['main']['cervie']['researcher']['copyright'] = $this->getData(
+      [
+        'eloquent'=>'pagination',
+        'category'=>'copyright'
+      ]
+    );
 
     /*  Researcher Professional Membership
     **************************************************************************************/
 
-    //Set Table Researcher Professional Membership
-    // $data['table']['column']['cervie']['researcher']['professional']['membership'] = $this->getDataTable(
-    //   [
-    //     'category'=>'professional_membership'
-    //   ]
-    // );
+    //Set Table Researcher Copyright
+    $data['table']['column']['cervie']['researcher']['trademark'] = $this->getDataTable(
+      [
+        'category'=>'trademark'
+      ]
+    );
 
-    //Set Model Professional Membership Level
-    // $model['general']['professional']['membership']['level'] = new ProfessionalMembershipLevel();
-    // $data['general']['professional']['membership']['level'] = $model['general']['professional']['membership']['level']->selectBox();
-    //
-    // //Get General Professional Membership Level
-    // foreach($data['general']['professional']['membership']['level'] as $key=>$value){
-    //
-    //   //Set Main Data Researcher Professional Membership
-    //   $data['main']['cervie']['researcher']['professional']['membership'][$value->professional_membership_level_id] = $this->getData(
-    //     [
-    //       'eloquent'=>'pagination',
-    //       'category'=>'professional_membership',
-    //       'column'=>[
-    //         'professional_membership_level_id'=>$value->professional_membership_level_id
-    //       ]
-    //     ]
-    //   );
-    //
-    // }
-    // dd($data['main']['cervie']['researcher']['professional']['membership']);
-// dd($data['main']['cervie']['researcher']['professional']['membership'][1]);
-    // dd(count($data['main']['cervie']['researcher']['position']));
+    // Set Main Data Researcher Copyright
+    $data['main']['cervie']['researcher']['trademark'] = $this->getData(
+      [
+        'eloquent'=>'pagination',
+        'category'=>'trademark'
+      ]
+    );
+
+
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
 
@@ -277,7 +264,7 @@ class IndexController extends Controller{
       break;
 
       //Area Interest
-      case 'area_interest':
+      case 'licensing':
 
         //Defined Column
         $table = [
@@ -287,15 +274,22 @@ class IndexController extends Controller{
             'name'=>'No',
           ],
           1=>[
-            'class'=>'col-md-8',
             'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Area Interest',
+            'name'=>' Licensing Title',
+          ],
+          2=>[
+            'icon'=>'<i class="mdi mdi-calendar"></i>',
+            'name'=>' Date Start',
           ],
           3=>[
+            'icon'=>'<i class="mdi mdi-calendar"></i>',
+            'name'=>' Date End',
+          ],
+          4=>[
             'icon'=>'<i class="mdi mdi-shield-check"></i>',
             'name'=>' Verification',
           ],
-          2=>[
+          5=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
             'name'=>' Control',
           ]
@@ -303,8 +297,8 @@ class IndexController extends Controller{
 
       break;
 
-      //Work Experience
-      case 'work_experience':
+      //Copyright
+      case 'copyright':
 
         //Defined Column
         $table = [
@@ -315,11 +309,11 @@ class IndexController extends Controller{
           1=>[
             'class'=>'col-md-5',
             'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Company',
+            'name'=>' Copyright Title',
           ],
           2=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Period',
+            'name'=>' Date Filed',
           ],
           3=>[
             'icon'=>'<i class="mdi mdi-shield-check"></i>',
@@ -333,8 +327,11 @@ class IndexController extends Controller{
 
       break;
 
-      //Professional Membership
-      case 'professional_membership':
+      //Trademark
+      case 'trademark':
+
+      //Copyright
+      case 'copyright':
 
         //Defined Column
         $table = [
@@ -343,28 +340,19 @@ class IndexController extends Controller{
             'name'=>'No',
           ],
           1=>[
-            'class'=>'col-*',
+            'class'=>'col-md-5',
             'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Name',
+            'name'=>' Trademark Title',
           ],
           2=>[
-            'class'=>'col-*',
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Role',
+            'icon'=>'<i class="mdi mdi-settings"></i>',
+            'name'=>' Date Filed',
           ],
           3=>[
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Level',
-          ],
-          4=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Period',
-          ],
-          5=>[
             'icon'=>'<i class="mdi mdi-shield-check"></i>',
             'name'=>' Verification',
           ],
-          6=>[
+          4=>[
             'icon'=>'<i class="mdi mdi-settings"></i>',
             'name'=>' Control',
           ]
@@ -412,13 +400,13 @@ class IndexController extends Controller{
       break;
 
       //Area Interest
-      case 'area_interest':
+      case 'licensing':
 
         //Set Model
-        $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterest();
+        $model['cervie']['researcher']['licensing'] = new CervieResearcherLicensingView();
 
         //Set Data
-        $data = $model['cervie']['researcher']['area']['interest']->getList(
+        $data = $model['cervie']['researcher']['licensing']->getList(
           [
             'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
             'column'=>[
@@ -429,14 +417,14 @@ class IndexController extends Controller{
 
       break;
 
-      //Work Experience
-      case 'work_experience':
+      //Copyright
+      case 'copyright':
 
         //Set Model
-        $model['cervie']['researcher']['work']['experience'] = new CervieResearcherWorkExperience();
+        $model['cervie']['researcher']['copyright'] = new CervieResearcherCopyrightView();
 
         //Set Data
-        $data = $model['cervie']['researcher']['work']['experience']->getList(
+        $data = $model['cervie']['researcher']['copyright']->getList(
           [
             'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
             'column'=>[
@@ -448,21 +436,20 @@ class IndexController extends Controller{
       break;
 
       //Professional membership
-      case 'professional_membership':
+      case 'trademark':
 
-        //Set Model
-        $model['cervie']['researcher']['professional']['membership'] = new CervieResearcherProfessionalMembership();
+      //Set Model
+      $model['cervie']['researcher']['trademark'] = new CervieResearcherTrademarkView();
 
-        //Set Data
-        $data = $model['cervie']['researcher']['professional']['membership']->getList(
-          [
-            'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
-            'column'=>[
-              'employee_id'=>Auth::id(),
-              'professional_membership_level_id'=>$data['column']['professional_membership_level_id']
-            ]
+      //Set Data
+      $data = $model['cervie']['researcher']['trademark']->getList(
+        [
+          'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
+          'column'=>[
+            'employee_id'=>Auth::id()
           ]
-        );
+        ]
+      );
 
       break;
 
