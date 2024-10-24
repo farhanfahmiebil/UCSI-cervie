@@ -8,13 +8,16 @@
   {{-- Introduction --}}
   @include($page['sub'].'introduction')
 
+  {{-- Banner --}}
+  @include($page['sub'].'banner')
+
   {{-- Achievement --}}
   @include($page['sub'].'achievement')
 
   {{-- Organization --}}
   @include($page['sub'].'organization')
 
-</section>
-<!-- end organization -->
+  {{-- Researcher --}}
+  @include($page['sub'].'researcher')
 
 @endsection

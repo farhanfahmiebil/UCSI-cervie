@@ -246,6 +246,33 @@ jQuery(function ($) {
        Owl Carousel
        ====================================== */
 
+       /* Testimonial */
+       $('.banner-carousel').owlCarousel({
+           loop: true,
+           smartSpeed: 500,
+           responsiveClass: true,
+           nav:true,
+           dots: true,
+           dotsContainer: ".owl-thumbs",
+           autoplay: true,
+           autoplayHoverPause: true,
+           autoplayTimeout: 3000,
+           responsive: {
+               0: {
+                   items: 1,
+                   margin: 30,
+               },
+               480: {
+                   items: 1,
+                   margin: 30,
+               },
+               992: {
+                   items: 1,
+                   margin: 30,
+               }
+           }
+       });
+
     /* Testimonial */
     $('.testimonial-two').owlCarousel({
         loop: true,

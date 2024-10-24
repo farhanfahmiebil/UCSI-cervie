@@ -30,16 +30,16 @@
         @endif
 
         <!-- column content -->
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12 d-flex align-items-stretch">
 
           <!-- news item -->
-          <div class="news_item shadow blog-two">
+          <div class="news_item shadow blog-two d-flex flex-column">
             <div class="image split-blog-scale">
-              <img src="{{ asset($asset['image'] . 'organization/' . $value->organization_id . '.png') }}" alt="Latest News" class="img-fluid">
+              <img src="{{ asset($asset['image'] . 'organization/' . $value->organization_id . '.png') }}" alt="Latest News" class="img-fluid card-fixed">
             </div>
-            <div class="news_desc">
+            <div class="news_desc mt-auto">
               <h3 class="text-capitalize line-height-normal">
-                <a href="javascript:void(0)" class="color-black">{{ $value->name }} - {{ $value->organization_id }}</a>
+                <a href="javascript:void(0)" class="color-black">{{ $value->name }}</a>
               </h3>
             </div>
           </div>
@@ -47,6 +47,7 @@
 
         </div>
         <!-- end column content -->
+
 
         {{-- Close the row after every 3rd item --}}
         @if(($key + 1) % 3 == 0)

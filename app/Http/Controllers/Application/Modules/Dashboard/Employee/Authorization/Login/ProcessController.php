@@ -143,7 +143,7 @@ class ProcessController extends Controller{
             Auth::loginUsingId(['samaccountname'=>$data['credential']['samaccountname']],false);
 
             //Redirect to Dashboard
-            return redirect()->intended(route($hyperlink['page']['home']['researcher']));
+            return redirect()->intended(route($hyperlink['page']['home']['employee']));
 
           }
 

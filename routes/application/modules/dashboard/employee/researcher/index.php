@@ -137,6 +137,36 @@ Route::prefix('researcher')->group(function(){
 
                 }); //End General
 
+                /* Publication
+                **************************************************************************************/
+                Route::prefix('publication')->group(function(){
+
+                  /*  New
+                  **************************************************************************************/
+                  Route::get('/new', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@new')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.new');
+
+                  /*  Create
+                  **************************************************************************************/
+                  Route::post('/create', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@create')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.create');
+
+                  /*  List
+                  **************************************************************************************/
+                  Route::get('/list', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.list');
+
+                  /*  Delete
+                  **************************************************************************************/
+                  Route::get('/delete', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@delete')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.delete');
+
+                  /*  View
+                  **************************************************************************************/
+                  Route::get('/view/{id}', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.view');
+
+                  /*  Update
+                  **************************************************************************************/
+                  Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.update');
+
+                }); //End Publication
+
               }); //End Tab
 
             }); //End Employee ID

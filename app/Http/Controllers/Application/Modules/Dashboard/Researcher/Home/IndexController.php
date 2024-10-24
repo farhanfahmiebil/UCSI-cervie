@@ -93,7 +93,7 @@ class IndexController extends Controller{
 
     //Set Breadcrumb Title
     $data['breadcrumb']['title'] = ['Welcome Back, '.Auth::user()->name];
-
+// dd(Auth::user()->name);
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 

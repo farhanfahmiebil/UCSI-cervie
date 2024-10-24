@@ -407,14 +407,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd([
-//   'column'=>[
-//     'category'=>'PORTAL',
-//     'user_type'=>strtoupper('administrator'),
-//     'navigation_category_code'=>'GENERAL_INFORMATION',
-//     'domain_url'=>$request->root()
-//   ]
-// ]);
+
     //Set Model Researcher - Employee Profile
     $model['employee']['profile'] = new EmployeeProfileProcedure();
 
@@ -463,7 +456,7 @@ class IndexController extends Controller{
 					//Filter Category
 					$filter['search'] = ($request->search != null)?$request->search:null;
           $filter['employee_id'] = ($request->employee_id != null)?['employee_id'=>$request->employee_id]:null;
-					$filter['need_verification'] = ($request->need_verification != null)?['employee_id'=>$request->need_verification]:null;
+					$filter['need_verification'] = ($request->need_verification != null)?['need_verification'=>$request->need_verification]:null;
 					$filter['order']['ordercolumn'] = ($request->sorting_column != null)?$request->sorting_column:null;
 					$filter['order']['orderby'] = ($request->sorting != null)?$request->sorting:null;
 

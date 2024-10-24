@@ -56,14 +56,67 @@ class CervieResearcherPublication extends Model{
   public function getList($data){
 
     //Set Table
-    $table = 'list_cervie_researcher_publication';
+    $this->table = 'list_cervie_researcher_publication';
 
     //Get Query
-    $result = DB::connection($this->connection)->table($table)
-                                               ->where($table.'.employee_id',$data['column']['employee_id']);
+    $result = DB::connection($this->connection)->table($this->table)
+                                               ->where($this->table.'.employee_id',$data['column']['employee_id']);
 
     //Filter Query
-    if(isset($data['column']['publication_type_id']) && $data['column']['publication_type_id'] != null){$result = $result->where($table.'.publication_type_id',$data['column']['publication_type_id']);}
+    if(isset($data['column']['publication_type_id']) && $data['column']['publication_type_id'] != null){$result = $result->where($this->table.'.publication_type_id',$data['column']['publication_type_id']);}
+
+    if(isset($data['type'])){
+
+     //Get Type
+     switch($data['type']){
+
+       //Get Type
+       case 'filter':
+       case 'search':
+       case 'sort':
+
+       // dd($data['column']['order']);
+
+         //Search Query
+         if(isset($data['column']['search'])){
+
+           //Set Search
+           $search = $data['column']['search'];
+
+           //Get Filter Search
+           $result = $result->where(function($query) use ($search){
+// dd(2);
+             //Filter Search
+             $query->where($this->table.'.name','LIKE','%'.$search.'%');
+             $query->orWhere($this->table.'.title','LIKE','%'.$search.'%');
+             // $query->orWhere($this->table.'.employee_id','LIKE','%'.$search.'%');
+
+           });
+
+         }
+
+         //Filter Query
+         if(isset($data['column']['need_verification']) && $data['column']['need_verification'] != null){$result = $result->where('need_verification',$data['column']['need_verification']);}
+         // if(isset($data['column']['employee_status_id']) && $data['column']['employee_status_id'] != null){$result = $result->where('status_employee_id',$data['column']['employee_status_id']);}
+
+         //Sort Query
+         if((isset($data['column']['order']['ordercolumn']) && $data['column']['order']['ordercolumn'] != null) && (isset($data['column']['order']['orderby']) && $data['column']['order']['orderby'] != null)){
+           $result = $result->orderBy($data['column']['order']['ordercolumn'],$data['column']['order']['orderby']);
+         }
+
+       break;
+
+       //If Failed
+       default:
+
+         //Return Failed
+         abort(404);
+
+       break;
+
+     }
+    // dd(32);
+    }
 
     //Check Type For Soft and Hard Delete
     if(isset($data['eloquent']) != null && $data['eloquent'] == 'pagination'){

@@ -15,21 +15,21 @@
 
       </ul>
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <h3>RESEARCHER PORTAL</h3>
+        <h3></h3>
       </div>
       <ul class="navbar-nav navbar-nav-right">
 
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
-              <span class="nav-profile-name">Johnson</span>
+              <span class="nav-profile-name text-white">{{ Auth::user()->name }}</span>
               <span class="online-status"></span>
-              <img src="images/faces/face28.png" alt="profile">
+              <img src="{{ asset('images/avatar/anonymous.png') }}" alt="profile">
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                <a class="dropdown-item">
+                <!-- <a class="dropdown-item">
                   <i class="mdi mdi-settings text-primary"></i>
                   Settings
-                </a>
+                </a> -->
                 <a class="dropdown-item" href="{{ route($hyperlink['navigation']['authorization']['researcher']['header']['account']['logout']) }}">
                   <i class="mdi mdi-logout text-primary"></i>
                   Logout

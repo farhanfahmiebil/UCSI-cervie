@@ -31,14 +31,8 @@ $value = collect($data['navigation']['category']['main'])->first(function ($item
                 <!-- content -->
                 <div class="{{ ((!count($data['navigation']['category']['sub']))?'col-12':'col-sm-9 col-12 order-sm-1 order-2') }}">
 
-                  {{-- If Navigation Category Sub Exist --}}
-                  @if(count($data['navigation']['category']['sub']) > 1)
-
-                    {{-- Sub Navigation Tab Pointer --}}
-                    @include($page['navigation']['tab']['pointer'])
-
-                  @endif
-                  {{-- End If Navigation Category Sub Exist --}}
+                  {{-- Sub Navigation Tab Pointer --}}
+                  @include($page['navigation']['tab']['pointer'])
 
                 </div>
                 <!-- end content -->

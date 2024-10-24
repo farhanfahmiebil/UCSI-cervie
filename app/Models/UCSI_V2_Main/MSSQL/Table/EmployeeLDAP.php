@@ -19,6 +19,9 @@ use LdapRecord\Laravel\Auth\HasLdapUser;
 use LdapRecord\Models\Concerns\CanAuthenticate;
 use LdapRecord\Models\Model;
 
+//Get Model
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
+
 //Get Storage
 use Storage;
 
@@ -171,6 +174,30 @@ class EmployeeLDAP extends Authenticatable implements LdapAuthenticatable{
   #######################################################################################
   # End Foreign Key
   #######################################################################################
+
+  /**************************************************************************************
+    Get Researcher
+  **************************************************************************************/
+  public static function getResearcher($id){
+
+    //Set Model Researcher
+    $model['researcher'] = new ResearcherProcedure();
+
+    //Get Researcher
+    $result = $model['researcher']->readRecord(
+      [
+        'column'=>[
+          'employee_id'=>$id
+        ]
+      ]
+    );
+
+// dd($data);
+    //Return Avatar Default URL
+    return $result;
+
+  }
+
 
   /**************************************************************************************
     Get Avatar

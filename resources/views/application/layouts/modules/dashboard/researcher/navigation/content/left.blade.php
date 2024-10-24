@@ -22,15 +22,29 @@
           <!-- end avatar -->
 
           <!-- researcher profile -->
-          <div class="row mt-4 text-center">
+          <div class="row mt-4">
             <div class="col-lg-12">
               <h3 class="font-weight-bold text-dark">{{ Auth::user()->name }}</h3>
               <h3 class="text-grey">
-                @if(count(Auth::user()->employee->salutation->getSalutation(['column' => ['employee_id' => Auth::id()]])) >= 1)
-                  @foreach(Auth::user()->employee->salutation->getSalutation(['column' => ['employee_id' => Auth::id()]]) as $key=>$value)
-                    {{ $value->salutation_name }}
-                  @endforeach
+
+                {{-- Check Employee Salutation --}}
+                @if(isset(Auth::user()->employee) && isset(Auth::user()->employee->salutation))
+
+                  {{-- Count Employee Salutation --}}
+                  @if(count(Auth::user()->employee->salutation->getSalutation(['column' => ['employee_id' => Auth::id()]])) >= 1)
+
+                    {{-- Get Employee Salutation Data --}}
+                    @foreach(Auth::user()->employee->salutation->getSalutation(['column' => ['employee_id' => Auth::id()]]) as $key => $value)
+                        {{ $value->salutation_name }}
+                    @endforeach
+                    {{-- End Get Employee Salutation Data --}}
+
+                  @endif
+                  {{-- End Count Employee Salutation --}}
+
                 @endif
+                {{-- End Check Employee Salutation --}}
+
               </h3>
             </div>
 
@@ -38,21 +52,21 @@
           <!-- end researcher profile -->
 
           <!-- researcher email -->
-          <div class="row mt-4 text-center">
+          <div class="row mt-4">
 
             <div class="col-lg-12">
               <h3 class="font-weight-bold text-dark">Email</h3>
-              <h3 class="text-grey">{{ Auth::user()->mail }}</h3>
+              <h6 class="text-grey">{{ Auth::user()->mail }}</h6>
             </div>
 
           </div>
           <!-- end researcher email -->
 
           <!-- researcher information -->
-          <div class="row mt-4 text-center">
+          <div class="row mt-4">
             <div class="col-lg-12">
               <h3 class="font-weight-bold text-dark">Faculty</h3>
-              <h3 class="text-grey">{ Faculty }</h3>
+              <h6 class="text-grey">{{ Auth::user()->getResearcher(Auth::id())->organization_name }}</h6>
             </div>
           </div>
           <!-- end researcher information -->

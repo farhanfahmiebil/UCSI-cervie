@@ -1,7 +1,7 @@
 <?php
 
 //Get Controller Path
-namespace App\Http\Controllers\Application\Modules\Dashboard\Researcher\Publication;
+namespace App\Http\Controllers\Application\Modules\Dashboard\Employee\Researcher\Portfolio\Organization\User\Publication;
 
 //Get Authorization
 use Auth;
@@ -16,6 +16,11 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 
 //Model View
+use App\Models\UCSI_V2_Access\MSSQL\View\NavigationCategory AS NavigationCategoryView;
+use App\Models\UCSI_V2_Access\MSSQL\View\NavigationCategorySub AS NavigationCategorySubView;
+use App\Models\UCSI_V2_Education\MSSQL\View\Researcher AS ResearcherView;
+use App\Models\UCSI_V2_Main\MSSQL\Procedure\EmployeeProfile AS EmployeeProfileProcedure;
+
 use App\Models\UCSI_V2_General\MSSQL\View\AcademicIndexingBody AS AcademicIndexingBodyView;
 use App\Models\UCSI_V2_General\MSSQL\View\PublicationType AS PublicationTypeView;
 use App\Models\UCSI_V2_General\MSSQL\View\Quartile AS QuartileView;
@@ -43,7 +48,7 @@ class IndexController extends Controller{
   protected $application = 'application';
 
   //User
-  protected $user = 'researcher';
+  protected $user = 'employee';
 
   //Path Header
 	protected $header = [
@@ -69,9 +74,14 @@ class IndexController extends Controller{
 	**************************************************************************************/
 	public function routePath(){
 
-		//Set Route View
-		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.publication.';
-    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.publication.';
+    //Set Route Name
+		$this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.researcher.portfolio.organization.user.view.publication.';
+
+    //Set Route View
+		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.researcher.portfolio.organization.user.view.publication.';
+
+    //Set Route Link
+    $this->route['link'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.researcher.portfolio.organization.user.';
 
     //Set Navigation
 		$this->hyperlink['navigation'] = $this->navigation['hyperlink'];
@@ -79,14 +89,33 @@ class IndexController extends Controller{
     //Set Navigation
 		$this->page['sub'] = $this->route['view'];
 
+
     //Set Navigation
-    $this->hyperlink['page']['new'] = $this->route['name'].'new';
+		$this->page['main'] = $this->route['link'].'view.';
+
+    $this->page['navigation']['header']['breadcrumb'] = $this->page['main'].'navigation.header.breadcrumb';
+    $this->page['navigation']['tab']['header'] = $this->page['main'].'navigation.tab.header.index';
+    $this->page['navigation']['tab']['main'] = $this->page['main'].'navigation.tab.content.main.index';
+    $this->page['navigation']['tab']['pointer'] = '';
+    $this->page['navigation']['tab']['content']['list'] = $this->route['view'].'list.index';
+    $this->page['navigation']['tab']['content']['new'] = $this->route['view'].'new.index';
+    $this->page['navigation']['tab']['content']['view'] = $this->route['view'].'view.index';
+    $this->page['navigation']['tab']['right'] = $this->page['main'].'navigation.tab.content.navigation.right.index';
+
+		//Set Hyperlink
+    $this->hyperlink['page']['back'] = $this->route['link'].'list';
+
+    //General Information - Researcher Position
+    $this->hyperlink['page']['list'] = $this->route['view'].'list';
+    $this->hyperlink['page']['new'] = $this->route['view'].'new';
     $this->hyperlink['page']['create'] = $this->route['name'].'create';
-		$this->hyperlink['page']['list'] = $this->route['name'].'list';
     $this->hyperlink['page']['delete']['main'] = $this->route['name'].'delete';
     $this->hyperlink['page']['delete']['evidence'] = $this->route['name'].'evidence.delete';
     $this->hyperlink['page']['view'] = $this->route['name'].'view';
     $this->hyperlink['page']['update'] = $this->route['name'].'update';
+
+    //Set Page Sub
+    $this->hyperlink['page']['navigation']['main'] = $this->route['link'].'navigation.';
 
 	}
 
@@ -537,23 +566,44 @@ class IndexController extends Controller{
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
 
-    //Set Model General Publication Type
-    $model['general']['publication']['type'] = new PublicationTypeView();
+    //Set Model Navigation Category
+    $model['navigation']['category']['main'] = new NavigationCategoryView();
 
-    //Check Exist
-    $model['general']['publication']['type']->checkExist(
+    //Get Navigation Category
+    $data['navigation']['category']['main'] = $model['navigation']['category']['main']->getList([
+      'column'=>[
+        'category'=>'PORTAL',
+        'user_type'=>strtoupper('administrator'),
+        'domain_url'=>$request->root()
+      ]
+    ]);
+
+    //Set Model Navigation Category Sub
+    $model['navigation']['category']['sub'] = new NavigationCategorySubView();
+
+    //Get Navigation Category Sub
+    $data['navigation']['category']['sub'] = $model['navigation']['category']['sub']->getList(
       [
         'column'=>[
-          'publication_type_id'=>$request->route('publication_type_id')
+          'category'=>'PORTAL',
+          'user_type'=>strtoupper('administrator'),
+          'navigation_category_code'=>'PUBLICATION',
+          'domain_url'=>$request->root()
         ]
       ]
     );
 
-    //Set Page Sub
-    $page = $this->page;
+    //Set Model Researcher - Employee Profile
+    $model['employee']['profile'] = new EmployeeProfileProcedure();
 
-    //Set Page Sub
-    $page['sub'] .= 'list.sub';
+    //Get Employee Profile
+    $data['employee']['profile'] = $model['employee']['profile']->readRecord(
+      [
+        'column'=>[
+            'employee_id'=>$request->employee_id
+        ]
+      ]
+    );
 
     //Set Breadcrumb Icon
     $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
@@ -564,43 +614,107 @@ class IndexController extends Controller{
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
 
+    //Set Model General Publication Type
+    $model['general']['publication']['type'] = new PublicationTypeView();
+
     //Get General Publication Type Select Box
     $data['general']['publication']['type'] = $model['general']['publication']['type']->selectBox();
-// dd($data['general']['publication']['type']);
-
-    //Set Model Publication
-    $model['cervie']['researcher']['publication'] = new CervieResearcherPublicationView();
 
     //Get General Publication Type
     foreach($data['general']['publication']['type'] as $key=>$value){
 
-      //Set Main Data Researcher Publication
-      $data['main']['cervie']['researcher']['publication'][$value->publication_type_id] = $model['cervie']['researcher']['publication']->getList(
+      //Set Main Data Researcher Position
+      $data['main']['cervie']['researcher']['publication'][$value->publication_type_id] = $this->getData(
         [
-          'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
+          'eloquent'=>'pagination',
           'column'=>[
-            'employee_id'=>Auth::id(),
-            'publication_type_id'=>$value->publication_type_id
-          ]
+            'employee_id'=>$request->employee_id
+          ],
+          'category'=>'publication'
         ]
       );
 
-      //Set Table Researcher Publication
       $data['table']['column']['cervie']['researcher']['publication'][$value->publication_type_id] = $this->getDataTable(
         [
           'category'=>$value->publication_type_id
         ]
       );
 
+
     }
-    // dd($data['main']['cervie']['researcher']['professional']['membership']);
+
+    //If Type Exist
+		if($request->has('form_token')){
+// dd($request->form_token,$this->encrypter->decrypt($request->form_token));
+// dd($this->encrypter->decrypt($request->form_token));
+			//Check Type Request
+			switch($this->encrypter->decrypt($request->form_token)){
+
+				//List Type
+				case 'filter':
+				case 'search':
+				case 'sort':
+
+					//Filter Category
+					$filter['search'] = ($request->search != null)?$request->search:null;
+          $filter['employee_id'] = ($request->employee_id != null)?['employee_id'=>$request->employee_id]:null;
+          $filter['publication_type_id'] = ($request->publication_type_id != null)?['publication_type_id'=>$request->publication_type_id]:null;
+					$filter['need_verification'] = ($request->need_verification != null)?['need_verification'=>$request->need_verification]:null;
+					$filter['order']['ordercolumn'] = ($request->sorting_column != null)?$request->sorting_column:null;
+					$filter['order']['orderby'] = ($request->sorting != null)?$request->sorting:null;
+
+          //Get General Publication Type
+          foreach($data['general']['publication']['type'] as $key=>$value){
+
+            //Set Main Data Researcher Position
+            $data['main']['cervie']['researcher']['publication'][$value->publication_type_id] = $this->getData(
+              [
+                'type'=>$this->encrypter->decrypt($request->form_token),
+                'eloquent'=>'pagination',
+                'column'=>$filter,
+                'category'=>'publication'
+              ]
+            );
+
+            $data['table']['column']['cervie']['researcher']['publication'][$value->publication_type_id] = $this->getDataTable(
+              [
+                'category'=>$value->publication_type_id
+              ]
+            );
+
+
+          }
+
+				break;
+
+				//If Request Type Not Found
+				default:
+
+					//Return Failed
+					return redirect($request->url)->with('alert_type','error')
+																				->with('message','Execute Failed');
+
+				break;
+
+			}
+
+		}
+
+    //Set Page Sub
+    $page = $this->page;
+
+    //Set Page Sub
+    $page['sub'] .= 'list.sub';
+
+    //Set Page Pointer
+    $page['navigation']['tab']['pointer'] =  $page['navigation']['tab']['content']['list'];
+    // dd($data);
 // dd($data['main']['cervie']['researcher']['publication']);
-    // dd(count($data['main']['cervie']['researcher']['position']));
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
 
-		//Return View
-		return view($this->route['view'].'list.index',compact('data','form_token','page','hyperlink'));
+    //Return View
+    return view($this->route['link'].'view.navigation.content.list.index', compact('data','page','form_token','hyperlink'));
 
   }
 
@@ -1247,6 +1361,30 @@ class IndexController extends Controller{
 
     //Return Table
     return $table;
+
+  }
+
+  /**************************************************************************************
+    Get Data
+  **************************************************************************************/
+  public function getData($data){
+
+
+
+    //Set Model Publication
+    $model['cervie']['researcher']['publication'] = new CervieResearcherPublicationView();
+
+    //Set Main Data Researcher Publication
+    $data = $model['cervie']['researcher']['publication']->getList(
+      [
+        'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
+        'type'=>((isset($data['type']))?$data['type']:null),
+        'category'=>'publication',
+        'column'=>$data['column']
+      ]
+    );
+
+    return $data;
 
   }
 

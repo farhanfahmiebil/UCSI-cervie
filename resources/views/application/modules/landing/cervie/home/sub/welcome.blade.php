@@ -1,4 +1,4 @@
-<!-- section -->
+<!-- section welcome -->
 <section id="home" class="p-0 particles-version center-block">
 
   <!-- title -->
@@ -33,7 +33,7 @@
   <!-- end not fullscreen -->
 
 </section>
-<!-- end section -->
+<!-- end section welcome-->
 
 {{-- Vanta --}}
 @include(Config::get('routing.application.modules.landing.cervie.layout').'.plugin.vanta.index')

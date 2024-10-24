@@ -10,7 +10,7 @@
 
     <!-- row -->
     <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 text-center wow fadeIn" data-wow-delay="300ms">
+      <div class="col-lg-12 col-md-12 col-sm-12 text-center wow fadeIn" data-wow-delay="400ms">
         <div class="main-title mb-md-5 wow fadeIn" data-wow-delay="300ms">
           <h5> Look at our achievements </h5>
         </div>
@@ -22,32 +22,32 @@
     <div class="row">
 
       <div class="col-md-2 col-sm-12 stats-box mb-xs-2rem">
-        <div class="serial-box center-block wow zoomIn" data-wow-delay="400ms">
+        <div class="serial-box center-block wow zoomIn" data-wow-delay="800ms">
           <img src="{{ asset($asset['image'].'achievement\item_1.png') }}" alt="">
         </div>
       </div>
       <div class="col-md-2 col-sm-12 stats-box mb-xs-2rem">
-        <div class="serial-box center-block wow zoomIn" data-wow-delay="400ms">
+        <div class="serial-box center-block wow zoomIn" data-wow-delay="1200ms">
           <img src="{{ asset($asset['image'].'achievement\item_2.png') }}" alt="">
         </div>
       </div>
       <div class="col-md-2 col-sm-12 stats-box mb-xs-2rem">
-        <div class="serial-box center-block wow zoomIn" data-wow-delay="400ms">
+        <div class="serial-box center-block wow zoomIn" data-wow-delay="1600ms">
           <img src="{{ asset($asset['image'].'achievement\item_3.png') }}" alt="">
         </div>
       </div>
       <div class="col-md-2 col-sm-12 stats-box mb-xs-2rem">
-      <div class="serial-box center-block wow zoomIn" data-wow-delay="400ms">
+      <div class="serial-box center-block wow zoomIn" data-wow-delay="1800ms">
           <img src="{{ asset($asset['image'].'achievement\item_4.png') }}" alt="">
         </div>
       </div>
       <div class="col-md-2 col-sm-12 stats-box mb-xs-2rem">
-        <div class="serial-box center-block wow zoomIn" data-wow-delay="400ms">
+        <div class="serial-box center-block wow zoomIn" data-wow-delay="2000ms">
           <img src="{{ asset($asset['image'].'achievement\item_5.png') }}" alt="">
         </div>
       </div>
       <div class="col-md-2 col-sm-12 stats-box mb-xs-2rem">
-        <div class="serial-box center-block wow zoomIn" data-wow-delay="400ms">
+        <div class="serial-box center-block wow zoomIn" data-wow-delay="2400ms">
           <img src="{{ asset($asset['image'].'achievement\item_6.png') }}" alt="">
         </div>
       </div>

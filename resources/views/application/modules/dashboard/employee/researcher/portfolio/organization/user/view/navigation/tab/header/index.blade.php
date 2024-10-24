@@ -11,7 +11,14 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link {{ in_array(strtolower($value->navigation_category_code), [request()->segment(11), request()->segment(11).'_'.request()->segment(12)]) ? 'active' : '' }}"
            id="tab-{{ $value->navigation_category_id }}"
-           href="{{ route($hyperlink['page']['back'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}"
+           href="{{ Route::has($value->route)
+                      ? route($value->route, [
+                          'organization_id' => request()->organization_id ?? '#',
+                          'employee_id' => request()->employee_id ?? '#'
+                      ])
+                      : '#'
+                  }}
+"
            role="tab"
            aria-controls="{{ strtolower($value->navigation_category_id) }}"
            aria-selected="{{ (request()->tab_category == strtolower($value->navigation_category_code) ? 'true' : 'false') }}">

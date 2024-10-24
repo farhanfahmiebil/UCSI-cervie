@@ -3,7 +3,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes - Home
+| Web Routes - Landing Page - CERVIE
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -15,3 +15,11 @@
 /*  Home
 **************************************************************************************/
 Route::get('/home',config('routing.application.modules.landing.cervie.controller').'\Home\IndexController@index')->name(config('routing.application.modules.landing.cervie.name').'.home');
+
+/* Researcher
+**************************************************************************************/
+Route::prefix('researcher')->group(function(){
+
+  Route::get('/view{employee_id}',config('routing.application.modules.landing.cervie.controller').'\Researcher\IndexController@view')->name(config('routing.application.modules.landing.cervie.name').'.ressearcher.view');
+
+}); //End Researcher
