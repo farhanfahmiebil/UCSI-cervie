@@ -1,5 +1,5 @@
 <!-- jQuery -->
-<script type="text/javascript" src="{{ asset('js/jquery/library/3.6.1/index.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/jQuery/library/3.6.1/index.js') }}"></script>
 
 <!-- moment -->
 <script type="text/javascript" src="{{ asset('js/moment/index.js') }}"></script>

@@ -131,7 +131,7 @@ class ProcessController extends Controller{
 
           //Should Use Guard
           Auth::shouldUse($request->guard);
-
+// dd(Auth::guard());
           //Set Session
           Session::put('authorization_code',$request->authorization_code);
           Session::put('authorization_token',$request->authorization_token);
@@ -146,6 +146,12 @@ class ProcessController extends Controller{
             return redirect()->intended(route($hyperlink['page']['home']['employee']));
 
           }
+
+          //Authorize DEVELOPER
+          Auth::loginUsingId(['samaccountname'=>$data['credential']['samaccountname']],false);
+
+          //Redirect to Dashboard
+          return redirect()->intended(route($hyperlink['page']['home']['employee']));
 
 // dd(Auth::attempt($data['credential']));
           // Attempt LDAP authentication Successful

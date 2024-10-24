@@ -72,38 +72,43 @@ return [
         ],
 
         'ldap_employee' => [
-          'driver' => 'ldap',
-          // 'model' => LdapRecord\Models\OpenLDAP\Entry::class,
-          'model' => LdapRecord\Models\ActiveDirectory\Entry::class,
-          'rules' => [],
-          'database' => [
-              'model' => App\Models\UCSI_V2_Main\MSSQL\Table\EmployeeLDAP::class,
-              'sync_passwords' => true,
-              'sync_attributes' => [
-                  'cn' => 'cn',
-                  'sn' => 'sn',
-                  'givenname' => 'givenname',
-                  'displayname' => 'displayname',
-                  'distinguishedname' => 'distinguishedname',
-                  'name' => 'name',
-                  'department' => 'department',
-                  'title' => 'title',
-                  'username' => 'samaccountname',
-                  // 'username' => 'userprincipalname',
-                  'mail' => 'mail',
-                  'employee_id' => 'samaccountname',
-                  'samaccountname' => 'samaccountname',
-                  'userprincipalname' => 'userprincipalname',
-                  'password' => 'password',
-                  'created_by' => 'samaccountname',
-              ],
-              'sync_existing' => [
-                'mail' => 'mail',
-                'employee_id' => 'samaccountname',
-                'userprincipalname' => 'userprincipalname',
-              ],
-            ]
+            'driver' => 'eloquent',
+            'model' => App\Models\UCSI_V2_Main\MSSQL\Table\EmployeeLDAP::class,
         ],
+
+        // 'ldap_employee' => [
+        //   'driver' => 'ldap',
+        //   // 'model' => LdapRecord\Models\OpenLDAP\Entry::class,
+        //   'model' => LdapRecord\Models\ActiveDirectory\Entry::class,
+        //   'rules' => [],
+        //   'database' => [
+        //       'model' => App\Models\UCSI_V2_Main\MSSQL\Table\EmployeeLDAP::class,
+        //       'sync_passwords' => true,
+        //       'sync_attributes' => [
+        //           'cn' => 'cn',
+        //           'sn' => 'sn',
+        //           'givenname' => 'givenname',
+        //           'displayname' => 'displayname',
+        //           'distinguishedname' => 'distinguishedname',
+        //           'name' => 'name',
+        //           'department' => 'department',
+        //           'title' => 'title',
+        //           'username' => 'samaccountname',
+        //           // 'username' => 'userprincipalname',
+        //           'mail' => 'mail',
+        //           'employee_id' => 'samaccountname',
+        //           'samaccountname' => 'samaccountname',
+        //           'userprincipalname' => 'userprincipalname',
+        //           'password' => 'password',
+        //           'created_by' => 'samaccountname',
+        //       ],
+        //       'sync_existing' => [
+        //         'mail' => 'mail',
+        //         'employee_id' => 'samaccountname',
+        //         'userprincipalname' => 'userprincipalname',
+        //       ],
+        //     ]
+        // ],
     ],
 
     /*

@@ -61,7 +61,7 @@ class RedirectIfAuthenticated{
 
     //Set Token
     $token = new TokenAuthorizationUser();
-
+// dd($guards);
     //Guard
     if(session()->has('authorization_token')){
 
