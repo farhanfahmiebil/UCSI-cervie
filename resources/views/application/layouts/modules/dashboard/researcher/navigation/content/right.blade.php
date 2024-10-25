@@ -44,7 +44,7 @@
                       $navigation_category['label'] = $navigation_category['is_active']?'text-white':'text-dark';
                     @endphp
 
-                    <a href="{{ $route }}" class="card mt-3 w-100 text-decoration-none {{ $navigation_category['card'] }}">
+                    <a href="{{ ((!empty($value->route))?route($value->route):'') }}" class="card mt-3 w-100 text-decoration-none {{ $navigation_category['card'] }}">
                       <div class="card-body p-3 my-3 d-flex align-items-center">
                         <button class="btn btn-rounded btn-icon {{ $navigation_category['icon'] }}">
                           <i class="{{ $value->navigation_category_icon }}"></i>

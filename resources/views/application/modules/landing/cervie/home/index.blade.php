@@ -20,4 +20,7 @@
   {{-- Researcher --}}
   @include($page['sub'].'researcher')
 
+  {{-- Contact --}}
+  @include($page['sub'].'contact')
+
 @endsection

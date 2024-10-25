@@ -161,7 +161,7 @@ class Controller extends BaseController{
             'sidebar'=>[
               'right'=>[
                 'home'=> config('routing.application.modules.dashboard.researcher.name').'.home',
-                'insight'=> config('routing.application.modules.dashboard.researcher.name').'.insight.home',
+                'insight'=> config('routing.application.modules.dashboard.researcher.name').'.insight.home.list',
                 'general_information'=>config('routing.application.modules.dashboard.researcher.name').'.general.information.home.list',
                 'qualification'=>config('routing.application.modules.dashboard.researcher.name').'.qualification.home.list',
                 'publication'=>config('routing.application.modules.dashboard.researcher.name').'.publication.list',
@@ -173,8 +173,8 @@ class Controller extends BaseController{
                 'recognition'=>config('routing.application.modules.dashboard.researcher.name').'.recognition.list',
                 'grant'=>config('routing.application.modules.dashboard.researcher.name').'.grant.list',
                 'linkages'=>config('routing.application.modules.dashboard.researcher.name').'.linkage.list',
-                'postgraduate_supervision'=>config('routing.application.modules.dashboard.researcher.name').'.postgraduate_supervision.list',
-                'community_engagement'=>config('routing.application.modules.dashboard.researcher.name').'.community_engagement.list',
+                'postgraduate_supervision'=>config('routing.application.modules.dashboard.researcher.name').'.postgraduate.supervision.list',
+                'community_engagement'=>config('routing.application.modules.dashboard.researcher.name').'.community.engagement.list',
                 'commercialization'=>config('routing.application.modules.dashboard.researcher.name').'.commercialization.list',
 
               ],

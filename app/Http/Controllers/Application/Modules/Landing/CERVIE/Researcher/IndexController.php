@@ -9,14 +9,15 @@ use Carbon\Carbon;
 //Get Controller Helper
 use App\Http\Controllers\Controller;
 
-//Model
-use App\Models\UCSI_V2_Education\MSSQL\View\Organization AS OrganizationView;
+//Model ResearcherProcedure
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
+
 
 //Get Request
 use Illuminate\Http\Request;
 
 //Get Storage
-
+use Storage;
 
 //Get Class
 class IndexController extends Controller{
@@ -72,10 +73,12 @@ class IndexController extends Controller{
 // dd($this->hyperlink['page']['index']);
 	}
 
-	/**************************************************************************************
- 		Index
+
+
+  /**************************************************************************************
+ 		View
  	**************************************************************************************/
-	public function index(Request $request){
+	public function view(Request $request){
 
 		//Get Route Path
 		$this->routePath();
@@ -88,26 +91,30 @@ class IndexController extends Controller{
 
     $page = $this->page;
 
-    $page['sub'] .= 'sub.';
+    $page['sub'] .= 'view.sub.';
 
-    //Set Model Organization
-    $model['organization'] = new OrganizationView();
+    //Set Model Researcher
+    $model['researcher'] = new ResearcherProcedure();
 
-    //Get Model Organization
-    $data['organization'] = $model['organization']->selectBox(
+    //Get Model Researcher
+    $data['researcher']['main'] = $model['researcher']->readRecord(
       [
         'column'=>[
-          'company_id'=>'UCSI_EDUCATION',
-          'company_office_id'=>'MAIN_CAMPUS',
-          'not_in_organization_id'=>['1','2','14','15']
+          'employee_id'=>$request->employee_id
         ]
       ]
     );
 
     $asset = $this->asset;
-// dd($data['outlet']['menu']['item']);
+
+    //Set Asset
+    $asset['avatar'] = '/storage/resources/researcher/'.$request->employee_id.'/avatar/';
+// dd($asset['avatar']);
+    //Set Document
+    // $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/professional_membership/'.$request->id.'/';
+// dd($data['researcher']['main']->full_name);
     //Return View
-    return view($this->route['view'].'.index',compact('data','asset','page','hyperlink'));
+    return view($this->route['view'].'view.index',compact('data','asset','page','hyperlink'));
 
     // dd($check['exist']['outlet']);
 

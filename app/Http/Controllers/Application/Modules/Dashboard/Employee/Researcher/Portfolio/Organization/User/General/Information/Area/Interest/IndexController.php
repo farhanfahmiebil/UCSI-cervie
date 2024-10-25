@@ -57,7 +57,7 @@ class IndexController extends Controller{
     'category'=>'Researcher Porfolio',
 		'module'=>'Organization',
 		'module_sub'=>'User',
-    'item'=>'Position',
+    'item'=>'Area Interest',
 		'gate'=>''
 	];
 
@@ -172,65 +172,6 @@ class IndexController extends Controller{
       ]
     );
 
-    /*  Researcher Area Interest
-   	**************************************************************************************/
-
-    //Set Table Researcher Area Interest
-    $data['table']['column']['cervie']['researcher']['area']['interest'] = $this->getDataTable(
-      [
-        'category'=>'position'
-      ]
-    );
-
-    //Set Main Data Researcher Area Interest
-    $data['main']['cervie']['researcher']['area']['interest'] = $this->getData(
-      [
-        'eloquent'=>'pagination',
-        'category'=>'position',
-        'column'=>[
-          'employee_id'=>$request->employee_id
-        ]
-      ]
-    );
-
-    //Set Model
-    $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
-    $model['general']['organization'] = new Organization();
-
-    //Get Table Control
-    $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
-      [
-        'column'=>[
-          'table_control_id'=>'cervie_researcher_position'
-        ]
-      ]
-    );
-
-    //Set Data Organization
-    $data['general']['organization'] = $model['general']['organization']->selectBox(
-      [
-        'column'=>[
-          'company_id'=>'UCSI_EDUCATION',
-          'company_office_id'=>'MAIN_CAMPUS'
-        ]
-      ]
-    );
-
-    //Defined Column
-    $data['table']['column']['cervie']['researcher']['evidence'] = [
-      0=>[
-        'icon'=>'<i class="mdi mdi-numeric"></i>',
-        'name'=>'No',
-      ],
-      1=>[
-        'icon'=>'<i class="mdi mdi-file-account-outline"></i>',
-        'name'=>' File',
-      ],
-      2=>[
-        'icon'=>'<i class="mdi mdi-settings"></i>',
-        'name'=>' Control',
-      ]
-    ];
 
     //Set Page
     $page = $this->page;
@@ -278,13 +219,7 @@ class IndexController extends Controller{
             'column'=>[
               'employee_id'=>Auth::id(),
               'name'=>$request->name,
-              'organization_id'=>$request->organization_id,
-              'organization_name'=>null,
-              'user_position_id'=>null,
-              'date_start'=>$request->date_start,
-              'date_end'=>$request->date_end,
               'need_verification'=>0,
-              'is_current_position'=>(($request->is_current_position)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -292,66 +227,6 @@ class IndexController extends Controller{
           ]
         );
 
-        //If Files Exist
-        if($request->has('document')){
-
-          //Get File Loop
-          foreach($request->file('document') as $key=>$value){
-
-            //Set File Name With Extension
-            $file['name']['raw']['with']['extension'] = $value->getClientOriginalName();
-
-            //Set file name With Extension
-            $file['name']['raw']['without']['extension'] = pathinfo($file['name']['raw']['with']['extension'], PATHINFO_FILENAME);
-
-            //Get File Extension
-            $file['extension'] = $value->getClientOriginalExtension();
-
-            //Set Path Folder
-            $path['folder'] = 'public/resources/researcher/'.trim(Auth::id()).'/document/position/'.$result['main']['create']->last_insert_id.'/';;
-
-            //Set Modified File Name Without Extension (Using last_insert_id)
-            $file['name']['modified']['without']['extension'] = ($key+1);
-
-            //Set Modified File Name With Extension
-            $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'] . '.' . $file['extension'];
-
-            //Set The Full Upload Path
-            $path['upload'] = $path['folder'] . $file['name']['modified']['with']['extension'];
-
-            //Check If The File Already Exists In Storage
-            $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
-
-            //If File Exists, Delete It
-            if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
-
-            //Store File
-            Storage::disk()->put($path['upload'], fopen($value, 'r+'));
-
-            //Set Model Evidence
-            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
-
-            //Create Evidence
-            $result['evidence']['create'] = $model['cervie']['researcher']['evidence']->createRecord(
-              [
-                'column'=>[
-                  'employee_id'=>$request->employee_id,
-                  'file_id'=>$file['name']['modified']['without']['extension'],
-                  'file_name'=>(($request->document_name[$key])?$request->document_name[$key]:null),
-                  'file_raw_name'=>$file['name']['raw']['without']['extension'],
-                  'file_extension'=>$file['extension'],
-                  'table_name'=>'cervie_researcher_position',
-                  'table_id'=>$result['main']['create']->last_insert_id,
-                  'remark'=>(($request->remark)?$request->remark:null),
-                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
-                  'created_by'=>Auth::id(),
-                ]
-              ]
-            );
-
-          }
-
-        }
 
       break;
 
@@ -525,48 +400,11 @@ class IndexController extends Controller{
         $result['main']['delete'] = $model['cervie']['researcher']['area']['interest']->deleteRecord(
           [
             'column'=>[
-              'position_id'=>$request->id,
+              'area_interest_id'=>$request->id,
               'employee_id'=>$request->employee_id,
             ]
           ]
         );
-
-        //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.$request->employee_id.'/document/position/'.$request->id.'/';
-
-        //Check If The Folder Already Exists In Storage
-        $check['exist']['storage'] = Storage::disk()->exists($path['folder']);
-
-        //If Folder Exists, Delete It
-        if($check['exist']['storage']){Storage::disk()->deleteDirectory($path['folder']);}
-
-        //Set Model Evidence
-        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
-
-        //Delete Evidence Record
-        $result['evidence']['delete'] = $model['cervie']['researcher']['evidence']->deleteRecordByResearcherTable(
-          [
-            'column'=>[
-              'employee_id'=>$request->employee_id,
-              'table_name'=>'cervie_researcher_position',
-              'table_id'=>$request->id
-            ]
-          ]
-        );
-
-        //Set Model
-        $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
-
-        // //Delete Evidence
-        // $data['main']['verification'] = $model['cervie']['researcher']['area']['interest']->needVerification(
-        //   [
-        //     'column'=>[
-        //       'position_id'=>$request->id,
-        //       'employee_id'=>$request->employee_id,
-        //       'updated_by'=>Auth::id()
-        //     ]
-        //   ]
-        // );
 
       break;
 
@@ -576,92 +414,6 @@ class IndexController extends Controller{
     return redirect()->route($hyperlink['page']['list'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id])
                      ->with('alert_type','success')
                      ->with('message','Research Position Deleted');
-
-  }
-
-  /**************************************************************************************
- 		Delete
- 	**************************************************************************************/
-	public function deleteEvidence(Request $request){
-
-		//Get Route Path
-		$this->routePath();
-
-		//Set Hyperlink
-		$hyperlink = $this->hyperlink;
-
-    //If Form Token Exist
-    if(!$request->has('form_token')){abort(555,'Form Token Missing');}
-
-		//Check Type Request
-		switch($this->encrypter->decrypt($request->form_token)){
-
-      //Create
-      case 'delete':
-
-        //Set Model
-        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
-
-        //Set Main
-        $data['evidence'] = $model['cervie']['researcher']['evidence']->readRecord(
-          [
-            'column'=>[
-              'evidence_id'=>$request->evidence_id,
-              'employee_id'=>$request->employee_id
-            ]
-          ]
-        );
-
-        //Set Path Folder
-        $path['folder'] = 'public/resources/researcher/'.$request->employee_id.'/document/position/'.$data['evidence']->table_id.'/';
-
-        //Set Modified File Name Without Extension (Using last_insert_id)
-        $file['name']['modified']['without']['extension'] = $data['evidence']->file_id;
-
-        //Set Modified File Name With Extension
-        $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'].'.'.$data['evidence']->file_extension;
-
-        //Set The Full Upload Path
-        $path['upload'] = $path['folder'].$file['name']['modified']['with']['extension'];
-
-        //Check If The File Already Exists In Storage
-        $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
-
-        //If The File Exists, Delete It
-        if($check['exist']['storage']){Storage::disk()->delete($path['upload']);}
-
-        //Delete Record
-        $result['evidence']['delete'] = $model['cervie']['researcher']['evidence']->deleteRecord(
-          [
-            'column'=>[
-              'evidence_id'=>$data['evidence']->evidence_id,
-              'employee_id'=>$request->employee_id
-            ]
-          ]
-        );
-
-        //Set Model
-        $model['cervie']['researcher']['area']['interest'] = new CervieResearcherAreaInterestProcedure();
-
-        //Set Main Verification
-        // $data['main']['verification'] = $model['cervie']['researcher']['area']['interest']->needVerification(
-        //   [
-        //     'column'=>[
-        //       'position_id'=>$data['evidence']->table_id,
-        //       'employee_id'=>$request->employee_id,
-        //       'updated_by'=>Auth::id()
-        //     ]
-        //   ]
-        // );
-
-      break;
-
-    }
-
-    //Return to Selected Tab Category Route
-    return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id,'id'=>$request->id])
-                     ->with('alert_type','success')
-                     ->with('message','Evidence Deleted');
 
   }
 
@@ -720,7 +472,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd($data['main']['data']);
+
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
@@ -728,7 +480,7 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_position'
+          'table_control_id'=>'cervie_researcher_area_interest'
         ]
       ]
     );
@@ -752,7 +504,7 @@ class IndexController extends Controller{
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'position_id'=>$request->id
+          'area_interest_id'=>$request->id
         ]
       ]
     );
@@ -765,7 +517,7 @@ class IndexController extends Controller{
       [
         'column'=>[
           'employee_id'=>Auth::id(),
-          'table_name'=>'cervie_researcher_position',
+          'table_name'=>'cervie_researcher_area_interest',
           'table_id'=>$request->id
         ]
       ]
@@ -841,102 +593,16 @@ class IndexController extends Controller{
         $data['main'] = $model['cervie']['researcher']['area']['interest']->updateRecord(
           [
             'column'=>[
-              'position_id'=>$request->position_id,
+              'area_interest_id'=>$request->id,
               'employee_id'=>$request->employee_id,
               'name'=>$request->name,
-              'organization_id'=>$request->organization_id,
-              'organization_name'=>null,
-              'user_position_id'=>null,
-              'date_start'=>$request->date_start,
-              'date_end'=>$request->date_end,
               'need_verification'=>0,
-              'is_current_position'=>(($request->is_current_position)?1:0),
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
             ]
           ]
         );
-
-        //If files Exist
-        if($request->has('document')){
-
-          //Get File Loop
-          foreach($request->file('document') as $key=>$value){
-
-            //Set Model
-            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
-
-            //Set Document
-            $data['document'] = $model['cervie']['researcher']['evidence']->readRecordByResearcherTable(
-              [
-                'column'=>[
-                  'employee_id'=>$request->employee_id,
-                  'table_name'=>'cervie_researcher_position',
-                  'table_id'=>$request->id
-                ]
-              ]
-            );
-
-            //Set Counter
-            $counter = ((count($data['document']) == $key)?$key:count($data['document']));
-
-            //Set file name with extension
-            $file['name']['raw']['with']['extension'] = $value->getClientOriginalName();
-
-            //Set file name without extension
-            $file['name']['raw']['without']['extension'] = pathinfo($file['name']['raw']['with']['extension'], PATHINFO_FILENAME);
-
-            //Get file extension
-            $file['extension'] = $value->getClientOriginalExtension();
-
-            //Set path folder
-            $path['folder'] = 'public/resources/researcher/'.$request->employee_id.'/document/position/'.$request->id.'/';
-
-            //Set modified file name without extension (using last_insert_id)
-            $file['name']['modified']['without']['extension'] = ($counter+1);
-
-            //Set modified file name with extension
-            $file['name']['modified']['with']['extension'] = $file['name']['modified']['without']['extension'] . '.' . $file['extension'];
-
-            //Set the full upload path
-            $path['upload'] = $path['folder'] . $file['name']['modified']['with']['extension'];
-
-            //Check if the file already exists in storage
-            $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
-
-            //If the file exists, delete it
-            if($check['exist']['storage']){
-              Storage::disk()->delete($path['upload']);
-            }
-
-            //Store the file in storage (you may use `fopen` if needed for specific storages)
-            Storage::disk()->put($path['upload'],fopen($value,'r+'));
-
-            //Set the model and create a new record in the database
-            $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
-
-            //Set main data and create a record for the file
-            $data['upload'] = $model['cervie']['researcher']['evidence']->createRecord(
-              [
-                'column' => [
-                  'employee_id'=>$request->employee_id,
-                  'file_id' => $file['name']['modified']['without']['extension'],
-                  'file_name' => (($request->document_name[$key])?$request->document_name[$key]:null),
-                  'file_raw_name' => $file['name']['raw']['without']['extension'],
-                  'file_extension' => $file['extension'],
-                  'table_name' => 'cervie_researcher_position',
-                  'table_id' => $request->id,
-                  'remark'=>(($request->remark)?$request->remark:null),
-                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
-                  'created_by' => Auth::id(),
-                ]
-              ]
-            );
-
-          }
-
-        }
 
       break;
 
@@ -1030,10 +696,6 @@ class IndexController extends Controller{
     //Define validation rules
     $rules = [
       'name'=>['required'],
-      'organization_id'=>['required'],
-      'date_start' => ['required','date'],
-      'date_end' => ['nullable','date','after:date_start'],
-      'is_current_position'=>['boolean'], // Not required, but must be boolean if present
       'document.*'=>['required', 'mimes:pdf', 'max:3072'], // Validate each file in the array
       'document_name.*'=>['required'], // Validate that each file has an associated name
     ];
@@ -1041,12 +703,6 @@ class IndexController extends Controller{
     //Custom validation messages
     $messages = [
       'name.required'=>'Name is required',
-      'organization_id.required'=>'Organization Name is Required',
-      'date_start.required'=>'Date Start is Required',
-      'date_end.required'=>'Date End is Required',
-      'date_start.date'=>'Date Start Must Be Date Format',
-      'date_end.date'=>'Date End Must Be Date Format',
-      'date_end.after'=>'Date End must be after Date Start',
     ];
 
     //If Document Name Exist
@@ -1068,24 +724,6 @@ class IndexController extends Controller{
 
     //Create A Validator Instance
     $validator = Validator::make($request->all(), $rules, $messages);
-
-    //Custom rule: either date end or is current position must be present (but not both)
-    $validator->after(function ($validator) use ($request) {
-
-      $date_end = $request->input('date_end');
-      $is_current_position = $request->input('is_current_position');
-
-      //Check if both date end and is current position are empty
-      if(empty($date_end) && empty($is_current_position)){
-        $validator->errors()->add('date_or_work', 'Either Date End or Is Current Position must be provided.');
-      }
-
-      //Check if both fields are filled
-      if(!empty($date_end) && !empty($is_current_position)){
-        $validator->errors()->add('date_or_work', 'Only one of Date End or Is Current Position should be provided.');
-      }
-
-    });
 
     //Run The Validation
     $validator->validate();

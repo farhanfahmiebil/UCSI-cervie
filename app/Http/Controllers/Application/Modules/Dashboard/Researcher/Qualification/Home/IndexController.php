@@ -200,6 +200,10 @@ class IndexController extends Controller{
           ],
           2=>[
             'icon'=>'<i class="mdi mdi-school"></i>',
+            'name'=>' Field of Study',
+          ],
+          3=>[
+            'icon'=>'<i class="mdi mdi-school"></i>',
             'name'=>' University/College/Other',
           ],
           4=>[

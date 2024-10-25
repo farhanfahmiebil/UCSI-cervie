@@ -38,22 +38,27 @@ class CervieResearcherPostGraduateSupervision extends Model{
 
     // Set Query
     $this->query = 'DECLARE @id INT;
-                    EXEC ' . $table . ' ?,?,?,?,?,?,?,
-                                        ?,?,?,?,?,?,?, @id OUTPUT;
+                    EXEC ' . $table . ' ?,?,?,?,?,
+                                        ?,?,?,?,?,
+                                        ?,?,?,?,?,
+                                        ?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
     $result = DB::connection($this->connection)->select($this->query, [
         $data['column']['employee_id'],
+        $data['column']['project_title'],
         $data['column']['student_id'],
+        $data['column']['student_name'],
+        $data['column']['institution_name'],
         $data['column']['qualification_id'],
+        $data['column']['field_study'],
         $data['column']['date_start'],
         $data['column']['date_end'],
         $data['column']['is_ongoing'],
-        $data['column']['student_name'],
-        $data['column']['organization'],
-        $data['column']['programme'],
-        $data['column']['project_title'],
+        $data['column']['study_mode_id'],
+        $data['column']['sponsorship_id'],
+        $data['column']['status_id'],
         $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
@@ -147,21 +152,26 @@ class CervieResearcherPostGraduateSupervision extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,
-                                    ?,?,?,?,?,?,?,?';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,
+                                    ?,?,?,?,?,
+                                    ?,?,?,?,?,
+                                    ?,?,?';
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['postgraduate_supervision_id'],
         $data['column']['employee_id'],
+        $data['column']['project_title'],
         $data['column']['student_id'],
+        $data['column']['student_name'],
+        $data['column']['institution_name'],
         $data['column']['qualification_id'],
+        $data['column']['field_study'],
         $data['column']['date_start'],
         $data['column']['date_end'],
         $data['column']['is_ongoing'],
-        $data['column']['student_name'],
-        $data['column']['organization'],
-        $data['column']['programme'],
-        $data['column']['project_title'],
+        $data['column']['study_mode_id'],
+        $data['column']['sponsorship_id'],
+        $data['column']['status_id'],
         $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],

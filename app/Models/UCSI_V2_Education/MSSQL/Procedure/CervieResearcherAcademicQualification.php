@@ -1,5 +1,6 @@
 <?php
 
+//Set Namespace
 namespace app\Models\UCSI_V2_Education\MSSQL\Procedure;
 
 //Get Database
@@ -38,7 +39,7 @@ class CervieResearcherAcademicQualification extends Model{
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 
     //Get Result
@@ -46,6 +47,7 @@ class CervieResearcherAcademicQualification extends Model{
         $data['column']['employee_id'],
         $data['column']['qualification_id'],
         $data['column']['qualification_other'],
+        $data['column']['field_study'],
         $data['column']['institution_name'],
         $data['column']['year_start'],
         $data['column']['year_end'],
@@ -147,7 +149,7 @@ class CervieResearcherAcademicQualification extends Model{
     );
 // dd($data);
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?,?,?;';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -155,6 +157,7 @@ class CervieResearcherAcademicQualification extends Model{
         $data['column']['employee_id'],
         $data['column']['qualification_id'],
         $data['column']['qualification_other'],
+        $data['column']['field_study'],
         $data['column']['institution_name'],
         $data['column']['year_start'],
         $data['column']['year_end'],

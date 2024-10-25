@@ -22,12 +22,15 @@ use App\Models\UCSI_V2_General\MSSQL\View\CurrencyCode AS CurrencyCodeView;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherGrant AS CervieResearcherGrantView;
 use App\Models\UCSI_V2_General\MSSQL\View\SustainableDevelopmentGoal AS SustainableDevelopmentGoalView;
 use App\Models\UCSI_V2_Education\MSSQL\View\Status AS StatusView;
+use App\Models\UCSI_V2_Education\MSSQL\View\Report AS ReportView;
+
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherGrant AS CervieResearcherGrantProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTeamMember AS CervieResearcherTeamMemberProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\Report AS ReportProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -231,8 +234,7 @@ class IndexController extends Controller{
       'representation_category_id'=>['required'],
       'title'=>['required'],
       'date_start' => ['required','date'],
-      'date_end' => ['nullable','date','after:date_start'],
-      'is_ongoing'=>['boolean'], // Not required, but must be boolean if present
+      'date_end' => ['required','date','after:date_start'],
       'quantum'=>['required'],
       'currency_code_id'=>['required'],
       'sustainable_development_goal_id'=>['nullable'],
@@ -269,24 +271,6 @@ class IndexController extends Controller{
 
     //Create A Validator Instance
     $validator = Validator::make($request->all(), $rules, $messages);
-
-    //Custom rule: either date end or is on going must be present (but not both)
-    $validator->after(function ($validator) use ($request) {
-
-      $date_end = $request->input('date_end');
-      $is_ongoing = $request->input('is_ongoing');
-
-      //Check if both date end and is on going are empty
-      if(empty($date_end) && empty($is_ongoing)){
-        $validator->errors()->add('date_or_work', 'Either Date End or Is Going must be provided.');
-      }
-
-      //Check if both fields are filled
-      if(!empty($date_end) && !empty($is_ongoing)){
-        $validator->errors()->add('date_or_work', 'Only one of Date End or Is Going should be provided.');
-      }
-
-    });
 
     //Run The Validation
     $validator->validate();
@@ -327,12 +311,11 @@ class IndexController extends Controller{
           [
             'column'=>[
               'employee_id'=>Auth::id(),
-              'representation_role_id'=>($request->has('project_representation_role_id')?$request->project_representation_role_id:null),
+              'representation_role_id'=>($request->has('representation_role_id')?$request->representation_role_id:null),
               'status_id'=>($request->has('status_id')?$request->status_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'title'=>($request->has('title')?$request->title:null),
-              'is_ongoing'=>(($request->is_ongoing)?1:0),
               'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
               'quantum'=>($request->has('quantum')?$request->quantum:null),
               'representation_category_id'=>($request->has('representation_category_id')?$request->representation_category_id:null),
@@ -459,52 +442,70 @@ class IndexController extends Controller{
   /**************************************************************************************
  		List
  	**************************************************************************************/
-  public function list(Request $request)
-  {
-      // Get Route Path
-      $this->routePath();
+  public function list(Request $request){
 
-      // Set Hyperlink
-      $hyperlink = $this->hyperlink;
+    //Get Route Path
+    $this->routePath();
 
-      // Set Page Sub
-      $page = $this->page;
-      $page['sub'] .= 'list.sub';
+    //Set Hyperlink
+    $hyperlink = $this->hyperlink;
 
-      // Set Breadcrumb Icon
-      $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
+    //Set Page Sub
+    $page = $this->page;
+    $page['sub'] .= 'list.sub';
 
-      // Set Breadcrumb Title
-      $data['breadcrumb']['title'] = ['Welcome Back, ' . Auth::user()->name];
+    //Set Breadcrumb Icon
+    $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
 
-      // Set Breadcrumb
-      $data['title'] = array($this->header['category']);
+    //Set Breadcrumb Title
+    $data['breadcrumb']['title'] = ['Welcome Back, ' . Auth::user()->name];
 
-      // Set Model Award
-      $model['cervie']['researcher']['grant'] = new CervieResearcherGrantView();
-      $model['cervie']['researcher']['ongoing'] = new CervieResearcherGrantProcedure();
+    //Set Breadcrumb
+    $data['title'] = array($this->header['category']);
 
-      // Set Main Data Researcher Grant List
-      $data['main']['cervie']['researcher']['grant'] = $model['cervie']['researcher']['grant']->getList(
-          [
-              'eloquent'=>'pagination',
-              'column'=>[
-                  'employee_id'=>Auth::id(),
-              ]
-          ]
-      );
+    //Set Model Researcher Grant
+    $model['cervie']['researcher']['grant'] = new CervieResearcherGrantView();
+    // $model['cervie']['researcher']['ongoing'] = new CervieResearcherGrantProcedure();
 
-      // Set Table Researcher Grant
-      $data['table']['column']['cervie']['researcher']['grant'] = $this->getDataTable();
+    // Set Main Data Researcher Grant List
+    $data['main']['cervie']['researcher']['grant'] = $model['cervie']['researcher']['grant']->getList(
+      [
+        'eloquent'=>'pagination',
+        'column'=>[
+          'employee_id'=>Auth::id(),
+        ]
+      ]
+    );
 
-      // Set Main Data Researcher Ongoing Grants
-      $ongoingGrants = $model['cervie']['researcher']['ongoing']->readRecordOngoing(
-          [
-              'column'=>[
-                  'employee_id'=>Auth::id(),
-              ]
-          ]
-      );
+    //Set Table Researcher Grant
+    $data['table']['column']['cervie']['researcher']['grant'] = $this->getDataTable();
+
+    //Set Model Report
+    $model['report']['view'] = new ReportView();
+
+    //Get Report
+    $data['report']['view'] = $model['report']['view']->viewReport(
+      [
+        'column'=>[
+          'code'=>'0000000000001'
+        ]
+      ]
+    );
+
+    //Set Model Report
+    $model['report']['procedure'] = new ReportProcedure();
+
+    //Get Report
+    $data['report']['by']['grant']['progress'] = $model['report']['procedure']->readReport(
+      [
+        'code'=>$data['report']['view']->code,
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+// dd($data['report']['by']['grant']['progress']);
+      // $report['grant']['by']['progress'] =
 
 
       // // Calculate Progress for Ongoing Grants
@@ -547,40 +548,40 @@ class IndexController extends Controller{
       //     ];
       // }
 
-      $data['main']['cervie']['researcher']['ongoing'] = [];
-foreach ($ongoingGrants as $grant) {
-    $startDate = Carbon::parse($grant->date_start);
-    $currentDate = Carbon::now();
-
-    // Initialize progress percentage
-    $progressPercentage = 0;
-
-    if ($currentDate < $startDate) {
-        // Before start date: 0%
-        $progressPercentage = 0;
-    } else {
-        // After start date: calculate progress
-        // Assume a total duration (for example, 1 year or 365 days)
-        $totalDays = 365; // You can adjust this based on your requirements
-
-        // Calculate days passed since the start date
-        $daysPassed = $currentDate->diffInDays($startDate);
-
-        // Calculate progress as a percentage of total duration
-        $progressPercentage = ($daysPassed / $totalDays) * 100;
-
-        // Ensure progress does not go below 0 or above 100
-        $progressPercentage = max(0, min(100, round($progressPercentage)));
-    }
-
-    // Store grant progress data
-    $data['main']['cervie']['researcher']['ongoing'][] = [
-        'grant_id' => $grant->grant_id,
-        'grant_title' => $grant->title,
-        'progress' => $progressPercentage,
-        'date_start' => $grant->date_start,
-    ];
-}
+//       $data['main']['cervie']['researcher']['ongoing'] = [];
+// foreach ($ongoingGrants as $grant) {
+//     $startDate = Carbon::parse($grant->date_start);
+//     $currentDate = Carbon::now();
+//
+//     // Initialize progress percentage
+//     $progressPercentage = 0;
+//
+//     if ($currentDate < $startDate) {
+//         // Before start date: 0%
+//         $progressPercentage = 0;
+//     } else {
+//         // After start date: calculate progress
+//         // Assume a total duration (for example, 1 year or 365 days)
+//         $totalDays = 365; // You can adjust this based on your requirements
+//
+//         // Calculate days passed since the start date
+//         $daysPassed = $currentDate->diffInDays($startDate);
+//
+//         // Calculate progress as a percentage of total duration
+//         $progressPercentage = ($daysPassed / $totalDays) * 100;
+//
+//         // Ensure progress does not go below 0 or above 100
+//         $progressPercentage = max(0, min(100, round($progressPercentage)));
+//     }
+//
+//     // Store grant progress data
+//     $data['main']['cervie']['researcher']['ongoing'][] = [
+//         'grant_id' => $grant->grant_id,
+//         'grant_title' => $grant->title,
+//         'progress' => $progressPercentage,
+//         'date_start' => $grant->date_start,
+//     ];
+// }
 
       // Get Form Token
       $form_token = $this->encrypt_token_form;
@@ -1044,11 +1045,10 @@ foreach ($ongoingGrants as $grant) {
             'column'=>[
               'grant_id'=>$request->id,
               'employee_id'=>Auth::id(),
-              'representation_role_id'=>($request->has('project_representation_role_id')?$request->project_representation_role_id:null),
+              'representation_role_id'=>($request->has('representation_role_id')?$request->representation_role_id:null),
               'status_id'=>($request->has('status_id')?$request->status_id:null),
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
-              'is_ongoing'=>(($request->is_ongoing)?1:0),
               'title'=>($request->has('title')?$request->title:null),
               'currency_code_id'=>($request->has('currency_code_id')?$request->currency_code_id:null),
               'quantum'=>($request->has('quantum')?$request->quantum:null),
@@ -1198,7 +1198,7 @@ foreach ($ongoingGrants as $grant) {
         'name'=>' Type',
       ],
       2=>[
-        'icon'=>'<i class="mdi person-supervisor-circle"></i>',
+        'icon'=>'<i class="mdi mdi-subtitles"></i>',
         'name'=>' Title',
       ],
       3=>[

@@ -63,6 +63,8 @@ class Qualification extends Model{
             ->table($table)
             ->where($table.'.status_name','active');
 
+    //In Qualification
+    if(isset($data['column']['in']['qualification_id']) && $data['column']['in']['qualification_id'] != null){$result = $result->whereIn($table.'.qualification_id',$data['column']['in']['qualification_id']);}
 
     $result = $result->get()
                      ->toarray();

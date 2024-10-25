@@ -1026,22 +1026,18 @@ class IndexController extends Controller{
         'name'=>' Title',
       ],
       2=>[
-        'icon'=>'<i class="mdi mdi-account"></i>',
+        'icon'=>'<i class="mdi mdi-account-tie"></i>',
         'name'=>' Client',
       ],
       3=>[
         'icon'=>'<i class="mdi mdi-calendar"></i>',
-        'name'=>' Date Start',
+        'name'=>' Period',
       ],
       4=>[
-        'icon'=>'<i class="mdi mdi-calendar"></i>',
-        'name'=>' Date End',
+        'icon'=>'<i class="mdi mdi-shield-check"></i>',
+        'name'=>' Verification',
       ],
       5=>[
-        'icon'=>'<i class="mdi mdi-shield-check"></i>',
-        'name'=>' Verfication',
-      ],
-      6=>[
         'icon'=>'<i class="mdi mdi-settings"></i>',
         'name'=>' Control',
       ]

@@ -856,7 +856,7 @@ class IndexController extends Controller{
         'name'=>' Organization',
       ],
       2=>[
-        'icon'=>'<i class="mdi person-supervisor-circle"></i>',
+        'icon'=>'<i class="mdi mdi-domain"></i>',
         'name'=>' Title',
       ],
       3=>[

@@ -18,6 +18,6 @@ Route::prefix('insight')->group(function(){
 
   /*  Home
   **************************************************************************************/
-  Route::get('/home', config('routing.application.modules.dashboard.researcher.controller').'\Insight\Home\IndexController@index')->name(config('routing.application.modules.dashboard.researcher.name').'.insight.home');
+  Route::get('/home', config('routing.application.modules.dashboard.researcher.controller').'\Insight\Home\IndexController@index')->name(config('routing.application.modules.dashboard.researcher.name').'.insight.home.list');
 
 }); //End Insight

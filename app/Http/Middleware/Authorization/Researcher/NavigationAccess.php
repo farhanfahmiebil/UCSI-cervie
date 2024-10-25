@@ -41,7 +41,7 @@ class NavigationAccess{
         'user'=>'researcher'
       ]
     );
-
+// dd($data['navigation']['category']);
     //Share Access
     View::share('access',$data);
 

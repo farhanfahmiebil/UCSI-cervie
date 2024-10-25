@@ -55,7 +55,7 @@
           <div class="row mt-4">
 
             <div class="col-lg-12">
-              <h3 class="font-weight-bold text-dark">Email</h3>
+              <h3 class="font-weight-bold text-dark"><i class="mdi mdi-email"></i> Email</h3>
               <h6 class="text-grey">{{ Auth::user()->mail }}</h6>
             </div>
 
@@ -65,7 +65,7 @@
           <!-- researcher information -->
           <div class="row mt-4">
             <div class="col-lg-12">
-              <h3 class="font-weight-bold text-dark">Faculty</h3>
+              <h3 class="font-weight-bold text-dark"><i class="mdi mdi-domain"></i> Faculty</h3>
               <h6 class="text-grey">{{ Auth::user()->getResearcher(Auth::id())->organization_name }}</h6>
             </div>
           </div>

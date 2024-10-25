@@ -118,6 +118,21 @@
               <!-- row 3 -->
               <div class="row">
 
+                <!-- field study -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="field_study">Field of Study</label>
+                    <input type="text" class="form-control" id="field_study" name="field_study" value="{{ $data['main']->field_study }}" placeholder="Field of Study">
+                  </div>
+                </div>
+                <!-- end field study -->
+
+              </div>
+              <!-- end row 3 -->
+
+              <!-- row 4 -->
+              <div class="row">
+
                 <!-- institution -->
                 <div class="col-md-12">
                   <div class="form-group">
@@ -128,9 +143,9 @@
                 <!-- end institution -->
 
               </div>
-              <!-- end row 3 -->
+              <!-- end row 4 -->
 
-              <!-- row 4 -->
+              <!-- row 5 -->
               <div class="row">
 
                 <!-- year start -->
@@ -166,7 +181,7 @@
                 <!-- end year end -->
 
               </div>
-              <!-- end row 4 -->
+              <!-- end row 5 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)

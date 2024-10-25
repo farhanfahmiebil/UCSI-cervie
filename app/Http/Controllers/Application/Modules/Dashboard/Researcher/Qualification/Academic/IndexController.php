@@ -115,7 +115,15 @@ class IndexController extends Controller{
     $model['general']['qualification'] = new QualificationView();
 
     //Get Qualification
-    $data['general']['qualification'] = $model['general']['qualification']->selectBox();
+    $data['general']['qualification'] = $model['general']['qualification']->selectBox(
+      [
+        'column'=>[
+          'in'=>[
+            'qualification_id'=>['Q08','Q09']
+          ]
+        ]
+      ]
+    );
 
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
@@ -124,7 +132,7 @@ class IndexController extends Controller{
     $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
       [
         'column'=>[
-          'table_control_id'=>'cervie_researcher_academic_qualification'
+          'table_control_id'=>'cervie_researcher_academic_qualification',
         ]
       ]
     );
@@ -186,6 +194,7 @@ class IndexController extends Controller{
               'employee_id'=>Auth::id(),
               'qualification_id'=>$request->qualification_id,
               'qualification_other'=>(($request->qualification_other)?$request->qualification_other:null),
+              'field_study'=>$request->field_study,
               'institution_name'=>$request->institution_name,
               'year_start'=>$request->year_start,
               'year_end'=>$request->year_end,
@@ -566,6 +575,7 @@ class IndexController extends Controller{
               'employee_id'=>Auth::id(),
               'qualification_id'=>$request->qualification_id,
               'qualification_other'=>(($request->qualification_other)?$request->qualification_other:null),
+              'field_study'=>$request->field_study,
               'institution_name'=>$request->institution_name,
               'year_start'=>$request->year_start,
               'year_end'=>$request->year_end,
@@ -676,6 +686,7 @@ class IndexController extends Controller{
     $rules = [
       'qualification_id'=>['required'],
       'qualification_other'=>['required_if:qualification_id,Q15'],
+      'field_study'=>['required'],
       'institution_name'=>['required'],
       'year_start'=>['nullable','regex:/^\d{4}$/'], // 4-digit year (nullable)
       'year_end'=>['nullable','regex:/^\d{4}$/','after_or_equal:year_start'], // 4-digit year (nullable)
@@ -688,6 +699,7 @@ class IndexController extends Controller{
     $messages = [
       'qualification_id.required'=>'Qualification is required',
       'qualification_other.required_if' => 'Other Qualification is required when others qualification is selected',
+      'field_study.required'=>'Field of Study is required',
       'institution_name.required'=>'University/College/Other is required',
       'year_start.regex'=>'Year Start must be a 4-digit year',
       'year_end.regex'=>'Year End must be a 4-digit year',

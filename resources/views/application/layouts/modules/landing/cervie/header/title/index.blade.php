@@ -1,3 +1,3 @@
 <!-- title -->
-<title>UCSI Hotel - Table Menu</title>
+<title>UCSI - CERVIE</title>
 <!-- end title -->

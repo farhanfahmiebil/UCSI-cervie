@@ -85,19 +85,34 @@
               <!-- row 3 -->
               <div class="row">
 
-                <!-- institution -->
+                <!-- field study -->
                 <div class="col-md-12">
                   <div class="form-group">
-                    <label for="institution_name">University/College/Other</label>
-                    <input type="text" class="form-control" id="institution_name" name="institution_name" value="{{ old('institution_name') }}" placeholder="Name">
+                    <label for="field_study">Field of Study</label>
+                    <input type="text" class="form-control" id="field_study" name="field_study" value="{{ old('field_study') }}" placeholder="Field of Study">
                   </div>
                 </div>
-                <!-- end institution -->
+                <!-- end field study -->
 
               </div>
               <!-- end row 3 -->
 
               <!-- row 4 -->
+              <div class="row">
+
+                <!-- institution -->
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="institution_name">University/College/Other</label>
+                    <input type="text" class="form-control" id="institution_name" name="institution_name" value="{{ old('institution_name') }}" placeholder="Institution Name">
+                  </div>
+                </div>
+                <!-- end institution -->
+
+              </div>
+              <!-- end row 4 -->
+
+              <!-- row 5 -->
               <div class="row">
 
                 <!-- year start -->
@@ -133,7 +148,7 @@
                 <!-- end year end -->
 
               </div>
-              <!-- end row 4 -->
+              <!-- end row 5 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)

@@ -1,5 +1,6 @@
 <?php
 
+//Set Namespace
 namespace app\Models\UCSI_V2_Education\MSSQL\View;
 
 //Get Database

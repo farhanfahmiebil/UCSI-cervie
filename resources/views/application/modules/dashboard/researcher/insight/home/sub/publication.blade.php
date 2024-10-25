@@ -19,7 +19,7 @@
 
           <div class="col-md-6 ">
             <div class="mb-3">
-              Publication By Type
+              Publication By Indexing Body
             </div>
 
             <div id="graphPublicationByIndexingBody" class="border"></div>

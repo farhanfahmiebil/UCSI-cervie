@@ -20,6 +20,7 @@ Route::get('/home',config('routing.application.modules.landing.cervie.controller
 **************************************************************************************/
 Route::prefix('researcher')->group(function(){
 
-  Route::get('/view{employee_id}',config('routing.application.modules.landing.cervie.controller').'\Researcher\IndexController@view')->name(config('routing.application.modules.landing.cervie.name').'.ressearcher.view');
+  //View
+  Route::get('/view/{employee_id}',config('routing.application.modules.landing.cervie.controller').'\Researcher\IndexController@view')->name(config('routing.application.modules.landing.cervie.name').'.ressearcher.view');
 
 }); //End Researcher

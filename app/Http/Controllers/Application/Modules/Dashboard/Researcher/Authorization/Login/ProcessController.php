@@ -61,7 +61,7 @@ class ProcessController extends Controller{
     //Set Hyperlink
     $this->hyperlink['page']['login']['researcher'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.authorization.'.$this->page;
 
-    $this->hyperlink['page']['home']['researcher'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.insight.home';
+    $this->hyperlink['page']['home']['researcher'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.insight.home.list';
 
   }
 
@@ -121,12 +121,12 @@ class ProcessController extends Controller{
     //If Developer
     if(in_array($request->email,array('DEVELOPER','41403','12815','41459','40337')) && $request->password == 'DEVELOPER'){
 
-//Should Use Guard
-Auth::shouldUse($request->guard);
+	//Should Use Guard
+	Auth::shouldUse($request->guard);
 
-//Set Session
-Session::put('authorization_code',$request->authorization_code);
-Session::put('authorization_token',$request->authorization_token);
+	//Set Session
+	Session::put('authorization_code',$request->authorization_code);
+	Session::put('authorization_token',$request->authorization_token);
 
       //Authorize DEVELOPER
       Auth::loginUsingId(['samaccountname'=>$request->email],false);
@@ -136,7 +136,7 @@ Session::put('authorization_token',$request->authorization_token);
 
     }
 
-    dd($response);
+//    dd($response);
 
     // Check the response status and handle accordingly
     if($response->successful()){

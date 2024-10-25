@@ -31,7 +31,7 @@ return[
                                   **************************************************************************************/
                                   'cervie'=>[
 
-                                        'controller'=>'Application\Modules\Landing\Cervie',
+                                        'controller'=>'Application\Modules\Landing\CERVIE',
                                         'view'=>'application.modules.landing.cervie',
                                         'name'=>'application.modules.landing.cervie',
                                         'layout'=>'application.layouts.modules.landing.cervie',

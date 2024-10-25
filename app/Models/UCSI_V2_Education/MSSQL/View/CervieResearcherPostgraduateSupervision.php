@@ -1,6 +1,7 @@
 <?php
 
-namespace app\Models\UCSI_V2_Education\MSSQL\View;
+//Set Namespace
+namespace App\Models\UCSI_V2_Education\MSSQL\View;
 
 //Get Database
 use DB;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UCSI_V2_General\MSSQL\View\Setting;
 
 //Get Class
-class CervieResearcherPostGraduateSupervision extends Model{
+class CervieResearcherPostgraduateSupervision extends Model{
 
   /**
    * The database connection that should be used by the model.

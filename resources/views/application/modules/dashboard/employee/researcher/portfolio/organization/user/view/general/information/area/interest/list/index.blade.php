@@ -8,7 +8,7 @@
     <div class="d-flex align-items-center justify-content-between">
 
       <!-- title -->
-      <h4 class="card-title mb-2">Researcher Position</h4>
+      <h4 class="card-title mb-2">Researcher Area Interest</h4>
       <!-- end title -->
 
       <!-- dropdown -->

@@ -68,7 +68,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="representation_role_id">Project Role</label>
-                    <select class="form-control select2" id="project_representation_role_id" name="project_representation_role_id">
+                    <select class="form-control select2" id="representation_role_id" name="representation_role_id">
                       <option value="">-- Please Select --</option>
 
                       {{-- Check General Representation Role Exist --}}
@@ -106,18 +106,7 @@
                 <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <div class="d-flex bd-highlight">
-                      <div class="flex-grow-1 bd-highlight">
-                        <label for="date_end">Date End</label>
-                      </div>
-                      <div class="bd-highlight">
-                        <label for="is_ongoing" class="form-check-label">
-                          <input type="checkbox" class="form-check-input" id="is_ongoing" name="is_ongoing" value="1" {{ (($data['main']->is_ongoing) ?'checked':'') }}>
-                          Is On Going
-                          <i class="input-helper"></i>
-                        </label>
-                      </div>
-                    </div>
+                    <label for="date_end">Date End</label>
                     <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):null) }}" placeholder="">
                   </div>
                 </div>
@@ -538,27 +527,29 @@
                           <!-- end thead -->
 
                           {{-- Check Data Team Members Exist --}}
-                        @if($data['team_member'])
-                        {{-- Get Data Team Members --}}
-                  @foreach($data['team_member'] as $key => $value)
-                      <tr id="{{ $value->team_member_id }}">
-                          <td>{{ ($key + 1) }}</td>
-                          <td>{{ $value->name }}</td>
-                          <td>{{ $value->representation_role_name }}</td>
-                          <td>
-                              @if($key != 0)
-                                  <a href="#" class="btn btn-warning remove-team-member">
-                                      <i class="mdi mdi-alpha-x text-white"></i>
-                                  </a>
-                              @endif
-                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->grant_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
-                                  <i class="mdi mdi-trash-can"></i>
-                              </a>
-                          </td>
-                      </tr>
-                  @endforeach
-                  {{-- End Get Data Team Members --}}
-                        @else
+                          @if($data['team_member'])
+
+                            {{-- Get Data Team Members --}}
+                            @foreach($data['team_member'] as $key => $value)
+                                <tr id="{{ $value->team_member_id }}">
+                                    <td>{{ ($key + 1) }}</td>
+                                    <td>{{ $value->name }}</td>
+                                    <td>{{ $value->representation_role_name }}</td>
+                                    <td>
+                                        @if($key != 0)
+                                            <a href="#" class="btn btn-warning remove-team-member">
+                                                <i class="mdi mdi-alpha-x text-white"></i>
+                                            </a>
+                                        @endif
+                                        <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->grant_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                                            <i class="mdi mdi-trash-can"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            {{-- End Get Data Team Members --}}
+
+                          @else
                             <tr>
                                 <td class="row-number">1</td>
                                 <td colspan="2">
@@ -580,8 +571,8 @@
                                 </td>
                                 <td>&nbsp;</td>
                             </tr>
-                        @endif
-                        {{-- End Check Data Team Members Exist --}}
+                          @endif
+                          {{-- End Check Data Team Members Exist --}}
 
 
 
@@ -589,11 +580,11 @@
                       <!-- end table -->
 
                       <div class="row text-center pt-3">
-                          <div class="col-12">
-                              <button type="button" class="btn btn-primary add-new-team-member">
-                                  <i class="mdi mdi-plus"></i> Add New Team Member
-                              </button>
-                          </div>
+                        <div class="col-12">
+                          <button type="button" class="btn btn-primary add-new-team-member">
+                            <i class="mdi mdi-plus"></i> Add New Team Member
+                          </button>
+                        </div>
                       </div>
 
                   </div>
@@ -604,9 +595,11 @@
 
               <!-- script for dynamic row numbering and team member operations -->
               <script type="text/javascript">
-                  $(document).ready(function() {
-                    /* Add New Team Member Row */
-                  $('.add-new-team-member').click(function() {
+
+                $(document).ready(function(){
+
+                  /* Add New Team Member Row */
+                  $('.add-new-team-member').click(function(){
                       var new_row = '';
                       new_row += '<tr>';
                       new_row += '<td class="row-number"></td>';
@@ -631,7 +624,7 @@
                       new_row += '<a href="#" class="btn btn-danger remove-team-member">';
                       new_row += '<i class="mdi mdi-trash-can text-white"></i>';
                       new_row += '</a>';
-        
+
                       new_row += '</td>';
                       new_row += '</tr>';
 
@@ -641,50 +634,51 @@
                       initializeSelect2();
                   });
 
-                      /* Remove Team Member Row */
-                      $(document).on('click', '.remove-team-member', function(e) {
-                          e.preventDefault();
-                          $(this).closest('tr').remove();
-                          recalculateRowNumbers();
-                          checkTeamMemberCount();
-
-                      });
-
-                      /* Recalculate Row Numbers */
-                      function recalculateRowNumbers() {
-                          $('#team-member-table tbody tr').each(function(index) {
-                              $(this).find('.row-number').text(index + 1);
-                          });
-                      }
-
-                      /* Initialize Select2 */
-                      function initializeSelect2() {
-                          $('.select2').select2({
-                              width: '100%', // Adjust width as needed
-                              placeholder: '-- Please Select --',
-                              allowClear: true
-                          });
-                      }
-
-                      /* Check File Count and Hide/Show Add Button */
-                      function checkTeamMemberCount() {
-                          var team_member_count = $('#team-member-table tbody tr').length;
-                          var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
-
-                          if (team_member_count >= limit) {
-                              $('.add-new-team-member').hide();
-                          } else {
-                              $('.add-new-team-member').show();
-                          }
-                      }
-
-                      // Initial Select2 Initialization
-                      initializeSelect2();
-                      // Initial recalculation in case of pre-existing rows
+                  /* Remove Team Member Row */
+                  $(document).on('click', '.remove-team-member', function(e) {
+                      e.preventDefault();
+                      $(this).closest('tr').remove();
                       recalculateRowNumbers();
                       checkTeamMemberCount();
 
                   });
+
+                  /* Recalculate Row Numbers */
+                  function recalculateRowNumbers() {
+                      $('#team-member-table tbody tr').each(function(index) {
+                          $(this).find('.row-number').text(index + 1);
+                      });
+                  }
+
+                  /* Initialize Select2 */
+                  function initializeSelect2() {
+                      $('.select2').select2({
+                          width: '100%', // Adjust width as needed
+                          placeholder: '-- Please Select --',
+                          allowClear: true
+                      });
+                  }
+
+                  /* Check File Count and Hide/Show Add Button */
+                  function checkTeamMemberCount() {
+                      var team_member_count = $('#team-member-table tbody tr').length;
+                      var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
+
+                      if (team_member_count >= limit) {
+                          $('.add-new-team-member').hide();
+                      } else {
+                          $('.add-new-team-member').show();
+                      }
+                  }
+
+                  // Initial Select2 Initialization
+                  initializeSelect2();
+                  // Initial recalculation in case of pre-existing rows
+                  recalculateRowNumbers();
+                  checkTeamMemberCount();
+
+                });
+
               </script>
               <!-- end script for dynamic row numbering and team member operations -->
 
@@ -718,179 +712,154 @@
           </div>
           <!-- end card -->
 
-          </div>
-          <!-- end col -->
+        </div>
+        <!-- end col -->
 
-          </div>
-          <!-- end row -->
+      </div>
+      <!-- end row -->
 
-          </div>
-          <!-- end content -->
+    </div>
+    <!-- end content -->
 
-          </form>
-          <!-- end form -->
+  </form>
+  <!-- end form -->
 
-          <!-- Script for dynamic row numbering and file operations -->
-          <script type="text/javascript">
+  <!-- Script for dynamic row numbering and file operations -->
+  <script type="text/javascript">
 
-          /**************************************************************************************
-          Document On Load
-          **************************************************************************************/
-          $(document).ready(function(){
+  /**************************************************************************************
+    Document On Load
+  **************************************************************************************/
+  $(document).ready(function(){
 
-          /**************************************************************************************
-          Session
-          **************************************************************************************/
-          @if(Session('message'))
-          Swal.fire({
-          title: '{{ ucwords(Session::get('alert_type')) }}',
-          text: '{{ ucwords(Session::get('message')) }}',
-          icon: '{{ strtolower(Session::get('alert_type')) }}'
-          });
-          @endif
+    /**************************************************************************************
+      Session
+    **************************************************************************************/
+    @if(Session('message'))
+      Swal.fire({
+        title: '{{ ucwords(Session::get('alert_type')) }}',
+        text: '{{ ucwords(Session::get('message')) }}',
+        icon: '{{ strtolower(Session::get('alert_type')) }}'
+      });
+    @endif
 
-          /**************************************************************************************
-          Modal Delete
-          **************************************************************************************/
-          $('[class*="btn-delete-main"]').on('click',function(event){
+  /**************************************************************************************
+    Modal Delete
+  **************************************************************************************/
+  $('[class*="btn-delete-main"]').on('click',function(event){
 
-          //Set Parent Row
-          var id = $('#id').val();
-          // console.log(id)
-          //Set Form Token
-          var form_token = '{{ $form_token["delete"] }}';
+    //Set Parent Row
+    var id = $('#id').val();
+    // console.log(id)
+    //Set Form Token
+    var form_token = '{{ $form_token["delete"] }}';
 
-          //Set Hyperlink
-          var hyperlink  = $(this).data('href');
-            hyperlink += '?id='+id;
-            hyperlink += '&form_token='+form_token;
+    //Set Hyperlink
+    var hyperlink  = $(this).data('href');
+        hyperlink += '?id='+id;
+        hyperlink += '&form_token='+form_token;
 
-          //Set Alert
-          Swal.fire({
-          title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
-          showDenyButton:true,
-          confirmButtonText:'Yes',
-          denyButtonText:'Cancel',
-          icon:'error'
-          }).then((result) => {
+    //Set Alert
+    Swal.fire({
+      title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+      showDenyButton:true,
+      confirmButtonText:'Yes',
+      denyButtonText:'Cancel',
+      icon:'error'
+    }).then((result) => {
 
-          //If Confirmed
-          if(result.isConfirmed){
+    //If Confirmed
+    if(result.isConfirmed){
 
-            //Redirect
-            window.location.href = hyperlink;
+      //Redirect
+      window.location.href = hyperlink;
 
-          }else
+    }else
 
-          //If Denied
-          if(result.isDenied){
+    //If Denied
+    if(result.isDenied){
 
-            //Alert Message
-            Swal.fire('Cancel','','');
-          }
+      //Alert Message
+      Swal.fire('Cancel','','');
 
-          });
-          });
+    }
 
-          /**************************************************************************************
-            Modal Delete
-          **************************************************************************************/
-          $('[class*="btn-delete-evidence"]').on('click',function(event){
+    });
+  });
 
-          //Set Parent Row
-          var parent_row = $(this).closest('tr').attr('id');
+  /**************************************************************************************
+    Modal Delete
+  **************************************************************************************/
+  $('[class*="btn-delete-evidence"]').on('click',function(event){
 
-          //Set Alert
-          Swal.fire({
-            title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
-            showDenyButton:true,
-            confirmButtonText:'Yes',
-            denyButtonText:'Cancel',
-            icon:'error'
-          }).then((result) => {
+  //Set Parent Row
+  var parent_row = $(this).closest('tr').attr('id');
 
-            //If Confirmed
-            if(result.isConfirmed){
+  //Set Alert
+  Swal.fire({
+    title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+    showDenyButton:true,
+    confirmButtonText:'Yes',
+    denyButtonText:'Cancel',
+    icon:'error'
+  }).then((result) => {
 
-              //Redirect
-              window.location.href = $(this).data('href');
+    //If Confirmed
+    if(result.isConfirmed){
 
-            }else
+      //Redirect
+      window.location.href = $(this).data('href');
 
-            //If Denied
-            if(result.isDenied){
+    }else
 
-              //Alert Message
-              Swal.fire('Cancel','','');
-            }
+    //If Denied
+    if(result.isDenied){
 
-            });
+      //Alert Message
+      Swal.fire('Cancel','','');
+    }
 
-          });
+    });
 
-          /**************************************************************************************
-            Modal Delete
-          **************************************************************************************/
-          $('[class*="btn-delete-team-member"]').on('click',function(event){
+  });
 
-          //Set Parent Row
-          var parent_row = $(this).closest('tr').attr('id');
+  /**************************************************************************************
+    Modal Delete
+  **************************************************************************************/
+  $('[class*="btn-delete-team-member"]').on('click',function(event){
 
-          //Set Alert
-          Swal.fire({
-            title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
-            showDenyButton:true,
-            confirmButtonText:'Yes',
-            denyButtonText:'Cancel',
-            icon:'error'
-          }).then((result) => {
+  //Set Parent Row
+  var parent_row = $(this).closest('tr').attr('id');
 
-            //If Confirmed
-            if(result.isConfirmed){
+  //Set Alert
+  Swal.fire({
+    title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+    showDenyButton:true,
+    confirmButtonText:'Yes',
+    denyButtonText:'Cancel',
+    icon:'error'
+  }).then((result) => {
 
-              //Redirect
-              window.location.href = $(this).data('href');
+    //If Confirmed
+    if(result.isConfirmed){
 
-            }else
+      //Redirect
+      window.location.href = $(this).data('href');
 
-            //If Denied
-            if(result.isDenied){
+    }else
 
-              //Alert Message
-              Swal.fire('Cancel','','');
-            }
+    //If Denied
+    if(result.isDenied){
 
-            });
+      //Alert Message
+      Swal.fire('Cancel','','');
+    }
 
-          });
+    });
 
-          /**************************************************************************************
-            Is Ongoing
-          **************************************************************************************/
-          $('#is_ongoing').on('click',function(){
-            if($(this).is(':checked')){
-              //If the checkbox is checked, clear the Date End input and disable it
-              $('#date_end').val('').attr('disabled', true);
-            }else{
-              //If the checkbox is unchecked, enable the Date End input
-              $('#date_end').attr('disabled', false);
-            }
-          });
+  });
 
-          /**************************************************************************************
-            Date End
-          **************************************************************************************/
-          $('#date_end').on('input',function(){
-            if($(this).val()){
-              // If a date is entered, uncheck the 'Is Ongoing' checkbox
-              $('#is_ongoing').prop('checked', false);
-            }else{
-              // If Date End is cleared, allow 'Is Ongoing' to be checked
-              $('#is_ongoing').prop('checked', true);
-            }
-          });
+  });
+  </script>
 
-          });
-          </script>
-
-          @endsection
+@endsection

@@ -113,8 +113,8 @@
                   <td>{{ ($key+1) }}</td>
                   <td>{{ $value->organization }}</td>
                   <td>{{ $value->title }}</td>
-                  <td>{{ $value->date_start }}</td>
-                  <td>{{ $value->date_end }}</td>
+                  <td>{{ \Carbon\Carbon::parse($value->date_start)->format('d F Y') }}</td>
+                  <td>{{ \Carbon\Carbon::parse($value->date_end)->format('d F Y') }}</td>
                   <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
                   <td>
 

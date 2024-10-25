@@ -116,6 +116,7 @@
                   <td>{{ ($key+1) }}</td>
                   <td>{{ (($value->qualification_other != 'Q15')?$value->qualification_name:$value->qualification_other) }}</td>
                   <td>{{ $value->institution_name }}</td>
+                  <td>{{ $value->field_study }}</td>
                   <td>{{ $value->year_start }} - {{ (($value->is_current_progress)?'Current':$value->year_end) }}</td>
                   <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
                   <td>

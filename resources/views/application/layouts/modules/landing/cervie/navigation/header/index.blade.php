@@ -2,7 +2,7 @@
 <header>
 
   <!-- navbar -->
-  <nav class="navbar navbar-top-default navbar-expand-lg static-nav black nav-radius transparent-bg bottom-nav box-nav not-full no-animation">
+  <nav class="navbar navbar-top-default navbar-expand-lg static-nav black nav-radius transparent-bg {{ ((request()->segment(1) == 'home')?'bottom-nav':'') }} box-nav not-full no-animation">
 
     <!-- container -->
     <div class="container radius nav-box-shadow">
@@ -11,7 +11,7 @@
       </a>
       <div class="collapse navbar-collapse d-none d-lg-block">
         <ul class="nav navbar-nav ml-auto">
-          <li class="nav-item"> <a href="#home" class="scroll nav-link link">home</a>
+          <li class="nav-item"> <a href="#home" class="scroll nav-link link">Home {{ request()->segment(1) }}</a>
           </li>
           <li class="nav-item"> <a href="#introduction" class="scroll nav-link link">About</a>
           </li>
@@ -19,7 +19,9 @@
           </li>
           <li class="nav-item"> <a href="#our_faculties" class="scroll nav-link link">Faculty</a>
           </li>
-          <li class="nav-item"> <a href="#contact" class="scroll nav-link link">contact</a>
+          <li class="nav-item"> <a href="#researcher" class="scroll nav-link link">Researcher</a>
+          </li>
+          <li class="nav-item"> <a href="#contact" class="scroll nav-link link">Contact</a>
           </li>
         </ul>
       </div>
@@ -45,13 +47,14 @@
           <nav class="side-nav w-100">
               <div class="navbar-nav">
                   <a class="nav-link link scroll active" href="#home">Home</a>
-                  <a class="nav-link link scroll" href="#features">Features</a>
-                  <a class="nav-link link scroll" href="#work">Work</a>
-                  <a class="nav-link link scroll" href="#pricing">Pricing</a>
+                  <a class="nav-link link scroll" href="#introduction">About</a>
+                  <a class="nav-link link scroll" href="#achievement">Achievement</a>
+                  <a class="nav-link link scroll" href="#our_faculties">Faculty</a>
                   <a class="nav-link link scroll" href="#clients">Clients</a>
-                  <a class="nav-link link scroll" href="#blog">Blog</a>
+                  <a class="nav-link link scroll" href="#researcher">Researcher</a>
                   <a class="nav-link link scroll" href="#contact">Contact</a>
-                  <span class="menu-line"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                  <a class="nav-link link" href="/authorization/employee/login">Researcher Login</a>
+                  <a class="nav-link link" href="/authorization/employee/login">Employee Login</a>
               </div>
           </nav>
 
@@ -61,7 +64,7 @@
                   <li class="side-menu-icons"><a href="javascript:void(0)"><i class="fab fa-instagram color-white"></i> </a> </li>
                   <li class="side-menu-icons"><a href="javascript:void(0)"><i class="fab fa-twitter color-white"></i> </a> </li>
               </ul>
-              <p class="text-white">&copy; 2024 MegaOne. Made With Love by Themesindustry</p>
+              <p class="text-white">© UCSI Education {{ Carbon\Carbon::now()->format("Y") }}</p>
           </div>
       </div>
   </div>

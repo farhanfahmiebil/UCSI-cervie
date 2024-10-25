@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Models\UCSI_V2_Education\MSSQL\Procedure;
+namespace App\Models\UCSI_V2_Education\MSSQL\Procedure;
 
 //Get Database
 use DB;

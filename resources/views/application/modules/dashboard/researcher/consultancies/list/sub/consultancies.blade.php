@@ -113,17 +113,12 @@
                   <td>{{ ($key+1) }}</td>
                   <td>{{ $value->title }}</td>
                   <td>{{ $value->client }}</td>
-                  <td>{{ $value->date_start }}</td>
-                  <td>{{ $value->date_end }}</td>
+                  <td>{{ \Carbon\Carbon::parse($value->date_start)->format('d F Y') }} - {{ \Carbon\Carbon::parse($value->date_start)->format('d F Y') }}</td>
                   <td><span class="badge bg-{{ (($value->need_verification)?'warning':'success') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
                   <td>
-
                     <a href="{{ route($hyperlink['page']['view'],['id'=>$value->consultancies_id]) }}" class="btn btn-sm btn-secondary">
                       <i class="mdi mdi-pencil"></i>
                     </a>
-
-
-
                   </td>
                 </tr>
 

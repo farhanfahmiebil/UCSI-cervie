@@ -67,8 +67,8 @@
                 <!-- project role -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="project_representation_role_id">Project Role</label>
-                    <select class="form-control select2" id="project_representation_role_id" name="project_representation_role_id">
+                    <label for="representation_role_id">Project Role</label>
+                    <select class="form-control select2" id="representation_role_id" name="representation_role_id">
                       <option value="">-- Please Select --</option>
 
                       {{-- Check General Representation Role Exist --}}
@@ -106,18 +106,7 @@
                 <!-- date end -->
                 <div class="col-md-6">
                   <div class="form-group">
-                    <div class="d-flex bd-highlight">
-                      <div class="flex-grow-1 bd-highlight">
-                        <label for="date_end">Date End</label>
-                      </div>
-                      <div class="bd-highlight">
-                        <label for="is_ongoing" class="form-check-label">
-                          <input type="checkbox" class="form-check-input" id="is_ongoing" name="is_ongoing" value="1" {{ old('is_ongoing') ? 'checked' : ''}}>
-                          Is On Going
-                          <i class="input-helper"></i>
-                        </label>
-                      </div>
-                    </div>
+                    <label for="date_end">Date End</label>
                     <input type="date" class="form-control" id="date_end" name="date_end" value="{{ old('date_end') }}" placeholder="">
                   </div>
                 </div>
@@ -669,41 +658,5 @@
 
   </form>
   <!-- end form -->
-
-  <script type="text/javascript">
-
-    /**************************************************************************************
-      Document On Load
-    **************************************************************************************/
-    $(document).ready(function(){
-
-      /**************************************************************************************
-        Is Current OnGoing
-      **************************************************************************************/
-      $('#is_ongoing').on('click',function(){
-        if($(this).is(':checked')){
-          //If the checkbox is checked, clear the Date End input and disable it
-          $('#date_end').val('').attr('disabled', true);
-        }else{
-          //If the checkbox is unchecked, enable the Date End input
-          $('#date_end').attr('disabled', false);
-        }
-      });
-
-      /**************************************************************************************
-        Date End
-      **************************************************************************************/
-      $('#date_end').on('input',function(){
-        if($(this).val()){
-          // If a date is entered, uncheck the 'Is Lifetime' checkbox
-          $('#is_ongoing').prop('checked', false);
-        }else{
-          // If Date End is cleared, allow 'Is Lifetime' to be checked
-          $('#is_ongoing').prop('checked', true);
-        }
-      });
-    });
-
-  </script>
 
 @endsection

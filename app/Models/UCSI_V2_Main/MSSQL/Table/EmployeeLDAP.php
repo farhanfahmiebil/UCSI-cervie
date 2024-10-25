@@ -12,12 +12,12 @@ use DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 //Get LDAP Record
-use LdapRecord\Models\Entry;
-use LdapRecord\Laravel\Auth\LdapAuthenticatable;
-use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
-use LdapRecord\Laravel\Auth\HasLdapUser;
-use LdapRecord\Models\Concerns\CanAuthenticate;
-use LdapRecord\Models\Model;
+// use LdapRecord\Models\Entry;
+// use LdapRecord\Laravel\Auth\LdapAuthenticatable;
+// use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
+// use LdapRecord\Laravel\Auth\HasLdapUser;
+// use LdapRecord\Models\Concerns\CanAuthenticate;
+// use LdapRecord\Models\Model;
 
 //Get Model
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
@@ -26,10 +26,11 @@ use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedu
 use Storage;
 
 //Get Class
-class EmployeeLDAP extends Authenticatable implements LdapAuthenticatable{
+// class EmployeeLDAP extends Authenticatable implements LdapAuthenticatable{
+class EmployeeLDAP extends Authenticatable{
 
   //Use AuthenticatesWithLdap
-  use  AuthenticatesWithLdap, HasLdapUser;
+  // use  AuthenticatesWithLdap, HasLdapUser;
 
   /**
    * The database connection that should be used by the model.
@@ -43,7 +44,7 @@ class EmployeeLDAP extends Authenticatable implements LdapAuthenticatable{
    *
    * @var string
    */
-  protected string $guidKey = 'uuid';
+  // protected string $guidKey = 'uuid';
 
   /**
    * The table associated with the model.
@@ -78,32 +79,32 @@ class EmployeeLDAP extends Authenticatable implements LdapAuthenticatable{
    *
    * @var string
    */
-  public static $objectClasses = [
-      'top',
-      'domain',
-      'domainDNS',
-      'person',
-      'organizationalperson',
-      'user',
-  ];
+  // public static $objectClasses = [
+  //     'top',
+  //     'domain',
+  //     'domainDNS',
+  //     'person',
+  //     'organizationalperson',
+  //     'user',
+  // ];
 
   /**
    * The LDAP Domain Column
    *
    * @var string
    */
-  public function getLdapDomainColumn(): string{
-    return 'domain';
-  }
+  // public function getLdapDomainColumn(): string{
+  //   return 'domain';
+  // }
 
   /**
    * The LDAP Guid Column
    *
    * @var string
    */
-  public function getLdapGuidColumn(): string{
-    return 'guid';
-  }
+  // public function getLdapGuidColumn(): string{
+  //   return 'guid';
+  // }
 
   /**
    * The attributes that are mass assignable.

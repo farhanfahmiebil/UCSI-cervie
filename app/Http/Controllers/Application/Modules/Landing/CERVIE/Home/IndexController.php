@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 
 //Model
 use App\Models\UCSI_V2_Education\MSSQL\View\Organization AS OrganizationView;
+use App\Models\UCSI_V2_Education\MSSQL\View\Researcher AS ResearcherView;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -103,6 +104,13 @@ class IndexController extends Controller{
         ]
       ]
     );
+
+    //Set Model Researcher
+    $model['researcher'] = new ResearcherView();
+
+    $data['researcher'] = $model['researcher']->getList();
+
+
 
     $asset = $this->asset;
 // dd($data['outlet']['menu']['item']);
