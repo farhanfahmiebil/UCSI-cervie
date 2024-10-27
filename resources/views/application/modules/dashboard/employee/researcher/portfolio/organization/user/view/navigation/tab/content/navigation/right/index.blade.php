@@ -2,16 +2,22 @@
 @foreach($data['navigation']['category']['sub'] as $key=>$value)
 
   <!-- stats tile -->
-  <a href="#" class="stats-tile d-flex align-items-center {{ ((request()->segment('13') == strtolower($value->navigation_category_sub_code))?'tile-red':'border') }}">
+  <a href="{{ Route::has($value->route)
+             ? route($value->route, [
+                 'organization_id' => request()->organization_id ?? '#',
+                 'employee_id' => request()->employee_id ?? '#'
+             ])
+             : '#'
+         }}" class="stats-tile d-flex align-items-center {{ ((request()->segment('12') == strtolower($value->navigation_category_sub_code))?'tile-red':'border') }}">
 
     <!-- icon -->
     <div class="sale-icon icon-box md rounded-5 me-3 border">
-      <i class="{{ $value->navigation_category_sub_icon }} font-2x {{ ((request()->segment('13') == strtolower($value->navigation_category_sub_code))?'text-red':'text-dark') }}"></i>
+      <i class="{{ $value->navigation_category_sub_icon }} font-2x {{ ((request()->segment('12') == strtolower($value->navigation_category_sub_code))?'text-red':'text-dark') }}"></i>
     </div>
     <!-- end icon -->
 
     <!-- title -->
-    <div class="sale-details {{ ((request()->segment('13') == strtolower($value->navigation_category_sub_code))?'text-white':'text-dark') }}">
+    <div class="sale-details {{ ((request()->segment('12') == strtolower($value->navigation_category_sub_code))?'text-white':'text-dark') }}">
       <h5>{{ $value->navigation_category_sub_name }}</h5>
     </div>
     <!-- end title -->

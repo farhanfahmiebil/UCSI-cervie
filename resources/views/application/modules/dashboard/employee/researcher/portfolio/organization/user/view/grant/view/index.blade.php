@@ -51,7 +51,7 @@
           <div class="card-body">
 
             <!-- card title -->
-            <h4 class="card-title">Professional Membership Information</h4>
+            <h4 class="card-title">Grant Information</h4>
             <!-- end card title -->
 
             <hr>
@@ -69,51 +69,36 @@
             <!-- end error -->
 
             <!-- row 1 -->
-            <div class="row">
+            <div class="row pt-3">
 
-              <!-- name -->
+              <!-- representation category id -->
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="name">Membership Name</label>
-                  <input type="text" class="form-control" id="name" name="name" value="{{ $data['main']->name }}" placeholder="Name">
-                </div>
-              </div>
-              <!-- end name -->
-
-              <!-- professional membership level -->
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="representation_category_id">Professional Membership Level</label>
+                  <label for="representation_category_id">Grant Category</label>
                   <select class="form-control select2" id="representation_category_id" name="representation_category_id">
                     <option value="">-- Please Select --</option>
 
                     {{-- Check General Representation Category Exist --}}
                     @if(count($data['general']['representation']['category']) > 0)
 
-                      {{-- Get General Representation Category Data --}}
+                      {{-- Get General Grant Category Data --}}
                       @foreach($data['general']['representation']['category'] as $key=>$value)
                         <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
                       @endforeach
-                      {{-- End Get General Representation Category Data --}}
+                      {{-- End Get General Grant Category Level Data --}}
 
                     @endif
-                    {{-- End Check General Representation Category Exist --}}
+                    {{-- End Check General Grant Category Level Exist --}}
 
                   </select>
                 </div>
               </div>
-              <!-- end professional membership level -->
+              <!-- end grant category id -->
 
-            </div>
-            <!-- end row 1 -->
-
-            <!-- row 2 -->
-            <div class="row">
-
-              <!-- professional membership role -->
+              <!-- project role -->
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="representation_role_id">Professional Membership Role</label>
+                  <label for="representation_role_id">Project Role</label>
                   <select class="form-control select2" id="representation_role_id" name="representation_role_id">
                     <option value="">-- Please Select --</option>
 
@@ -124,51 +109,27 @@
                       @foreach($data['general']['representation']['role'] as $key=>$value)
                         <option value="{{ $value->representation_role_id }}" {{ (($data['main']->representation_role_id == $value->representation_role_id)?'selected':'') }}>{{ $value->name }}</option>
                       @endforeach
-                      {{-- End Get General Representation Role Data --}}
+                      {{-- End Get General Representation Role Level Data --}}
 
                     @endif
-                    {{-- End Check General Representation Role Exist --}}
+                    {{-- End Check General Representation Role Level Exist --}}
 
                   </select>
                 </div>
               </div>
-              <!-- end professional membership role -->
-
-              <!-- professional membership type -->
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="professional_membership_type_id">Professional Membership Type</label>
-                  <select class="form-control select2" id="professional_membership_type_id" name="professional_membership_type_id">
-                    <option value="">-- Please Select --</option>
-
-                    {{-- Check General Professional Membership Type Exist --}}
-                    @if(count($data['general']['professional']['membership']['type']) > 0)
-
-                      {{-- Get General Professional Membership Type Data --}}
-                      @foreach($data['general']['professional']['membership']['type'] as $key=>$value)
-                        <option value="{{ $value->professional_membership_type_id }}" {{ (($data['main']->professional_membership_type_id == $value->professional_membership_type_id)?'selected':'') }}>{{ $value->name }}</option>
-                      @endforeach
-                      {{-- End Get General Professional Membership Type Data --}}
-
-                    @endif
-                    {{-- End Check General Professional Membership Type Exist --}}
-
-                  </select>
-                </div>
-              </div>
-              <!-- end professional membership type -->
+              <!-- end project role -->
 
             </div>
-            <!-- end row 2 -->
+            <!-- end row 1 -->
 
-            <!-- row 3 -->
-            <div class="row">
+            <!-- row 2 -->
+            <div class="row pt-3">
 
               <!-- date start -->
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="date_start">Date Start</label>
-                  <input type="date" class="form-control" id="date_start" name="date_start" value="{{ ((!empty($data['main']->date_start))?(\Carbon\Carbon::parse($data['main']->date_start)->format('Y-m-d')):'') }}" placeholder="">
+                  <input type="date" class="form-control" id="date_start" name="date_start" value="{{ \Carbon\Carbon::parse($data['main']->date_start)->format('Y-m-d') }}" placeholder="">
                 </div>
               </div>
               <!-- end date start -->
@@ -176,27 +137,135 @@
               <!-- date end -->
               <div class="col-md-6">
                 <div class="form-group">
-                  <div class="d-flex bd-highlight">
-                    <div class="flex-grow-1 bd-highlight">
-                      <label for="date_end">Date End</label>
-                    </div>
-                    <div class="bd-highlight">
-                      <label for="is_lifetime" class="form-check-label">
-                        <input type="checkbox" class="form-check-input" id="is_lifetime" name="is_lifetime" value="1" {{ (($data['main']->is_lifetime) ?'checked':'') }}>
-                        Is Lifetime
-                        <i class="input-helper"></i>
-                      </label>
-                    </div>
-                  </div>
-
-                  <input type="date" class="form-control" id="date_end" name="date_end" value="{{ ((!empty($data['main']->date_end))?(\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d')):'') }}" placeholder="">
+                  <label for="date_end">Date End</label>
+                  <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):null) }}" placeholder="">
                 </div>
               </div>
               <!-- end date end -->
 
+              </div>
+              <!-- end row 2 -->
+
+            <!-- row 3 -->
+            <div class="row pt-3">
+
+              <!-- title  -->
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="title">Title</label>
+                  <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->grant_title }}" placeholder="">
+                </div>
+              </div>
+              <!-- end title -->
+
             </div>
             <!-- end row 3 -->
 
+            <!-- row 4 -->
+            <div class="row pt-3">
+
+              <!-- currency code  -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="title">Currency</label>
+                  <select class="form-control select2" id="currency_code_id" name="currency_code_id">
+                    <option value="">-- Please Select --</option>
+
+                    {{-- Check General Currency Code Exist --}}
+                    @if(count($data['general']['currency']['code']) > 0)
+
+                      {{-- Get General Currency Code Data --}}
+                      @foreach($data['general']['currency']['code'] as $key=>$value)
+                        <option value="{{ $value->currency_code_id }}" {{ (($data['main']->currency_code_id == $value->currency_code_id)?'selected':'') }}>{{ $value->name . ' (' . $value->currency_code_id . ')'}}</option>
+                      @endforeach
+                      {{-- End Get General Currency Code Data --}}
+
+                    @endif
+                    {{-- End Check General Currency Code Exist --}}
+
+                  </select>
+
+                </div>
+              </div>
+              <!-- end currency code -->
+
+              <!-- quantum  -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="title">Quantum</label>
+                  <input type="number" class="form-control" id="quantum" name="quantum" value="{{ $data['main']->quantum }}" placeholder="">
+                </div>
+              </div>
+              <!-- end quantum -->
+
+            </div>
+            <!-- end row 4 -->
+
+            <!-- row 5 -->
+            <div class="row pt-3">
+
+              <!-- sustainable development goal -->
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="sustainable_development_goal_id">Sustainable Development Goal</label>
+                  <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
+                    <option value="">--Please Select--</option>
+
+                    {{-- Check General Sustainable Development Goal Exist --}}
+                    @if(count($data['general']['sustainable']['development']['goal']) > 0)
+
+                        @php
+                          // Explode Sustainable Development Goal from the main data (comma-separated string)
+                          $selected_sdg = explode(',',$data['main']->sustainable_development_goal);
+                        @endphp
+
+                        {{-- Get General Sustainable Development Goal Data --}}
+                        @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
+                          <option value="{{ $value->sustainable_development_goal_id }}"
+                            {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
+                            {{ $value->code }} - {{ $value->name }}
+                          </option>
+                        @endforeach
+                        {{-- End Get General Sustainable Development Goal Data --}}
+
+                    @endif
+                    {{-- End Check General Sustainable Development Goal Exist --}}
+                  </select>
+                </div>
+              </div>
+              <!-- end sustainable development goal -->
+
+
+            </div>
+            <!-- end row 5 -->
+
+            <!-- row 6 -->
+            <div class="row pt-3">
+
+              <!-- status  -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="status_id">Status</label>
+                  <select class="form-control select2" name="status_id">
+                    <option value="">--Please Select--</option>
+                    {{-- Check General Status Exist --}}
+                    @if(count($data['general']['status'])>0)
+
+                      {{-- Get General Status Data --}}
+                      @foreach($data['general']['status'] as $key=>$value)
+                        <option value="{{ $value->status_id }}" {{ (($data['main']->status_id == $value->status_id)?'selected':'') }}>{{ ucwords($value->status_name) }}</option>
+                      @endforeach
+                      {{-- End Get General Status Data --}}
+
+                    @endif
+                    {{-- End Check General Status Exist --}}
+                  </select>
+                </div>
+              </div>
+              <!-- end status -->
+
+            </div>
+            <!-- end row 6 -->
 
             {{-- Evidence Need --}}
             @if($data['cervie']['researcher']['table']['control']->evidence_need)
@@ -297,7 +366,7 @@
                               <!-- end hyperlink -->
 
                               <!-- remove file -->
-                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->professional_membership_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->grant_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                 <i class="bi bi-trash"></i>
                               </a>
                               <!-- end remove file -->
@@ -439,6 +508,190 @@
             @endif
             {{-- End Evidence Need --}}
 
+            {{-- Team Member Need --}}
+            @if($data['cervie']['researcher']['table']['control']->team_member_need)
+
+            <hr>
+
+            <!-- card title -->
+            <h4 class="card-title">Team Member</h4>
+            <!-- end card title -->
+
+            <!-- row 1 -->
+            <div class="row">
+
+                <!-- table responsive -->
+                <div class="table-responsive">
+
+                    <!-- table -->
+                    <table class="table" id="team-member-table">
+
+                        <!-- thead -->
+                        <thead class="bg-danger text-white mx-3">
+                            @php
+                                // Set Checkbox Status
+                                $checkbox['status'] = false;
+                            @endphp
+
+                            {{-- Check Table Column Exist --}}
+                            @if(isset($data['table']['column']['cervie']['researcher']['team']['member']) && count($data['table']['column']['cervie']['researcher']['team']['member']) >= 1)
+                                {{-- Get Table Column Data --}}
+                                @foreach($data['table']['column']['cervie']['researcher']['team']['member'] as $key => $value)
+                                    {{-- Check if the column is of category 'checkbox' --}}
+                                    @if(isset($value['category']) && $value['category'] == 'checkbox')
+                                        @php
+                                            // Set Checkbox Status
+                                            $checkbox['status'] = true;
+                                        @endphp
+                                        <th>{!! $value['checkbox'] !!}</th>
+                                    @else
+                                        <th class="{{ isset($value['class']) ? $value['class'] : '' }}">
+                                            {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                                            {{ isset($value['name']) ? $value['name'] : '' }}
+                                        </th>
+                                    @endif
+                                @endforeach
+                            @else
+                                <th>Column Not Defined</th>
+                            @endif
+                        </thead>
+                        <!-- end thead -->
+
+                        {{-- Check Data Team Members Exist --}}
+                      @if($data['team_member'])
+                        {{-- Get Data Team Members --}}
+                        @foreach($data['team_member'] as $key => $value)
+                            <tr id="{{ $value->team_member_id }}">
+                                <td>{{ ($key + 1) }}</td>
+                                <td>{{ $value->name }}</td>
+                                <td>{{ $value->role }}</td>
+                                <td>
+                                  <!-- remove file -->
+                                  <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['team_member_id' => $value->team_member_id,'organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->grant_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                                    <i class="bi bi-trash"></i>
+                                  </a>
+                                  <!-- end remove file -->
+                                </td>
+                            </tr>
+                        @endforeach
+                        {{-- End Get Data Team Members --}}
+                      @else
+                          <tr>
+                              <td class="row-number">1</td>
+                              <td colspan="2">
+                                  <div class="form-group">
+                                      <label for="team_member_name">Name</label>
+                                      <input type="text" class="form-control" name="team_member_name[]">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="role">Role</label>
+                                      <input type="text" class="form-control" name="role[]">
+                                  </div>
+                              </td>
+                              <td>&nbsp;</td>
+                          </tr>
+                      @endif
+                      {{-- End Check Data Team Members Exist --}}
+
+
+
+                    </table>
+                    <!-- end table -->
+
+                    <div class="row text-center pt-3">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-primary add-new-team-member">
+                                <i class="mdi mdi-plus"></i> Add New Team Member
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- end table responsive -->
+
+            </div>
+            <!-- end row 1 -->
+
+            <!-- script for dynamic row numbering and team member operations -->
+            <script type="text/javascript">
+                $(document).ready(function() {
+                  /* Add New Team Member Row */
+                $('.add-new-team-member').click(function() {
+                    var new_row = '';
+                    new_row += '<tr>';
+                    new_row += '<td class="row-number"></td>';
+                    new_row += '<td colspan="2">';
+                    new_row += '<div class="form-group">';
+                    new_row += '<label for="team_member_name">Name</label>';
+                    new_row += '<input type="text" class="form-control" name="team_member_name[]">';
+                    new_row += '</div>';
+                    new_row += '<div class="form-group">';
+                    new_row += '<label for="role">Role</label>';
+                    new_row += '<input type="text" class="form-control" name="role[]">';
+                    new_row += '</div>';
+                    new_row += '</td>';
+                    new_row += '<td>';
+                    new_row += '<a href="#" class="btn btn-warning remove-team-member">';
+                    new_row += '<i class="bi bi-x-lg text-white"></i>';
+                    new_row += '</a>';
+                    new_row += '</td>';
+                    new_row += '</tr>';
+
+                    $('#team-member-table tbody').append(new_row);
+                    recalculateRowNumbers();
+                    checkTeamMemberCount();
+                    initializeSelect2();
+                });
+
+                    /* Remove Team Member Row */
+                    $(document).on('click', '.remove-team-member', function(e) {
+                        e.preventDefault();
+                        $(this).closest('tr').remove();
+                        recalculateRowNumbers();
+                        checkTeamMemberCount();
+
+                    });
+
+                    /* Recalculate Row Numbers */
+                    function recalculateRowNumbers() {
+                        $('#team-member-table tbody tr').each(function(index) {
+                            $(this).find('.row-number').text(index + 1);
+                        });
+                    }
+
+                    /* Initialize Select2 */
+                    function initializeSelect2() {
+                        $('.select2').select2({
+                            width: '100%', // Adjust width as needed
+                            placeholder: '-- Please Select --',
+                            allowClear: true
+                        });
+                    }
+
+                    /* Check File Count and Hide/Show Add Button */
+                    function checkTeamMemberCount() {
+                        var team_member_count = $('#team-member-table tbody tr').length;
+                        var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
+
+                        if (team_member_count >= limit) {
+                            $('.add-new-team-member').hide();
+                        } else {
+                            $('.add-new-team-member').show();
+                        }
+                    }
+
+                    // Initial Select2 Initialization
+                    initializeSelect2();
+                    // Initial recalculation in case of pre-existing rows
+                    recalculateRowNumbers();
+                    checkTeamMemberCount();
+
+                });
+            </script>
+            <!-- end script for dynamic row numbering and team member operations -->
+
+            @endif
+            {{-- End Team Member Need --}}
           </div>
           <!-- card body -->
 
@@ -450,9 +703,9 @@
 
               <div class="col-md-12">
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
-                <input type="hidden" id="id" name="id" value="{{ $data['main']->professional_membership_id }}">
+                <input type="hidden" id="id" name="id" value="{{ $data['main']->grant_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
                 <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
               </div>
             </div>
@@ -571,6 +824,41 @@
         }
 
       });
+    });
+
+    /**************************************************************************************
+    Modal Delete
+    **************************************************************************************/
+    $('[class*="btn-delete-team-member"]').on('click',function(event){
+
+    //Set Parent Row
+    var parent_row = $(this).closest('tr').attr('id');
+
+    //Set Alert
+    Swal.fire({
+    title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+    showDenyButton:true,
+    confirmButtonText:'Yes',
+    denyButtonText:'Cancel',
+    icon:'error'
+    }).then((result) => {
+
+    //If Confirmed
+    if(result.isConfirmed){
+
+      //Redirect
+      window.location.href = $(this).data('href');
+
+    }else
+
+    //If Denied
+    if(result.isDenied){
+
+      //Alert Message
+      Swal.fire('Cancel','','');
+    }
+
+    });
     });
 
     /**************************************************************************************

@@ -256,7 +256,7 @@ class CervieResearcherGrant extends Model{
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['grant_id'],
         $data['column']['employee_id'],
-        $data['column']['grant_id'],
+        $data['column']['need_verification'],
         $data['column']['updated_by']
       ]
     );

@@ -33,7 +33,6 @@ $value = collect($data['navigation']['category']['main'])->first(function ($item
 
                   {{-- Sub Navigation Tab Pointer --}}
                   @include($page['navigation']['tab']['pointer'])
-
                 </div>
                 <!-- end content -->
 

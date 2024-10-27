@@ -27,6 +27,9 @@ use App\Models\UCSI_V2_General\MSSQL\View\Quartile AS QuartileView;
 use App\Models\UCSI_V2_General\MSSQL\View\SustainableDevelopmentGoal AS SustainableDevelopmentGoalView;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherPublication AS CervieResearcherPublicationView;
 
+//Model View
+use App\Models\UCSI_V2_Education\MSSQL\View\Organization;
+
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherPublication AS CervieResearcherPublicationProcedure;
@@ -89,7 +92,6 @@ class IndexController extends Controller{
     //Set Navigation
 		$this->page['sub'] = $this->route['view'];
 
-
     //Set Navigation
 		$this->page['main'] = $this->route['link'].'view.';
 
@@ -135,6 +137,89 @@ class IndexController extends Controller{
 
     //Set Page Sub
     $page['sub'] .= 'new.sub';
+
+    //Set Model Navigation Category
+    $model['navigation']['category']['main'] = new NavigationCategoryView();
+
+    //Get Navigation Category
+    $data['navigation']['category']['main'] = $model['navigation']['category']['main']->getList([
+      'column'=>[
+        'category'=>'PORTAL',
+        'user_type'=>strtoupper('administrator'),
+        'domain_url'=>$request->root()
+      ]
+    ]);
+
+    //Set Model Navigation Category Sub
+    $model['navigation']['category']['sub'] = new NavigationCategorySubView();
+
+    //Get Navigation Category Sub
+    $data['navigation']['category']['sub'] = $model['navigation']['category']['sub']->getList(
+      [
+        'column'=>[
+          'category'=>'PORTAL',
+          'user_type'=>strtoupper('administrator'),
+          'navigation_category_code'=>'PUBLICATION',
+          'domain_url'=>$request->root()
+        ]
+      ]
+    );
+
+    //Set Model Researcher - Employee Profile
+    $model['employee']['profile'] = new EmployeeProfileProcedure();
+
+    //Get Employee Profile
+    $data['employee']['profile'] = $model['employee']['profile']->readRecord(
+      [
+        'column'=>[
+          'employee_id'=>$request->employee_id
+        ]
+      ]
+    );
+
+    /*  Researcher publication
+    **************************************************************************************/
+
+    //Set Table Researcher publication
+    $data['table']['column']['cervie']['researcher']['publication'] = $this->getDataTable(
+      [
+        'category'=>'publication'
+      ]
+    );
+
+    //Set Main Data Researcher publication
+    $data['main']['cervie']['researcher']['publication'] = $this->getData(
+      [
+        'eloquent'=>'pagination',
+        'category'=>'publication',
+        'column'=>[
+          'employee_id'=>$request->employee_id
+        ]
+      ]
+    );
+
+    //Set Model
+    $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
+    $model['general']['organization'] = new Organization();
+
+    //Get Table Control
+    $data['cervie']['researcher']['table']['control'] = $model['cervie']['researcher']['table']['control']->readRecord(
+      [
+        'column'=>[
+          'table_control_id'=>'cervie_researcher_publication'
+        ]
+      ]
+    );
+
+    //Set Data Organization
+    $data['general']['organization'] = $model['general']['organization']->selectBox(
+      [
+        'column'=>[
+          'company_id'=>'UCSI_EDUCATION',
+          'company_office_id'=>'MAIN_CAMPUS'
+        ]
+      ]
+    );
 
     //Set Breadcrumb Icon
     $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
@@ -197,11 +282,14 @@ class IndexController extends Controller{
       ]
     ];
 
+    //Set Page Pointer
+    $page['navigation']['tab']['pointer'] =  $page['navigation']['tab']['content']['new'];
+
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
 
 		//Return View
-		return view($this->route['view'].'new.index',compact('data','form_token','page','hyperlink'));
+    return view($this->route['link'].'view.navigation.content.list.index',compact('data','page','form_token','hyperlink'));
 
   }
 

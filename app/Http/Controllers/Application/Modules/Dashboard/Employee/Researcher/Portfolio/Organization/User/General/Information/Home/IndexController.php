@@ -110,9 +110,11 @@ class IndexController extends Controller{
       $hyperlink = $this->hyperlink;
 
       //Check If Not Empty
-      if(($request->segment(11) == 'general' && $request->segment(12) == 'information')){
+      // if(($request->segment(11) == 'general' && $request->segment(12) == 'information')){
+      if(($request->segment(11) == 'general_information')){
 
-        if(!empty($request->segment(13))){
+
+        if(!empty($request->segment(11))){
 
           //Return to Default Route
           return redirect()->route($hyperlink['page']['redirect'],[
@@ -122,7 +124,6 @@ class IndexController extends Controller{
 
         }
       }
-
 //       // Set Breadcrumb Icon
 //       $data['breadcrumb']['icon'] = '<i class="bi bi-person-workspace"></i>';
 //
