@@ -15,7 +15,7 @@
 
       <!-- avatar -->
       <div class="col-auto">
-        <img src="{{-- $avatar --}}" class="img-7xx rounded-circle border border-secondary border-3" />
+        <img src="{{ (isset($data['employee']['ldap']) && $data['employee']['ldap'] != null)?$data['employee']['ldap']:asset('images/avatar/anonymous.png') }}" class="img-7xx rounded-circle border border-secondary border-3" />
       </div>
       <!-- end avatar -->
 

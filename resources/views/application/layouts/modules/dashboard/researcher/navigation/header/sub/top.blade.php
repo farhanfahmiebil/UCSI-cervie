@@ -23,7 +23,7 @@
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
               <span class="nav-profile-name text-white">{{ Auth::user()->name }}</span>
               <span class="online-status"></span>
-              <img src="{{ asset('images/avatar/anonymous.png') }}" alt="profile">
+              <img src="{{ (asset(Auth::user()->getAvatar())?asset(Auth::user()->getAvatar()):asset('images/avatar/anonymous.png')) }}" alt="profile">
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                 <!-- <a class="dropdown-item">

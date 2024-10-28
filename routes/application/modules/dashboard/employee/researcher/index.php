@@ -803,6 +803,19 @@ Route::prefix('researcher')->group(function(){
 
                 }); // End Community
 
+                /* Avatar
+                **************************************************************************************/
+                Route::prefix('avatar')->group(function(){
+
+                    /*  View
+                    **************************************************************************************/
+                    Route::get('/view', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Avatar\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.avatar.view');
+
+                    /*  Update
+                    **************************************************************************************/
+                    Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Avatar\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.avatar.update');
+
+                }); //End Avatar
 
               }); //End Tab
 

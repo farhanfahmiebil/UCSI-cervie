@@ -16,7 +16,7 @@
           <!-- avatar -->
           <div class="row">
             <div class="col-sm-12">
-              <img src="{{ asset('images/avatar/anonymous.png') }}" class="rounded mx-auto d-block img-fluid" alt="anonymous">
+              <img src="{{ (asset(Auth::user()->getAvatar())?asset(Auth::user()->getAvatar()):asset('images/avatar/anonymous.png')) }}" class="rounded mx-auto d-block img-fluid" alt="anonymous">
             </div>
           </div>
           <!-- end avatar -->
