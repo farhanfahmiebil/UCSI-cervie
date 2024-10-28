@@ -1,5 +1,5 @@
 <!-- form -->
-<form action="{{ route($hyperlink['page']['create'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" enctype="multipart/form-data" method="POST">
+<form action="{{ route($hyperlink['page']['update'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" enctype="multipart/form-data" method="POST">
 @csrf
 
   <!-- content -->
@@ -34,28 +34,13 @@
             <!-- end error -->
 
             <!-- row 1 -->
-            <div class="row pt-3">
+            <div class="row">
 
               <!-- publication type id -->
               <div class="col-md-12">
                 <div class="form-group">
-                  <label for="publication_type_id">Publication Type</label>
-                  <select class="form-control select2" id="publication_type_id" name="publication_type_id">
-                    <option value="">-- Please Select --</option>
-
-                    {{-- Check General Publication Type Exist --}}
-                    @if(count($data['general']['publication']['type']) > 0)
-
-                      {{-- Get General Publication Type Data --}}
-                      @foreach($data['general']['publication']['type'] as $key=>$value)
-                        <option data-href="{{ route($hyperlink['page']['new'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'publication_type_id'=>$value->publication_type_id]) }}" value="{{ $value->publication_type_id }}" {{ ((old('publication_type_id') == $value->publication_type_id)?'selected':((request()->route('publication_type_id') == $value->publication_type_id)?'selected':'')) }}>{{ $value->name }}</option>
-                      @endforeach
-                      {{-- End Get General Publication Type Data --}}
-
-                    @endif
-                    {{-- End Check General Publication Type Exist --}}
-
-                  </select>
+                  <label for="publication_type_name">Publication Type</label>
+                  <input type="text" class="form-control" name="publication_type_name" value="{{ $data['main']->publication_type_name }}">
                 </div>
               </div>
               <!-- end publication type id -->
@@ -64,10 +49,10 @@
             <!-- end row 1 -->
 
             {{-- Check Route Publication Type Exist --}}
-            @if(!empty(request()->route('publication_type_id')))
+            @if(!empty($data['main']->publication_type_id))
 
               {{-- Get Route Publication Type Data --}}
-              @switch(request()->route('publication_type_id'))
+              @switch($data['main']->publication_type_id)
 
                 {{-- 1 - Article --}}
                 @case('1')
@@ -118,8 +103,11 @@
 
               <div class="col-md-12">
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="mdi mdi-arrow-left"></i>Back</a>
-                <input type="hidden" name="form_token" value="{{ $form_token['create'] }}">
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-plus"></i>Create</button>
+                <input type="hidden" id="id" name="id" value="{{ $data['main']->publication_id }}">
+                <input type="hidden" id="publication_type_id" name="publication_type_id" value="{{ $data['main']->publication_type_id }}">
+                <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
               </div>
 
             </div>
@@ -150,26 +138,6 @@
     Document On Load
   **************************************************************************************/
   $(document).ready(function(){
-
-    /*  Publication Type on Change
-    **************************************************************************************/
-    $('#publication_type_id').on('change',function(){
-
-      // Get the selected option
-      var option = $(this).find('option:selected');
-
-      // Get the data-href attribute of the selected option
-      var hyperlink = option.data('href');
-
-      // Log the data-href to the console
-      console.log(hyperlink);
-
-      // Optionally, redirect to the data-href if it's valid
-      if(hyperlink){
-       window.location.href = hyperlink;
-      }
-
-    });
 
     /*  Day
     **************************************************************************************/
@@ -205,7 +173,7 @@
 
     /*  Month
     **************************************************************************************/
-    $('#month').on('input', function() {
+    $('#month').on('input', function(){
       validateMonth({
         'input': {
           'id': $(this).attr('id'),
@@ -248,7 +216,7 @@
 
     /*  Validate Year
     **************************************************************************************/
-    function validateYear(data) {
+    function validateYear(data){
       var year_pattern = /^\d{0,4}$/; // Allows 0 to 4 digits
 
       if(!year_pattern.test(data.input.year)){
@@ -263,6 +231,84 @@
         }
       }
     }
+
+    /**************************************************************************************
+      Modal Delete
+    **************************************************************************************/
+    $('[class*="btn-delete-main"]').on('click',function(event){
+
+      //Set Parent Row
+      var id = $('#id').val();
+// console.log(id)
+      //Set Form Token
+      var form_token = '{{ $form_token["delete"] }}';
+
+      //Set Hyperlink
+      var hyperlink  = $(this).data('href');
+          hyperlink += '?id='+id;
+          hyperlink += '&form_token='+form_token;
+
+      //Set Alert
+      Swal.fire({
+        title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+        showDenyButton:true,
+        confirmButtonText:'Yes',
+        denyButtonText:'Cancel',
+        icon:'error'
+      }).then((result) => {
+
+        //If Confirmed
+        if(result.isConfirmed){
+
+          //Redirect
+          window.location.href = hyperlink;
+
+        }else
+
+        //If Denied
+        if(result.isDenied){
+
+          //Alert Message
+          Swal.fire('Cancel','','');
+        }
+
+      });
+    });
+
+    /**************************************************************************************
+      Modal Delete
+    **************************************************************************************/
+    $('[class*="btn-delete-evidence"]').on('click',function(event){
+
+      //Set Parent Row
+      var parent_row = $(this).closest('tr').attr('id');
+
+      //Set Alert
+      Swal.fire({
+        title:'Are you sure you want to Delete? Once deleted, it cannot be recovered.',
+        showDenyButton:true,
+        confirmButtonText:'Yes',
+        denyButtonText:'Cancel',
+        icon:'error'
+      }).then((result) => {
+
+        //If Confirmed
+        if(result.isConfirmed){
+
+          //Redirect
+          window.location.href = $(this).data('href');
+
+        }else
+
+        //If Denied
+        if(result.isDenied){
+
+          //Alert Message
+          Swal.fire('Cancel','','');
+        }
+
+      });
+    });
 
   });
 </script>

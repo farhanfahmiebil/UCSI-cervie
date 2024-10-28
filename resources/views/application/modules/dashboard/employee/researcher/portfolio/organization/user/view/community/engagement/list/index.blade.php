@@ -8,8 +8,17 @@
     <div class="d-flex align-items-center justify-content-between">
 
       <!-- title -->
-      <h4 class="card-title mb-2">Publication</h4>
+      <h4 class="card-title mb-2">Researcher Community Engagement</h4>
       <!-- end title -->
+
+      <!-- dropdown -->
+      <!-- <div class="dropdown">
+        <a href="{{ route($hyperlink['page']['new'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light px-1">
+          <i class="bi bi-plus text-dark"></i>
+          New Position
+        </a>
+      </div> -->
+      <!-- end dropdown -->
 
     </div>
     <!-- end header -->
@@ -43,26 +52,117 @@
             <h6>Filter By</h6>
             <p class="mt-2 text-muted card-text">
 
-              {{-- Check Need Verification Status --}}
-              @if(request()->has('need_verification'))
+              {{-- Check Employee LDAP Status --}}
+              @if(!empty(request()->input('status_employee_ldap_id')))
 
-                Need Verification (Status) :
+                @php
+
+                  // Set Column
+                  $column = [];
+
+                  // Ensure the data is an array
+                  $raw['status']['employee']['ldap'] = $data['status']['employee']['ldap'];
+
+                  // Check if $employeeLdapData is a collection and convert to array if needed
+                  if($raw['status']['employee']['ldap'] instanceof \Illuminate\Support\Collection){
+                    $raw['status']['employee']['ldap'] = $raw['status']['employee']['ldap']->toArray();
+                  }
+
+                  // Extract Status ID
+                  $column['status']['employee']['ldap'] = array_column($raw['status']['employee']['ldap'], 'status_id');
+
+                @endphp
+
+                @if(in_array(request()->input('status_employee_ldap_id'),$column['status']['employee']['ldap']))
+
+                    {{-- Find the index of the employee_ldap_status_id in the array --}}
+                    @php
+                      $index = array_search(request()->input('status_employee_ldap_id'),$column['status']['employee']['ldap']);
+                      $filter['status']['employee']['ldap'] = $data['status']['employee']['ldap'][$index]->name
+                    @endphp
+
+                @else
+
+                  {{-- Display Dash If Not Found --}}
+                  -
+                  @php $filter['status']['employee']['ldap'] = '-' @endphp
+
+                @endif
+
+                LDAP (Status) :
                 <span class="badge bg-{{
                     (
-                      (request()->input('need_verification') === '0')?'success':
+                      ($filter['status']['employee']['ldap'] === 'active')?'success':
                       (
-                        (request()->input('need_verification') === '1')?'warning':'info'
+                        ($filter['status']['employee']['ldap'] === 'inactive')?'warning':
+                        (
+                          ($filter['status']['employee']['ldap'] === 'deleted')?'danger':'info'
+                        )
                       )
                     ) }}">
 
-                    {{ ((request()->input('need_verification'))?'Pending':'Verified') }}
+                    {{ ucwords($filter['status']['employee']['ldap']) }}
 
                 </span>
 
                 <br>
 
               @endif
-              {{-- End Check Need Verification Status --}}
+              {{-- End Check Employee LDAP Status --}}
+
+
+              {{-- Check Employee Status --}}
+              @if(!empty(request()->input('status_employee_id')))
+
+                @php
+
+                  //Ensure the data is an array
+                  $raw['status']['employee']['main'] = $data['status']['employee']['main'];
+
+                  //Check if $employeeLdapData is a collection and convert to array if needed
+                  if($raw['status']['employee']['main'] instanceof \Illuminate\Support\Collection){
+                    $raw['status']['employee']['main'] = $raw['status']['employee']['main']->toArray();
+                  }
+
+                  // Extract Status ID
+                  $column['status']['employee']['main'] = array_column($raw['status']['employee']['main'], 'status_id');
+
+                @endphp
+
+                @if(in_array(request()->input('status_employee_id'),$column['status']['employee']['main']))
+
+                    {{-- Find the index of the employee_status_id in the array --}}
+                    @php
+                      $index = array_search(request()->input('status_employee_id'),$column['status']['employee']['main']);
+                      $filter['status']['employee']['main'] = $data['status']['employee']['main'][$index]->name
+                    @endphp
+
+                @else
+
+                  {{-- Display Dash If Not Found --}}
+                  -
+                  $filter['status']['employee']['main'] = '-'
+
+                @endif
+
+                Employee (Status) :
+                <span class="badge bg-{{
+                    (
+                      ($filter['status']['employee']['main'] === 'active')?'success':
+                      (
+                        ($filter['status']['employee']['main']=== 'inactive')?'warning':
+                        (
+                          ($filter['status']['employee']['main'] === 'deleted')?'danger':'info'
+                        )
+                      )
+                    ) }}">
+
+                    {{ ucwords($filter['status']['employee']['main']) }}
+
+                </span>
+
+              @endif
+              {{-- End Check Employee Status --}}
 
             </p>
           </div>
@@ -113,7 +213,8 @@
               <div class="input-group">
                 <input type="text" class="form-control" id="search" name="search" placeholder="Search by Name"/>
                 {!! ((!empty(request()->input('search')))?'<input type="hidden" name="status" value="'.request()->input('search').'"/>':'') !!}
-                {!! ((!empty(request()->input('need_verification')))?'<input type="hidden" name="need_verification" value="'.request()->input('need_verification').'"/>':'') !!}
+                {!! ((!empty(request()->input('employee_ldap_status_id')))?'<input type="hidden" name="status" value="'.request()->input('employee_ldap_status_id').'"/>':'') !!}
+                {!! ((!empty(request()->input('employee_status_id')))?'<input type="hidden" name="status" value="'.request()->input('employee_status_id').'"/>':'') !!}
                 {!! ((!empty(request()->input('sorting_display')))?'<input type="hidden" name="status" value="'.request()->input('sorting_display').'"/>':'') !!}
                 {!! ((!empty(request()->input('sorting')))?'<input type="hidden" name="status" value="'.request()->input('sorting').'"/>':'') !!}
                 <span class="input-group-btn bg-transparent">
@@ -190,7 +291,8 @@
       <input type="hidden" id="sorting" name="sorting" value="{{ request()->input('sorting') }}"/>
       <input type="hidden" id="sorting_display" name="sorting_display" value="{{ request()->input('sorting_display') }}"/>
       {!! ((!empty(request()->input('search')))?'<input type="hidden" name="search" value="'.request()->input('search').'"/>':'') !!}
-      {!! ((!empty(request()->input('need_verification')))?'<input type="hidden" name="need_verification" value="'.request()->input('need_verification').'"/>':'') !!}
+      {!! ((!empty(request()->input('employee_ldap_status_id')))?'<input type="hidden" name="employee_ldap_status_id" value="'.request()->input('employee_ldap_status_id').'"/>':'') !!}
+      {!! ((!empty(request()->input('employee_status_id')))?'<input type="hidden" name="employee_status_id" value="'.request()->input('employee_status_id').'"/>':'') !!}
     </form>
     <!-- end form sort -->
 
@@ -213,217 +315,152 @@
   <!-- card body -->
   <div class="card-body">
 
-    <!-- hidden -->
-    <input type="hidden" id="form_token" name="form_token" value=""/>
-    <input type="hidden" id="remark" name="remark" value=""/>
-    <!-- end hidden -->
+    <!-- table responsive -->
+    <div class="table-responsive">
 
-    {{-- Check Publication Type Exist --}}
-    @if(count($data['general']['publication']['type']) > 0)
+      <!-- hidden -->
+      <input type="hidden" id="form_token" name="form_token" value=""/>
+      <input type="hidden" id="remark" name="remark" value=""/>
+      <!-- end hidden -->
 
-      @php
+      <!-- table -->
+      <table class="table table-striped">
 
-        //Set Category Status
-        $check['category'] = false;
-
-      @endphp
-
-
-      {{-- Get Publication Type Data --}}
-      @foreach($data['general']['publication']['type'] as $key=>$value)
-
-        {{-- Check Researcher Publication Exist --}}
-        @if(count($data['main']['cervie']['researcher']['publication'][$value->publication_type_id]) > 0)
+        <!-- thead -->
+        <thead class="bg-danger text-white mx-3">
 
           @php
 
-            //Set Category Status
-            $check['category'] = true;
+            //Set Checkbox Status
+            $checkbox['status'] = false;
 
           @endphp
 
-          {{-- Get Researcher Publication Data --}}
-          @foreach($data['main']['cervie']['researcher']['publication'][$value->publication_type_id] as $k=>$v)
+          {{-- Check Table Column Exist --}}
+          @if(isset($data['table']['column']['cervie']['researcher']['community']['engagement']) && count($data['table']['column']['cervie']['researcher']['community']['engagement']) >= 1)
 
-            {{-- Check General Publication Type Matched With Researcher Publication Type --}}
-            @if($value->publication_type_id == $v->publication_type_id)
+              {{-- Get Table Column Data --}}
+              @foreach($data['table']['column']['cervie']['researcher']['community']['engagement'] as $key => $value)
 
-              <!-- header sub title -->
-              <div class="row pt-5 pb-1">
-
-                <!-- title -->
-                <h4 class="card-title mb-2">{{ $value->name }}</h4>
-                <!-- end title -->
-
-              </div>
-              <!-- end header sub title -->
-
-              <hr>
-
-              <!-- table responsive -->
-              <div class="table-responsive">
-
-                <!-- table -->
-                <table class="table table-striped">
-
-                  <!-- thead -->
-                  <thead class="bg-danger text-white mx-3">
+                  {{-- Check if the column is of category 'checkbox' --}}
+                  @if(isset($value['category']) && $value['category'] == 'checkbox')
 
                     @php
 
                       //Set Checkbox Status
-                      $checkbox['status'] = false;
+                      $checkbox['status'] = true;
 
                     @endphp
 
-                    {{-- Check Table Column Exist --}}
-                    @if(isset($data['table']['column']['cervie']['researcher']['publication'][$value->publication_type_id]) && count($data['table']['column']['cervie']['researcher']['publication'][$value->publication_type_id]) >= 1)
+                    <td>{!! $value['checkbox'] !!}</td>
 
-                      {{-- Get Table Column Data --}}
-                      @foreach($data['table']['column']['cervie']['researcher']['publication'][$value->publication_type_id] as $k=>$v)
+                  @else
 
-                          {{-- Check if the column is of category 'checkbox' --}}
-                          @if(isset($v['category']) && $v['category'] == 'checkbox')
+                    {{-- Check if 'class' is set and apply it --}}
+                    @if(isset($value['class']) && !empty($value['class']))
 
-                            @php
-
-                              //Set Checkbox Status
-                              $checkbox['status'] = true;
-
-                            @endphp
-
-                            <td>{!! $v['checkbox'] !!}</td>
-
-                          @else
-
-                            {{-- Check if 'class' is set and apply it --}}
-                            @if(isset($v['class']) && !empty($v['class']))
-                              <td class="{{ $v['class'] }}">
-                            @else
-                              <td>
-                            @endif
-
-                              {{-- Output the icon and name --}}
-                              {!! isset($v['icon']) ? $v['icon'] : '' !!}
-                              {{ isset($v['name']) ? $v['name'] : '' }}
-
-                            </td>
-
-                          @endif
-                          {{-- End Check if the column is of category 'checkbox' --}}
-
-                      @endforeach
-                      {{-- End Get Table Column Data --}}
+                      <td class="{{ $value['class'] }}">
 
                     @else
-                      <th>Column Not Defined</th>
+                      <td>
                     @endif
-                    {{-- End Check Table Column Data Exist --}}
 
-                  </thead>
-                  <!-- end thead -->
+                      {{-- Output the icon and name --}}
+                      {!! isset($value['icon']) ? $value['icon'] : '' !!}
+                      {{ isset($value['name']) ? $value['name'] : '' }}
 
-                  <!-- tbody -->
-                  <tbody>
+                    </td>
 
-                    {{-- Check Researcher Publication Exist --}}
-                    @if(count($data['main']['cervie']['researcher']['publication'][$value->publication_type_id]) > 0)
+                  @endif
+                  {{-- End Check if the column is of category 'checkbox' --}}
 
-                      {{-- Get Researcher Publication Data --}}
-                      @foreach($data['main']['cervie']['researcher']['publication'][$value->publication_type_id] as $k=>$v)
+              @endforeach
+              {{-- End Get Table Column Data --}}
 
-                        @if($value->publication_type_id == $v->publication_type_id)
+          @else
+              <th>Column Not Defined</th>
+          @endif
+          {{-- End Check Table Column Data Exist --}}
 
-                          @php
-                            $counter = 0
-                          @endphp
-                          <tr id="{{ $v->publication_id }}">
 
-                            {{-- Check if Checkbox Status True --}}
-                            @if($checkbox['status'])
-                              <td>
-                                <div class="form-check-label">
-                                  <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $v->publication_id }}"/>
-                                </div>
-                              </td>
-                            @endif
-                            {{-- End Check if Checkbox Status True --}}
+        </thead>
+        <!-- end thead -->
 
-                            <td>{{ ($k+1) }}</td>
-                            <td>{{ $v->title }}</td>
-                            <td>{{ $v->name }}</td>
-                            <td>
-                                {!! (($v->page_no)?'Page:'.$v->page_no:'') !!}
-                                {!! (($v->chapter_no)?'<br>Chapter No:'.$v->chapter_no:'') !!}
-                            </td>
-                            <td>{{ $v->sustainable_development_goal }}</td>
-                            <td><span class="badge bg-{{ (($v->need_verification)?'warning':'success') }}">{{ (($v->need_verification)?'Pending':'Verified') }}</span></td>
-                            <td>
+        <!-- tbody -->
+        <tbody>
 
-                              <a href="{{ route($hyperlink['page']['view'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$v->publication_id]) }}" class="btn btn-sm btn-secondary">
-                                <i class="bi bi-pencil"></i>
-                              </a>
+          {{-- Check Researcher Position Exist --}}
+          @if(count($data['main']['cervie']['researcher']['community']['engagement']) > 0)
 
-                              <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->route('organization_id'),'employee_id'=>request()->route('employee_id'),'id'=>$v->publication_id]) }}" class="btn-delete-main btn btn-sm btn-danger">
-                                <i class="bi bi-trash text-white"></i>
-                              </a>
+            {{-- Get Researcher Position Data --}}
+            @foreach($data['main']['cervie']['researcher']['community']['engagement'] as $key=>$value)
 
-                            </td>
-                          </tr>
-                        @endif
+              <tr id="{{ $value->community_engagement_id }}" class="bg-danger">
 
-                      @endforeach
-                      {{-- End Get Researcher Publication Data --}}
+                {{-- Check if Checkbox Status True --}}
+                @if($checkbox['status'])
+                  <td>
+                    <div class="form-check">
+                      <input type="checkbox" name="id[]" class="form-check-input selectBox" value="{{ $value->community_engagement_id }}"/>
+                    </div>
+                  </td>
+                @endif
+                {{-- End Check if Checkbox Status True --}}
 
-                    @else
+                <td>{{ ($key+1) }}</td>
+                <td>{{ $value->organization }}</td>
+                <td>{{ $value->title }}</td>
+                <td>{{ $value->date_start }}</td>
+                <td>{{ $value->date_end }}</td>
+                <td><span class="badge shade-{{ (($value->need_verification)?'yellow':'green') }}">{{ (($value->need_verification)?'Pending':'Verified') }}</span></td>
+                <td>
+                  <a href="{{ route($hyperlink['page']['view'],['organization_id'=>request()->route('organization_id'),'employee_id'=>request()->route('employee_id'),'id'=>$value->community_engagement_id]) }}" class="btn btn-sm btn-secondary">
+                    <i class="bi bi-pencil"></i>
+                  </a>
 
-                      <tr class="text-center">
-                        <td colspan="{{ count($data['table']['column']['cervie']['researcher']['publication'][$v->publication_type_id]) }}">No Data</td>
-                      </tr>
+                  <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->route('organization_id'),'employee_id'=>request()->route('employee_id'),'id'=>$value->community_engagement_id]) }}" class="btn-delete-main btn btn-sm btn-danger">
+                    <i class="bi bi-trash text-white"></i>
+                  </a>
 
-                    @endif
-                    {{-- End Check Researcher Publication Exist --}}
+                </td>
+              </tr>
 
-                  </tbody>
-                  <!-- end tbody -->
+            @endforeach
+            {{-- End Get Researcher Position Data --}}
 
-                </table>
-                <!-- end table -->
+          @else
 
-              </div>
-              <!-- end table responsive -->
+            <tr>
+              <td colspan="{{ count($data['table']['column']['cervie']['researcher']['community']['engagement']) }}">No Data</td>
+            </tr>
 
-              @break
+          @endif
+          {{-- End Check Researcher Position Exist --}}
 
-            @endif
-            {{-- End Check General Publication Type Matched With Researcher Publication Type --}}
+        </tbody>
+        <!-- end tbody -->
 
-          @endforeach
-          {{-- End Get Researcher Publication Data --}}
+      </table>
+      <!-- end table -->
+
+      <!-- pagination -->
+      <div class="col-12 pt-3">
+
+        {{-- Check Main Data Exist --}}
+        @if(count($data['main']['cervie']['researcher']['community']['engagement']) >= 1)
+
+          <!-- paginate -->
+          {{ $data['main']['cervie']['researcher']['community']['engagement']->appends(request()->input())->links(Config::get('routing.application.modules.dashboard.researcher.layout').'.navigation.pagination.index',['navigation'=>['alignment'=>'center']]) }}
+          <!-- end paginate -->
 
         @endif
-        {{-- End Check Researcher Publication Exist --}}
-
-      @endforeach
-      {{-- End Get Publication Type Data --}}
-
-      @if(!$check['category'])
-
-      <!-- header sub title -->
-      <div class="row pt-5 text-center">
-
-        <!-- title -->
-        <h4 class="card-title mb-2">There is No Record Added, You may Add by Clicking New Publication Above</h4>
-        <!-- end title -->
+        {{-- End Check Main Data Exist --}}
 
       </div>
-      <!-- end header sub title -->
+      <!-- end pagination -->
 
-      @endif
-
-    @endif
-    {{-- End Check Publication Type Exist --}}
-
+    </div>
+    <!-- end table responsive -->
 
   </div>
   <!-- end card body -->

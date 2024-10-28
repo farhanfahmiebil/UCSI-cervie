@@ -11,7 +11,7 @@
     <!-- end card title -->
 
     <!-- row 1 -->
-    <div class="row">
+    <div class="row pt-3">
 
       <!-- table responsive -->
       <div class="table-responsive">
@@ -104,7 +104,7 @@
         <div class="row text-center pt-3">
 
           <div class="col-12">
-            <button type="button" class="btn btn-primary add-new-file"><i class="mdi mdi-plus"></i>Add New File</button>
+            <button type="button" class="btn btn-primary add-new-file"><i class="bi bi-plus"></i>Add New File</button>
           </div>
         </div>
 

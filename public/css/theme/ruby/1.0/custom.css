@@ -434,3 +434,14 @@ label img {
   transform: scale(0.9);
   z-index: -1;
 }
+
+.star {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #e0e0e0; /* Default star color */
+    transition: color 0.2s ease; /* Smooth transition for color change */
+
+}
+.star.selected {
+    color: #ffcc00; /* Selected star color */
+}

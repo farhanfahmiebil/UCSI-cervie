@@ -2,7 +2,7 @@
 <div id="group_publication_book_chapter">
 
   <!-- row 2 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <!-- title -->
     <div class="col-md-12">
@@ -17,7 +17,7 @@
   <!-- end row 2 -->
 
   <!-- row 3 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <!-- author -->
     <div class="col-md-12">
@@ -32,7 +32,7 @@
   <!-- end row 3 -->
 
   <!-- row 4 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <!-- name -->
     <div class="col-md-12">
@@ -47,7 +47,7 @@
   <!-- end row 4 -->
 
   <!-- row 5 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <!-- day -->
     <div class="col-md-4">
@@ -80,11 +80,11 @@
   <!-- end row 5 -->
 
   <!-- row 6 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <div class="col-4">
 
-      <div class="row">
+      <div class="row pt-3">
 
         <!-- volume -->
         <div class="col-md-12">
@@ -101,7 +101,7 @@
 
     <div class="col-4">
 
-      <div class="row">
+      <div class="row pt-3">
 
         <!-- edition -->
         <div class="col-md-12">
@@ -118,7 +118,7 @@
 
     <div class="col-4">
 
-      <div class="row">
+      <div class="row pt-3">
 
         <!-- page no -->
         <div class="col-md-6">
@@ -147,7 +147,7 @@
   <!-- end row 6 -->
 
   <!-- row 7 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <!-- isbn -->
     <div class="col-md-4">
@@ -180,7 +180,7 @@
   <!-- end row 7 -->
 
   <!-- row 8 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <!-- doi -->
     <div class="col-md-4">
@@ -254,7 +254,7 @@
   <!-- end row 9 -->
 
   <!-- row 10 -->
-  <div class="row">
+  <div class="row pt-3">
 
     <!-- sustainable development goal -->
     <div class="col-md-12">

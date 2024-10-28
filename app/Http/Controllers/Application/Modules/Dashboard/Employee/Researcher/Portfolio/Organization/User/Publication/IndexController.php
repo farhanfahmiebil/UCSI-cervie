@@ -294,8 +294,8 @@ class IndexController extends Controller{
   }
 
   /**************************************************************************************
- 		Validate Data
- 	**************************************************************************************/
+    Validate Data
+  **************************************************************************************/
   public function getValidateData(Request $request){
 
     //Check Has Publication Type
@@ -385,7 +385,7 @@ class IndexController extends Controller{
           ];
 
 
-// dd($rules,$messages);
+  // dd($rules,$messages);
         break;
 
         //Book
@@ -555,7 +555,7 @@ class IndexController extends Controller{
               'chapter_no'=>($request->has('chapter_no')?$request->chapter_no:null),
               'sustainable_development_goal'=>$sustainable_development_goal,
               'hyperlink'=>($request->has('hyperlink')?$request->hyperlink:null),
-              'need_verification'=>1,
+              'need_verification'=>0,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'created_by'=>Auth::id()
@@ -637,7 +637,7 @@ class IndexController extends Controller{
     }
 
     //Return to Selected Tab Category Route
-    return redirect()->route($hyperlink['page']['list'])
+    return redirect()->route($hyperlink['page']['list'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id])
                      ->with('alert_type','success')
                      ->with('message','Publication Added');
 
@@ -871,7 +871,7 @@ class IndexController extends Controller{
             'column'=>[
               'publication_id'=>$request->id,
               'employee_id'=>Auth::id(),
-              'need_verification'=>1,
+              'need_verification'=>0,
               'updated_by'=>Auth::id()
             ]
           ]
@@ -882,7 +882,7 @@ class IndexController extends Controller{
     }
 
     //Return to Selected Tab Category Route
-    return redirect()->route($hyperlink['page']['list'])
+    return redirect()->route($hyperlink['page']['list'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id])
                      ->with('alert_type','success')
                      ->with('message','Publication Deleted');
 
@@ -892,7 +892,6 @@ class IndexController extends Controller{
  		Delete
  	**************************************************************************************/
 	public function deleteEvidence(Request $request){
-
 		//Get Route Path
 		$this->routePath();
 
@@ -969,7 +968,7 @@ class IndexController extends Controller{
     }
 
     //Return to Selected Tab Category Route
-    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+    return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id,'id'=>$request->id])
                      ->with('alert_type','success')
                      ->with('message','Evidence Deleted');
 
@@ -992,6 +991,45 @@ class IndexController extends Controller{
     //Set Page Sub
     $page['sub'] .= 'view.sub';
 
+    //Set Model Navigation Category
+    $model['navigation']['category']['main'] = new NavigationCategoryView();
+
+    //Get Navigation Category
+    $data['navigation']['category']['main'] = $model['navigation']['category']['main']->getList([
+      'column'=>[
+        'category'=>'PORTAL',
+        'user_type'=>strtoupper('administrator'),
+        'domain_url'=>$request->root()
+      ]
+    ]);
+
+    //Set Model Navigation Category Sub
+    $model['navigation']['category']['sub'] = new NavigationCategorySubView();
+
+    //Get Navigation Category Sub
+    $data['navigation']['category']['sub'] = $model['navigation']['category']['sub']->getList(
+      [
+        'column'=>[
+          'category'=>'PORTAL',
+          'user_type'=>strtoupper('administrator'),
+          'navigation_category_code'=>'PUBLICATION',
+          'domain_url'=>$request->root()
+        ]
+      ]
+    );
+
+    //Set Model Researcher - Employee Profile
+    $model['employee']['profile'] = new EmployeeProfileProcedure();
+
+    //Get Employee Profile
+    $data['employee']['profile'] = $model['employee']['profile']->readRecord(
+      [
+        'column'=>[
+          'employee_id'=>$request->employee_id
+        ]
+      ]
+    );
+
     //Set Breadcrumb Icon
     $data['breadcrumb']['icon'] = '<i class="bi bi-house"></i>';
 
@@ -1000,6 +1038,8 @@ class IndexController extends Controller{
 
 		//Set Breadcrumb
 		$data['title'] = array($this->header['category']);
+
+    $model['general']['organization'] = new Organization();
 
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
@@ -1012,6 +1052,17 @@ class IndexController extends Controller{
         ]
       ]
     );
+
+    //Set Data Organization
+    $data['general']['organization'] = $model['general']['organization']->selectBox(
+      [
+        'column'=>[
+          'company_id'=>'UCSI_EDUCATION',
+          'company_office_id'=>'MAIN_CAMPUS'
+        ]
+      ]
+    );
+
 
     //Set Model General Publication Type
     $model['general']['publication']['type'] = new PublicationTypeView();
@@ -1063,7 +1114,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd(    $data['evidence']);
+
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
       0=>[
@@ -1085,13 +1136,16 @@ class IndexController extends Controller{
     $asset['document'] = '/public/resources/researcher/'.trim(Auth::id()).'/document/publication/'.$request->id.'/';
 
     //Set Document
-    $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/publication/'.$request->id.'/';
-// dd($hyperlink['document'] );
+    $hyperlink['document'] = $request->root().'/storage/resources/researcher/'.trim(Auth::id()).'/document/publication/'.$request->id.'/';
+
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
-// dd($data['main']->title);
+
+    //Set Page Pointer
+    $page['navigation']['tab']['pointer'] =  $page['navigation']['tab']['content']['view'];
+
 		//Return View
-		return view($this->route['view'].'view.index',compact('data','page','asset','form_token','hyperlink'));
+    return view($this->route['link'].'view.navigation.content.list.index',compact('data','page','form_token','hyperlink','asset'));
 
   }
 
@@ -1105,6 +1159,7 @@ class IndexController extends Controller{
 
 		//Set Hyperlink
 		$hyperlink = $this->hyperlink;
+
 
     //If Form Token Exist
 		if(!$request->has('form_token')){abort(555,'Form Token Missing');}
@@ -1154,7 +1209,7 @@ class IndexController extends Controller{
               'chapter_no'=>($request->has('chapter_no')?$request->chapter_no:null),
               'sustainable_development_goal'=>$sustainable_development_goal,
               'hyperlink'=>($request->has('hyperlink')?$request->hyperlink:null),
-              'need_verification'=>1,
+              'need_verification'=>0,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
               'updated_by'=>Auth::id()
@@ -1245,212 +1300,204 @@ class IndexController extends Controller{
     }
 
     //Return to Selected Tab Category Route
-    return redirect()->route($hyperlink['page']['view'],['id'=>$request->id])
+    return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id,'id'=>$request->id])
                      ->with('alert_type','success')
                      ->with('message','Publication Saved');
 
   }
 
   /**************************************************************************************
- 		Get Data Table
- 	**************************************************************************************/
-  public function getDataTable($data){
+    Get Data Table
+**************************************************************************************/
+public function getDataTable($data) {
 
-    //Check Data Category Exist
-    if(!isset($data['category'])){abort(404);}
-
-    //Get Data Category
-    switch($data['category']){
-
-      //Article
-      case '1':
-
-        //Defined Column
-        $table = [
-          0=>[
-            'icon'=>'<i class="mdi mdi-numeric"></i>',
-            'name'=>'No',
-          ],
-          1=>[
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Title',
-          ],
-          2=>[
-            'icon'=>'<i class="mdi mdi-city"></i>',
-            'name'=>' Name',
-          ],
-          3=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Volume/Issue/PageNo',
-          ],
-          4=>[
-            'icon'=>'<i class="mdi mdi-google-earth"></i>',
-            'name'=>' SDG',
-          ],
-          5=>[
-            'icon'=>'<i class="mdi mdi-shield-check"></i>',
-            'name'=>' Verfication',
-          ],
-          6=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Control',
-          ]
-        ];
-
-      break;
-
-      //Journal
-      case '2':
-
-        //Defined Column
-        $table = [
-          0=>[
-            'icon'=>'<i class="mdi mdi-numeric"></i>',
-            'name'=>'No',
-          ],
-          1=>[
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Title',
-          ],
-          2=>[
-            'icon'=>'<i class="mdi mdi-city"></i>',
-            'name'=>' Name',
-          ],
-          3=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Volume/Issue/PageNo',
-          ],
-          4=>[
-            'icon'=>'<i class="mdi mdi-google-earth"></i>',
-            'name'=>' SDG',
-          ],
-          5=>[
-            'icon'=>'<i class="mdi mdi-shield-check"></i>',
-            'name'=>' Verification',
-          ],
-          6=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Control',
-          ]
-        ];
-
-      break;
-
-      //Book
-      case '3':
-
-        //Defined Column
-        $table = [
-          0=>[
-            'icon'=>'<i class="mdi mdi-numeric"></i>',
-            'name'=>'No',
-          ],
-          1=>[
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Title',
-          ],
-          2=>[
-            'icon'=>'<i class="mdi mdi-city"></i>',
-            'name'=>' Publisher',
-          ],
-          3=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' PageNo',
-          ],
-          4=>[
-            'icon'=>'<i class="mdi mdi-google-earth"></i>',
-            'name'=>' SDG',
-          ],
-          5=>[
-            'icon'=>'<i class="mdi mdi-shield-check"></i>',
-            'name'=>' Verification',
-          ],
-          6=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Control',
-          ]
-        ];
-
-      break;
-
-      //Book Chapter
-      case '4':
-
-        //Defined Column
-        $table = [
-          0=>[
-            'icon'=>'<i class="mdi mdi-numeric"></i>',
-            'name'=>'No',
-          ],
-          1=>[
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Title',
-          ],
-          2=>[
-            'icon'=>'<i class="mdi mdi-city"></i>',
-            'name'=>' Publisher',
-          ],
-          3=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' PageNo/ChapterNo',
-          ],
-          4=>[
-            'icon'=>'<i class="mdi mdi-google-earth"></i>',
-            'name'=>' SDG',
-          ],
-          5=>[
-            'icon'=>'<i class="mdi mdi-shield-check"></i>',
-            'name'=>' Verification',
-          ],
-          6=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Control',
-          ]
-        ];
-
-      break;
-
-      default:
-
-        //Defined Column
-        $table = [
-          0=>[
-            'icon'=>'<i class="mdi mdi-numeric"></i>',
-            'name'=>'No',
-          ],
-          1=>[
-            'icon'=>'<i class="mdi mdi-account-card-details"></i>',
-            'name'=>' Title',
-          ],
-          2=>[
-            'icon'=>'<i class="mdi mdi-city"></i>',
-            'name'=>' Name',
-          ],
-          3=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Volume/Issue/PageNo',
-          ],
-          4=>[
-            'icon'=>'<i class="mdi mdi-google-earth"></i>',
-            'name'=>' SDG',
-          ],
-          5=>[
-            'icon'=>'<i class="mdi mdi-shield-check"></i>',
-            'name'=>' Verfication',
-          ],
-          6=>[
-            'icon'=>'<i class="mdi mdi-settings"></i>',
-            'name'=>' Control',
-          ]
-        ];
-
-      break;
+    // Check Data Category Exist
+    if (!isset($data['category'])) {
+        abort(404);
     }
 
-    //Return Table
-    return $table;
+    // Get Data Category
+    switch ($data['category']) {
 
-  }
+        // Article
+        case '1':
+            // Defined Column
+            $table = [
+                0 => [
+                    'icon' => '<i class="bi bi-numeric"></i>',
+                    'name' => 'No',
+                ],
+                1 => [
+                    'icon' => '<i class="bi bi-file-earmark-text"></i>',
+                    'name' => 'Title',
+                ],
+                2 => [
+                    'icon' => '<i class="bi bi-person"></i>',
+                    'name' => 'Name',
+                ],
+                3 => [
+                    'icon' => '<i class="bi bi-clipboard"></i>',
+                    'name' => 'Volume/Issue/PageNo',
+                ],
+                4 => [
+                    'icon' => '<i class="bi bi-globe"></i>',
+                    'name' => 'SDG',
+                ],
+                5 => [
+                    'icon' => '<i class="bi bi-check-circle"></i>',
+                    'name' => 'Verification',
+                ],
+                6 => [
+                    'icon' => '<i class="bi bi-gear"></i>',
+                    'name' => 'Control',
+                ]
+            ];
+            break;
+
+        // Journal
+        case '2':
+            // Defined Column
+            $table = [
+                0 => [
+                    'icon' => '<i class="bi bi-numeric"></i>',
+                    'name' => 'No',
+                ],
+                1 => [
+                    'icon' => '<i class="bi bi-file-earmark-text"></i>',
+                    'name' => 'Title',
+                ],
+                2 => [
+                    'icon' => '<i class="bi bi-person"></i>',
+                    'name' => 'Name',
+                ],
+                3 => [
+                    'icon' => '<i class="bi bi-clipboard"></i>',
+                    'name' => 'Volume/Issue/PageNo',
+                ],
+                4 => [
+                    'icon' => '<i class="bi bi-globe"></i>',
+                    'name' => 'SDG',
+                ],
+                5 => [
+                    'icon' => '<i class="bi bi-check-circle"></i>',
+                    'name' => 'Verification',
+                ],
+                6 => [
+                    'icon' => '<i class="bi bi-gear"></i>',
+                    'name' => 'Control',
+                ]
+            ];
+            break;
+
+        // Book
+        case '3':
+            // Defined Column
+            $table = [
+                0 => [
+                    'icon' => '<i class="bi bi-numeric"></i>',
+                    'name' => 'No',
+                ],
+                1 => [
+                    'icon' => '<i class="bi bi-file-earmark-text"></i>',
+                    'name' => 'Title',
+                ],
+                2 => [
+                    'icon' => '<i class="bi bi-house"></i>',
+                    'name' => 'Publisher',
+                ],
+                3 => [
+                    'icon' => '<i class="bi bi-clipboard"></i>',
+                    'name' => 'PageNo',
+                ],
+                4 => [
+                    'icon' => '<i class="bi bi-globe"></i>',
+                    'name' => 'SDG',
+                ],
+                5 => [
+                    'icon' => '<i class="bi bi-check-circle"></i>',
+                    'name' => 'Verification',
+                ],
+                6 => [
+                    'icon' => '<i class="bi bi-gear"></i>',
+                    'name' => 'Control',
+                ]
+            ];
+            break;
+
+        // Book Chapter
+        case '4':
+            // Defined Column
+            $table = [
+                0 => [
+                    'icon' => '<i class="bi bi-numeric"></i>',
+                    'name' => 'No',
+                ],
+                1 => [
+                    'icon' => '<i class="bi bi-file-earmark-text"></i>',
+                    'name' => 'Title',
+                ],
+                2 => [
+                    'icon' => '<i class="bi bi-house"></i>',
+                    'name' => 'Publisher',
+                ],
+                3 => [
+                    'icon' => '<i class="bi bi-clipboard"></i>',
+                    'name' => 'PageNo/ChapterNo',
+                ],
+                4 => [
+                    'icon' => '<i class="bi bi-globe"></i>',
+                    'name' => 'SDG',
+                ],
+                5 => [
+                    'icon' => '<i class="bi bi-check-circle"></i>',
+                    'name' => 'Verification',
+                ],
+                6 => [
+                    'icon' => '<i class="bi bi-gear"></i>',
+                    'name' => 'Control',
+                ]
+            ];
+            break;
+
+        default:
+            // Defined Column
+            $table = [
+                0 => [
+                    'icon' => '<i class="bi bi-numeric"></i>',
+                    'name' => 'No',
+                ],
+                1 => [
+                    'icon' => '<i class="bi bi-file-earmark-text"></i>',
+                    'name' => 'Title',
+                ],
+                2 => [
+                    'icon' => '<i class="bi bi-person"></i>',
+                    'name' => 'Name',
+                ],
+                3 => [
+                    'icon' => '<i class="bi bi-clipboard"></i>',
+                    'name' => 'Volume/Issue/PageNo',
+                ],
+                4 => [
+                    'icon' => '<i class="bi bi-globe"></i>',
+                    'name' => 'SDG',
+                ],
+                5 => [
+                    'icon' => '<i class="bi bi-check-circle"></i>',
+                    'name' => 'Verification',
+                ],
+                6 => [
+                    'icon' => '<i class="bi bi-gear"></i>',
+                    'name' => 'Control',
+                ]
+            ];
+            break;
+    }
+
+    // Return Table
+    return $table;
+}
+
 
   /**************************************************************************************
     Get Data

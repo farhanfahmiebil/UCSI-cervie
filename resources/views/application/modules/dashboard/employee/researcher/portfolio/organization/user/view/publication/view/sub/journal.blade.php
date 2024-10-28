@@ -1,5 +1,5 @@
-<!-- group publication article -->
-<div id="group_publication_article">
+<!-- group publication journal -->
+<div id="group_publication_journal">
 
   <!-- row 2 -->
   <div class="row pt-3">
@@ -7,8 +7,8 @@
     <!-- title -->
     <div class="col-md-12">
       <div class="form-group">
-        <label for="title">Title<small class="text-danger">*</small></label>
-        <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="Title">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->title }}" placeholder="Title">
       </div>
     </div>
     <!-- end title -->
@@ -22,8 +22,8 @@
     <!-- author -->
     <div class="col-md-12">
       <div class="form-group">
-        <label for="author">Author<small class="text-danger">*</small></label>
-        <input type="text" class="form-control" id="author" name="author" value="{{ old('author') }}" placeholder="Author">
+        <label for="author">Author</label>
+        <input type="text" class="form-control" id="author" name="author" value="{{ $data['main']->author }}" placeholder="Author">
       </div>
     </div>
     <!-- end author -->
@@ -31,26 +31,20 @@
   </div>
   <!-- end row 3 -->
 
-  <!-- group academic detail -->
-  <div class="group_academic_detail">
+  <!-- row 4 -->
+  <div class="row pt-3">
 
-    <!-- row 4 -->
-    <div class="row pt-3">
-
-      <!-- name -->
-      <div class="col-md-12">
-        <div class="form-group">
-          <label for="name">Article Name<small class="text-danger">*</small></label>
-          <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="">
-        </div>
+    <!-- name -->
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="name">Journal Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ $data['main']->name }}" placeholder="">
       </div>
-      <!-- end name -->
-
     </div>
-    <!-- end row 4 -->
+    <!-- end name -->
 
   </div>
-  <!-- end group academic detail -->
+  <!-- end row 4 -->
 
   <!-- row 5 -->
   <div class="row pt-3">
@@ -58,8 +52,8 @@
     <!-- name -->
     <div class="col-md-12">
       <div class="form-group">
-        <label for="publisher">Publisher <small class="fst-italic">(Optional)</small></label>
-        <input type="text" class="form-control" id="publisher" name="publisher" value="{{ old('publisher') }}" placeholder="">
+        <label for="publisher">Publisher</label>
+        <input type="text" class="form-control" id="publisher" name="publisher" value="{{ $data['main']->publisher }}" placeholder="">
       </div>
     </div>
     <!-- end name -->
@@ -74,7 +68,7 @@
     <div class="col-md-4">
       <div class="form-group">
         <label for="day">Day <small class="fst-italic">(Optional)</small></label>
-        <input type="text" class="form-control" id="day" name="day" value="{{ old('day') }}" placeholder="">
+        <input type="text" class="form-control" id="day" name="day" value="{{ $data['main']->day }}" placeholder="">
       </div>
     </div>
     <!-- end day -->
@@ -83,7 +77,7 @@
     <div class="col-md-4">
       <div class="form-group">
         <label for="month">Month <small class="fst-italic">(Optional)</small></label>
-        <input type="text" class="form-control" id="month" name="month" value="{{ old('month') }}" placeholder="">
+        <input type="text" class="form-control" id="month" name="month" value="{{ $data['main']->month }}" placeholder="">
       </div>
     </div>
     <!-- end month -->
@@ -92,7 +86,7 @@
     <div class="col-md-4">
       <div class="form-group">
         <label for="year">Year<small class="text-danger">*</small></label>
-        <input type="text" class="form-control" id="year" name="year" value="{{ old('year') }}" placeholder="">
+        <input type="text" class="form-control" id="year" name="year" value="{{ $data['main']->year }}" placeholder="">
       </div>
     </div>
     <!-- end year -->
@@ -107,7 +101,7 @@
     <div class="col-md-4">
       <div class="form-group">
         <label for="volume">Volume</label>
-        <input type="text" class="form-control" id="volume" name="volume" value="{{ old('volume') }}" placeholder="">
+        <input type="text" class="form-control" id="volume" name="volume" value="{{ $data['main']->volume }}" placeholder="">
       </div>
     </div>
     <!-- end volume -->
@@ -116,7 +110,7 @@
     <div class="col-md-4">
       <div class="form-group">
         <label for="issue">Issue</label>
-        <input type="text" class="form-control" id="issue" name="issue" value="{{ old('issue') }}" placeholder="">
+        <input type="text" class="form-control" id="issue" name="issue" value="{{ $data['main']->issue }}" placeholder="">
       </div>
     </div>
     <!-- end issue -->
@@ -125,7 +119,7 @@
     <div class="col-md-4">
       <div class="form-group">
         <label for="page_no">Page No</label>
-        <input type="text" class="form-control" id="page_no" name="page_no" value="{{ old('page_no') }}" placeholder="">
+        <input type="text" class="form-control" id="page_no" name="page_no" value="{{ $data['main']->page_no }}" placeholder="">
       </div>
     </div>
     <!-- end page no -->
@@ -139,8 +133,8 @@
     <!-- isbn -->
     <div class="col-md-4">
       <div class="form-group">
-        <label for="isbn">ISBN <small class="fst-italic">(Optional)</small></label>
-        <input type="text" class="form-control" id="isbn" name="isbn" value="{{ old('isbn') }}" placeholder="">
+        <label for="isbn">ISBN</label>
+        <input type="text" class="form-control" id="isbn" name="isbn" value="{{ $data['main']->isbn }}" placeholder="">
       </div>
     </div>
     <!-- end isbn -->
@@ -148,8 +142,8 @@
     <!-- issn -->
     <div class="col-md-4">
       <div class="form-group">
-        <label for="issn">ISSN <small class="fst-italic">(Optional)</small></label>
-        <input type="text" class="form-control" id="issn" name="issn" value="{{ old('issn') }}" placeholder="">
+        <label for="issn">ISSN</label>
+        <input type="text" class="form-control" id="issn" name="issn" value="{{ $data['main']->issn }}" placeholder="">
       </div>
     </div>
     <!-- end issn -->
@@ -157,8 +151,8 @@
     <!-- eissn -->
     <div class="col-md-4">
       <div class="form-group">
-        <label for="eissn">eISSN <small class="fst-italic">(Optional)</small></label>
-        <input type="text" class="form-control" id="eissn" name="eissn" value="{{ old('eissn') }}" placeholder="">
+        <label for="eissn">eISSN</label>
+        <input type="text" class="form-control" id="eissn" name="eissn" value="{{ $data['main']->eissn }}" placeholder="">
       </div>
     </div>
     <!-- end eissn -->
@@ -172,8 +166,8 @@
     <!-- doi -->
     <div class="col-md-4">
       <div class="form-group">
-        <label for="doi">DOI <small class="fst-italic">(Optional)</small></label>
-        <input type="text" class="form-control" id="doi" name="doi" value="{{ old('doi') }}" placeholder="">
+        <label for="doi">DOI</label>
+        <input type="text" class="form-control" id="doi" name="doi" value="{{ $data['main']->doi }}" placeholder="">
       </div>
     </div>
     <!-- end doi -->
@@ -189,7 +183,7 @@
 
             {{-- Get General Quartile Data --}}
             @foreach($data['general']['quartile'] as $key=>$value)
-              <option value="{{ $value->quartile_id }}" {{ ((old('quartile_id') == $value->quartile_id)?'selected':'') }}>{{ $value->code }} - {{ $value->name }}</option>
+              <option value="{{ $value->quartile_id }}" {{ (($data['main']->quartile_id == $value->quartile_id)?'selected':'') }}>{{ $value->code }} - {{ $value->name }}</option>
             @endforeach
             {{-- End Get General Quartile Data --}}
 
@@ -200,10 +194,11 @@
     </div>
     <!-- end quartile -->
 
+
     <!-- indexing body -->
     <div class="col-md-4">
       <div class="form-group">
-        <label for="academic_indexing_body_id">Indexing Body<small class="text-danger">*</small></label>
+        <label for="indexing_body_id">Indexing Body</label>
         <select class="form-control select2" id="academic_indexing_body_id" name="academic_indexing_body_id">
           <option value="">--Please Select--</option>
           {{-- Check General Academic_Indexing Body Exist --}}
@@ -211,7 +206,7 @@
 
             {{-- Get General Academic_Indexing Body Data --}}
             @foreach($data['general']['academic']['indexing']['body'] as $key=>$value)
-              <option value="{{ $value->academic_indexing_body_id }}" {{ ((old('academic_indexing_body_id') == $value->academic_indexing_body_id)?'selected':'') }}>{{ $value->name }}</option>
+              <option value="{{ $value->academic_indexing_body_id }}" {{ (($data['main']->academic_indexing_body_id == $value->academic_indexing_body_id)?'selected':'') }}>{{ $value->name }}</option>
             @endforeach
             {{-- End Get General Academic_Indexing Body Data --}}
 
@@ -232,7 +227,7 @@
     <div class="col-md-12">
       <div class="form-group">
         <label for="academic_indexing_body_other">Other - Indexing Body (Please State)</label>
-        <input type="text" class="form-control" id="academic_indexing_body_other" name="academic_indexing_body_other" value="{{ old('academic_indexing_body_other') }}" placeholder="">
+        <input type="text" class="form-control" id="academic_indexing_body_other" name="academic_indexing_body_other" value="{{ $data['main']->academic_indexing_body_other }}" placeholder="">
       </div>
     </div>
     <!-- end academic indexing body other -->
@@ -246,29 +241,28 @@
     <!-- sustainable development goal -->
     <div class="col-md-12">
       <div class="form-group">
-        <label for="sustainable_development_goal">Sustainable Development Goal</label>
+        <label for="sustainable_development_goal_id">Sustainable Development Goal</label>
         <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
           <option value="">--Please Select--</option>
-          {{-- Check if Sustainable Development Goals exist --}}
+
+          {{-- Check General Sustainable Development Goal Exist --}}
           @if(count($data['general']['sustainable']['development']['goal']) > 0)
 
             @php
-              // Get old values for sustainable development goals (array) if they exist
-              $selected_sdg = old('sustainable_development_goal_id', []);
+              // Explode Sustainable Development Goal from the main data (comma-separated string)
+              $selected_sdg = explode(',',$data['main']->sustainable_development_goal);
             @endphp
 
-            {{-- Get Sustainable Development Goals Data --}}
+
             @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
               <option value="{{ $value->sustainable_development_goal_id }}"
-                {{-- Check if this value was previously selected --}}
                 {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
                 {{ $value->code }} - {{ $value->name }}
               </option>
             @endforeach
-            {{-- End Get Sustainable Development Goals Data --}}
 
           @endif
-          {{-- End Check if Sustainable Development Goals exist --}}
+          {{-- End Check General Sustainable Development Goal Exist --}}
         </select>
       </div>
     </div>
@@ -278,7 +272,7 @@
   <!-- end row 11 -->
 
 </div>
-<!-- end group publication article -->
+<!-- end group publication journal -->
 
 <script type="text/javascript">
 

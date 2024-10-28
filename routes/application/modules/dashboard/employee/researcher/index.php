@@ -211,7 +211,7 @@ Route::prefix('researcher')->group(function(){
 
                   /*  New
                   **************************************************************************************/
-                  Route::get('/new', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@new')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.new');
+                  Route::get('/new/{publication_type_id?}', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@new')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.new');
 
                   /*  Create
                   **************************************************************************************/
@@ -232,6 +232,10 @@ Route::prefix('researcher')->group(function(){
                   /*  Update
                   **************************************************************************************/
                   Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.update');
+
+                  /*  Delete Evidence
+                  **************************************************************************************/
+                  Route::get('/evidence/delete', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Publication\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.publication.evidence.delete');
 
                 }); //End Publication
 
@@ -755,6 +759,49 @@ Route::prefix('researcher')->group(function(){
 
                 }); //End Intellectual
 
+                /* Community
+                **************************************************************************************/
+                Route::prefix('community')->group(function() {
+
+                    /* Engagement
+                    **************************************************************************************/
+                    Route::prefix('engagement')->group(function(){
+
+                        /*  New
+                        **************************************************************************************/
+                        Route::get('/new', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@new')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.new');
+
+                        /*  Create
+                        **************************************************************************************/
+                        Route::post('/create', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@create')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.create');
+
+                        /*  List
+                        **************************************************************************************/
+                        Route::get('/list', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.list');
+
+                        /*  Delete
+                        **************************************************************************************/
+                        Route::get('/delete', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@delete')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.delete');
+
+                        /*  Delete Evidence
+                        **************************************************************************************/
+                        Route::get('/evidence/delete', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@deleteEvidence')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.evidence.delete');
+
+                        /*  View
+                        **************************************************************************************/
+                        Route::get('/view/{id}', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.view');
+
+                        /*  Update
+                        **************************************************************************************/
+                        Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.update');
+
+                        /*  Delete Team Member
+                        **************************************************************************************/
+                        Route::get('/team/member/delete', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Community\Engagement\IndexController@deleteTeamMember')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.community.engagement.team_member.delete');
+
+                    }); // End Engagement
+
+                }); // End Community
 
 
               }); //End Tab

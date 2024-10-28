@@ -68,8 +68,8 @@ class IndexController extends Controller{
 	public function routePath(){
 
 		//Set Route View
-		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.community_engagement.';
-    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.community_engagement.';
+		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.community.engagement.';
+    $this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.community.engagement.';
 
     //Set Navigation
 		$this->hyperlink['navigation'] = $this->navigation['hyperlink'];
