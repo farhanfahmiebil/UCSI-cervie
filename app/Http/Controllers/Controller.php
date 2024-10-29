@@ -153,7 +153,8 @@ class Controller extends BaseController{
             'home'=>config('routing.application.modules.dashboard.researcher.name').'.home',
             'header'=>[
               'account'=>[
-                // 'profile'=>config('routing.application.modules.dashboard.researcher.name').'.account.profile.view',
+
+                'profile'=>config('routing.application.modules.dashboard.researcher.name').'.account.profile.view',
                 // 'change_password'=>config('routing.application.modules.researcher.employee.name').'.account.change_password.index',
                 'logout'=>config('routing.application.modules.dashboard.researcher.name').'.authorization.logout',
               ]

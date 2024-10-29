@@ -29,7 +29,7 @@
               <!-- dropzone -->
               <div class="dropzone sm needsclick dz-clickable">
                 <div class="dz-message needsclick">
-                  <img src="{{ asset(Auth::user()->getAvatar()) }}" class="img-7xx rounded-circle" />
+                  <img src="{{ asset(Auth::user()->getAvatar()) }}" class="img-fluid img-7xx rounded-circle" />
                 </div>
               </div>
               <!-- end dropzone -->
@@ -77,6 +77,7 @@
     <!-- control -->
     <div class="d-flex gap-2 justify-content-end">
       <input type="hidden" name="tab_category" value="avatar">
+      <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
 
       {{-- Check Authorization User Status Stop Submit --}}
       @if(!in_array(Auth::user()->employee->status->name,array('pending')))

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Class
-class Researcher extends Model{
+class ResearcherScopus extends Model{
 
   /**
    * The database connection that should be used by the model.
@@ -34,12 +34,13 @@ class Researcher extends Model{
   public function readRecord($data){
 
     //Set Table
-    $table = 'read_researcher';
+    $table = 'read_researcher_scopus';
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?;';
+    $this->query = 'EXEC '.$table.' ?,?;';
     //Get Result
     $result = DB::connection($this->connection)->select($this->query,[
+        $data['column']['researcher_scopus_id'],
         $data['column']['employee_id'],
       ]
     );
@@ -53,29 +54,99 @@ class Researcher extends Model{
   }
 
   /**************************************************************************************
+    Create
+  **************************************************************************************/
+  public function createRecord($data){
+
+    //Set Table
+    $table = 'create_researcher_scopus';
+
+    //Set Query
+    $this->query = 'DECLARE @id INT;
+              EXEC '.$table.' ?,?,?,?,?,?,?, @id OUTPUT;
+              SELECT @id AS id;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->select($this->query,[
+        $data['column']['employee_id'],
+        $data['column']['scopus_id'],
+        $data['column']['hyperlink'],
+        $data['column']['need_verification'],
+        $data['column']['remark'],
+        $data['column']['remark_user'],
+        $data['column']['created_by']
+      ]
+    );
+
+
+    //Check Result Success
+    if(!empty($result)){
+
+      //Read Record
+      $item = $this->readRecord(
+        [
+          'column'=>[
+            'researcher_scopus_id'=>$result[0]->id,
+            'employee_id'=>$data['column']['employee_id']
+          ]
+        ]
+      );
+
+      //Create Log
+      $this->createLog(
+        [
+          'employee_id'=>$item->employee_id,
+          'table_name'=>$this->table,
+          'event'=>'create',
+          'auditable_id'=>$item->researcher_scopus_id,
+          'old_value'=>'[]',
+          'new_value'=>json_encode($item),
+          'created_by'=>$item->created_by,
+        ]
+      );
+
+      //Return Data
+      return (object)[
+        'status'=>true,
+        'last_insert_id'=>$result[0]->id ?? 0
+      ];
+
+    }
+
+    //If Result Failed
+    return (object)[
+      'status'=>false
+    ];
+
+  }
+
+  /**************************************************************************************
     Update
   **************************************************************************************/
   public function updateRecord($data){
 
     //Set Table
-    $table = 'update_researcher';
+    $table = 'update_researcher_scopus';
 
     //Read Record
     $item['old'] = $this->readRecord(
       [
         'column'=>[
-          'employee_id'=>$data['column']['employee_id'],
+          'researcher_scopus_id'=>$data['column']['researcher_scopus_id'],
+          'employee_id'=>$data['column']['employee_id']
         ]
       ]
     );
 
     //Set Query
-    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?;';
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?;';
 
     // //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
+        $data['column']['researcher_scopus_id'],
         $data['column']['employee_id'],
-        $data['column']['description'],
+        $data['column']['scopus_id'],
+        $data['column']['hyperlink'],
         $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
@@ -87,7 +158,8 @@ class Researcher extends Model{
     $item['new'] = $this->readRecord(
       [
         'column'=>[
-          'employee_id'=>$data['column']['employee_id'],
+          'researcher_scopus_id'=>$data['column']['researcher_scopus_id'],
+          'employee_id'=>$data['column']['employee_id']
         ]
       ]
     );

@@ -34,17 +34,17 @@ Route::prefix('account')->group(function(){
 
         /*  Index
         **************************************************************************************/
-        Route::get('/',config('routing.application.modules.dashboard.employee.controller').'\Account\ProfileController@index')->name(config('routing.application.modules.dashboard.employee.name').'.account.profile.view');
+        Route::get('/',config('routing.application.modules.dashboard.researcher.controller').'\Account\ProfileController@index')->name(config('routing.application.modules.dashboard.researcher.name').'.account.profile.view');
 
       }); //End Tab Sub Category
 
         /*  Download
         **************************************************************************************/
-        Route::get('/download/category/{category}',config('routing.application.modules.dashboard.employee.controller').'\Account\ProfileController@download')->name(config('routing.application.modules.dashboard.employee.name').'.account.profile.view.download');
+        Route::get('/download/category/{category}',config('routing.application.modules.dashboard.researcher.controller').'\Account\ProfileController@download')->name(config('routing.application.modules.dashboard.researcher.name').'.account.profile.view.download');
 
         /*  Update
         **************************************************************************************/
-        Route::post('/update',config('routing.application.modules.dashboard.employee.controller').'\Account\ProfileController@update')->name(config('routing.application.modules.dashboard.employee.name').'.account.profile.update');
+        Route::post('/update',config('routing.application.modules.dashboard.researcher.controller').'\Account\ProfileController@update')->name(config('routing.application.modules.dashboard.researcher.name').'.account.profile.update');
 
       }); //End Tab Category
 
@@ -62,11 +62,11 @@ Route::prefix('account')->group(function(){
 
       /*  Index
       **************************************************************************************/
-      // Route::get('/',config('routing.application.modules.dashboard.employee.controller').'\Account\ChangePasswordController@index')->name(config('routing.application.modules.dashboard.employee.name').'.account.change_password.index');
+      // Route::get('/',config('routing.application.modules.dashboard.researcher.controller').'\Account\ChangePasswordController@index')->name(config('routing.application.modules.dashboard.researcher.name').'.account.change_password.index');
 
       /*  Process
       **************************************************************************************/
-      // Route::post('/process',config('routing.application.modules.dashboard.employee.controller').'\Account\ChangePasswordController@process')->name(config('routing.application.modules.dashboard.employee.name').'.account.change_password.process');
+      // Route::post('/process',config('routing.application.modules.dashboard.researcher.controller').'\Account\ChangePasswordController@process')->name(config('routing.application.modules.dashboard.researcher.name').'.account.change_password.process');
 
     }); //End Password
 

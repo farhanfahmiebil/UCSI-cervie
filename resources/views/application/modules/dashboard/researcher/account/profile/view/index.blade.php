@@ -1,52 +1,9 @@
-@extends(Config::get('routing.application.modules.dashboard.employee.layout').'.structure.index')
+@extends(Config::get('routing.application.modules.dashboard.researcher.layout').'.structure.index')
 
 @section('main-content')
 
-  <!-- header banner -->
-  <div class="subscribe-header">
-    <img src="{{ asset('images/background/red_stripe.svg') }}" class="img-fluid w-100" alt="Header" />
-  </div>
-  <!-- end header banner -->
-
   <!-- subscriber body -->
   <div class="subscriber-body">
-
-    <!-- account profile image and name -->
-    <div class="row justify-content-center mt-4">
-
-      <!-- col -->
-      <div class="col-lg-12">
-
-        <!-- row -->
-        <div class="row align-items-end">
-
-          <!-- avatar -->
-          <div class="col-auto">
-            <img src="{{ asset(Auth::user()->getAvatar()) }}" class="img-7xx rounded-circle border border-secondary border-3" />
-          </div>
-          <!-- end avatar -->
-
-          <!-- account profile name -->
-          <div class="col mt-4">
-            <h6>{{ Auth::user()->title }}</h6>
-            <h4 class="m-0">{{ Auth::user()->name }}</h4>
-          </div>
-          <!-- end account profile name -->
-
-          <!-- profile percentage completed -->
-          <!-- <div class="col-12 col-md-auto">
-            <span class="badge shade-red">79% Completed</span>
-          </div> -->
-          <!-- end profile percentage completed -->
-
-        </div>
-        <!-- end row -->
-
-      </div>
-      <!-- end col -->
-
-    </div>
-    <!-- end account profile image and name -->
 
     <!-- row start -->
     <div class="row justify-content-center mt-4">
@@ -66,12 +23,12 @@
                 <!-- end avatar -->
 
                 <!-- my qr -->
-                <li class="nav-item" role="presentation">
+                <!-- <li class="nav-item" role="presentation">
                   <a class="nav-link {{ ((request()->tab_category == 'work')?'active':'') }}" id="tab-work" href="{{ route($hyperlink['page']['view'],['tab'=>'tab','tab_category'=>'work']) }}" role="tab"
                     aria-controls="work" aria-selected="false">
                     Work
                   </a>
-                </li>
+                </li> -->
                 <!-- end my qr -->
 
                 <!-- personal -->
@@ -83,6 +40,15 @@
                 </li>
                 <!-- end personal -->
 
+                <!-- profile -->
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link {{ ((request()->tab_category == 'profile')?'active':'') }}" id="tab-profile" href="{{ route($hyperlink['page']['view'],['tab'=>'tab','tab_category'=>'profile']) }}" role="tab"
+                    aria-controls="personal" aria-selected="true">
+                    Profile
+                  </a>
+                </li>
+                <!-- end profile -->
+
                 <!-- contact -->
                 <li class="nav-item" role="presentation">
                   <a class="nav-link {{ ((request()->tab_category == 'contact')?'active':'') }}" id="tab-qr" href="{{ route($hyperlink['page']['view'],['tab'=>'tab','tab_category'=>'contact']) }}" role="tab"
@@ -93,12 +59,12 @@
                 <!-- end contact -->
 
                 <!-- setting -->
-                <li class="nav-item" role="presentation">
+                <!-- <li class="nav-item" role="presentation">
                   <a class="nav-link {{ ((request()->tab_category == 'setting')?'active':'') }}" id="tab-setting" href="{{ route($hyperlink['page']['view'],['tab'=>'tab','tab_category'=>'setting']) }}" role="tab"
                     aria-controls="contact" aria-selected="false">
                     Setting
                   </a>
-                </li>
+                </li> -->
                 <!-- end setting -->
 
                 <!-- <li class="nav-item" role="presentation">
@@ -151,9 +117,6 @@
   </div>
   <!-- end subscriber body -->
 
-  {{-- Pop Alert --}}
-  @include($hyperlink['navigation']['layout']['dashboard']['employee']['modal']['pop_alert'])
-
   <script type="text/javascript">
 
     /**************************************************************************************
@@ -165,14 +128,11 @@
         Session
       **************************************************************************************/
       @if(Session('message'))
-
-        alertModal(
-          {
-            'modal_name':'modal-alert',
-            'title':'{{ ucwords(Session::get('alert_type')) }}',
-            'message':'{{ ucwords(Session::get('message')) }}'
-          }
-        );
+        Swal.fire({
+          title: '{{ ucwords(Session::get('alert_type')) }}',
+          text: '{{ ucwords(Session::get('message')) }}',
+          icon: '{{ strtolower(Session::get('alert_type')) }}'
+        });
       @endif
 
     });

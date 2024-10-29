@@ -250,6 +250,9 @@ class RouteServiceProvider extends ServiceProvider{
                 //Commercialization
                 require base_path($this->path['dashboard']['researcher'].'commercialization/index.php');
 
+                //Account
+                require base_path($this->path['dashboard']['researcher'].'account/index.php');
+
              }); //End Dashboard
 
            }); //End Employee
