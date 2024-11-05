@@ -100,7 +100,7 @@
           <input type="hidden" name="tab_category" value="profile">
           <input type="hidden" name="researcher_scopus_id" value="{{($data['researcher']->researcher_scopus_id)?$data['researcher']->researcher_scopus_id:null}}">
           <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-          <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-plus"></i>Create</button>
+          <button type="submit" class="btn btn-danger text-white"><i class="mdi mdi-plus"></i>Update</button>
 
         </div>
         <!-- end control -->

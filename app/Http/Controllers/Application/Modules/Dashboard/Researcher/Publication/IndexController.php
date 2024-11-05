@@ -566,16 +566,15 @@ class IndexController extends Controller{
 
     //Get General Publication Type Select Box
     $data['general']['publication']['type'] = $model['general']['publication']['type']->selectBox();
-// dd($data['general']['publication']['type']);
 
     //Set Model Publication
-    $model['cervie']['researcher']['publication'] = new CervieResearcherPublicationView();
+    $model['cervie']['researcher']['publication']['view'] = new CervieResearcherPublicationView();
 
     //Get General Publication Type
     foreach($data['general']['publication']['type'] as $key=>$value){
 
       //Set Main Data Researcher Publication
-      $data['main']['cervie']['researcher']['publication'][$value->publication_type_id] = $model['cervie']['researcher']['publication']->getList(
+      $data['main']['cervie']['researcher']['publication'][$value->publication_type_id] = $model['cervie']['researcher']['publication']['view'] ->getList(
         [
           'eloquent'=>((isset($data['eloquent']))?$data['eloquent']:null),
           'column'=>[
@@ -593,14 +592,99 @@ class IndexController extends Controller{
       );
 
     }
-    // dd($data['main']['cervie']['researcher']['professional']['membership']);
-// dd($data['main']['cervie']['researcher']['publication']);
-    // dd(count($data['main']['cervie']['researcher']['position']));
+
+    //Set Model Publication
+    $model['cervie']['researcher']['publication']['procedure'] = new CervieResearcherPublicationProcedure();
+
+    //Get Graph
+    $data['cervie']['researcher']['publication']['graph']['type'] = $model['cervie']['researcher']['publication']['procedure']->readGraphbyType(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+
+    //Get Graph
+    $data['cervie']['researcher']['publication']['graph']['indexing']['body'] = $model['cervie']['researcher']['publication']['procedure']->readGraphbyIndexingBody(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+
+    // $data['graph']['type'] = [
+    //     'label' => [], // Populate this with appropriate labels
+    //     'value' => []  // Populate this with values from $result
+    // ];
+    //
+    // $data['graph']['indexing']['body'] = [
+    //     'label' => [], // Populate this with appropriate labels
+    //     'value' => []  // Populate this with values from $result
+    // ];
+
+    // foreach ($data['cervie']['researcher']['publication']['graph']['type'] as $row) {
+    //     // Assuming your result has 'label' and 'value' fields
+    //     $data['graph']['type']['label'][] = $row->publication_type_name; // Replace 'label' with the actual field name
+    //     $data['graph']['type']['value'][] = $row->total; // Replace 'value' with the actual field name
+    //     $data['graph']['type']['year'][$row->year] = $row->year; // Replace 'value' with the actual field name
+    //
+    // }
+
+    $data['graph']['type'] = []; // Initialize the structure
+
+    foreach ($data['cervie']['researcher']['publication']['graph']['type'] as $row) {
+        $year = $row->year;
+
+        // Initialize the year entry if it doesn't exist
+        if (!isset($data['graph']['type'][$year])) {
+            $data['graph']['type'][$year] = [
+                'label' => [], // Ensure this is an array
+                'value' => []  // Ensure this is an array
+            ];
+        }
+
+        // Append the label and value to the corresponding year
+        $data['graph']['type'][$year]['label'][] = $row->publication_type_name; // Always an array
+        $data['graph']['type'][$year]['value'][] = $row->total; // Always an array
+    }
+
+    // Prepare the series for the chart
+    $publicationSeries = [];
+
+    // Check the data structure before processing
+    foreach ($data['graph']['type'] as $year => $info) {
+        if (!is_array($info['label']) || !is_array($info['value'])) {
+            continue; // Skip if labels or values are not arrays
+        }
+
+        foreach ($info['label'] as $index => $label) {
+            if (!isset($publicationSeries[$index])) {
+                $publicationSeries[$index] = [
+                    'name' => $label,
+                    'data' => array_fill(0, count($data['graph']['type']), 0) // Initialize data array for all years
+                ];
+            }
+            $publicationSeries[$index]['data'][$year] = $info['value'][$index] ?? 0; // Set data
+        }
+    }
+
+    // Now $publicationSeries should be ready to pass to JavaScript
+
+
+    foreach ($data['cervie']['researcher']['publication']['graph']['indexing']['body'] as $row) {
+        // Assuming your result has 'label' and 'value' fields
+        $data['graph']['indexing']['body']['label'][] = $row->indexing_body_type_name; // Replace 'label' with the actual field name
+        $data['graph']['indexing']['body']['value'][] = $row->total; // Replace 'value' with the actual field name
+
+    }
+
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
 
 		//Return View
-		return view($this->route['view'].'list.index',compact('data','form_token','page','hyperlink'));
+		return view($this->route['view'].'list.index',compact('publicationSeries','data','form_token','page','hyperlink'));
 
   }
 

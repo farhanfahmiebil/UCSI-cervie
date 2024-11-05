@@ -57,4 +57,35 @@ class EmployeeProfile extends Model{
 
   }
 
+  /**************************************************************************************
+    Update
+  **************************************************************************************/
+  public function updateRecord($data){
+
+    //Set Table
+    $table = 'update_employee_profile';
+
+    //Set Query
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->statement($this->query,[
+        $data['column']['employee_id'],
+        $data['column']['first_name'],
+        $data['column']['last_name'],
+        $data['column']['full_name'],
+        $data['column']['middle_name'],
+        $data['column']['dob'],
+        $data['column']['nickname'],
+        $data['column']['remark'],
+        $data['column']['remark_user'],
+        $data['column']['updated_by']
+      ]
+    );
+
+    //Get Result
+    return $result;
+
+  }
+
 }

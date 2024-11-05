@@ -307,4 +307,48 @@ class CervieResearcherPublication extends Model{
 
   }
 
+  /**************************************************************************************
+  Read Graph by Type
+  **************************************************************************************/
+  public function readGraphbyType($data){
+
+    //Set Table
+    $table = 'read_graph_cervie_researcher_publication_by_type';
+
+    //Set Query
+    $this->query = 'EXEC '.$table.' ?;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->select($this->query,[
+        $data['column']['employee_id'],
+      ]
+    );
+
+    //Return Result
+    return $result;
+
+  }
+
+  /**************************************************************************************
+    Read Graph by Indexing Body
+  **************************************************************************************/
+  public function readGraphbyIndexingBody($data){
+
+    //Set Table
+    $table = 'read_graph_cervie_researcher_publication_by_indexing_body';
+
+    //Set Query
+    $this->query = 'EXEC '.$table.' ?;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->select($this->query,[
+        $data['column']['employee_id'],
+      ]
+    );
+
+    //Return Result
+    return $result;
+
+  }
+
 }

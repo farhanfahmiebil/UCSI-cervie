@@ -13,7 +13,7 @@
 
         <!-- card header -->
         <div class="card-header">
-          <h3>Work</h3>
+          <h3>Contact</h3>
         </div>
         <!-- end card header -->
 
@@ -21,11 +21,11 @@
         <div class="card-body">
 
           <!-- row -->
-          <div class="row gx-3">
+          <div class="row">
 
             <!-- sub title -->
             <div class="col-xxl-12">
-  						<div class="form-section-title p-3 mt-4 mb-3 fw-bold">
+  						<div class="form-section-title mb-3 fw-bold">
   							Office Contact Details
   						</div>
   					</div>
@@ -79,7 +79,7 @@
 
             <!-- sub title -->
             <div class="col-xxl-12">
-  						<div class="form-section-title p-3 mt-4 mb-3 fw-bold">
+  						<div class="form-section-title mt-4 mb-3 fw-bold">
   							Office Email Details
   						</div>
   					</div>
@@ -135,11 +135,11 @@
         <div class="card-body">
 
           <!-- row -->
-          <div class="row gx-3">
+          <div class="row">
 
             <!-- sub title -->
             <div class="col-xxl-12">
-  						<div class="form-section-title p-3 mt-4 mb-3 fw-bold">
+  						<div class="form-section-title mb-3 fw-bold">
   							Mobile Details
   						</div>
   					</div>
@@ -180,18 +180,22 @@
       </div>
       <!-- end card -->
 
-      <!-- control -->
-      <div class="d-flex gap-2 justify-content-end">
-        <input type="hidden" name="tab_category" value="contact">
+      <!-- form control -->
+      <div class="row text-end pt-3">
 
-        {{-- Check Authorization User Status Stop Submit --}}
-        @if(!in_array(Auth::user()->employee->status->name,array('pending')))
-          <button type="submit" class="btn btn-primary">Save</button>
-        @endif
-        {{-- End Check Authorization User Status Stop Submit --}}
+        <!-- control -->
+        <div class="col-md-12">
+
+          <input type="hidden" name="tab_category" value="contact">
+          <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
+          <button type="submit" class="btn btn-danger text-white"><i class="mdi mdi-plus"></i>Update</button>
+
+        </div>
+        <!-- end control -->
 
       </div>
-      <!-- end control -->
+      <!-- end form control -->
+
 
     </form>
     <!-- end form -->

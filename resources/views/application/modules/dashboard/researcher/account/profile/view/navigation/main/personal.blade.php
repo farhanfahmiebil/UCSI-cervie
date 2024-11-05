@@ -1,6 +1,32 @@
 {{-- Check Employee Profile --}}
 @if(isset($data['employee']['profile']))
 
+<style>
+.label.label-info {
+    background-color: #ee5b5b !important; /* Adjust this color as needed */
+    color: #fff !important; /* Ensure text is visible */
+    padding: 4px 8px; /* Add top/bottom and left/right padding */
+    border-radius: 4px; /* Optional: Keep the border radius */
+}
+
+.bootstrap-tagsinput .tag {
+    margin-right: 0 !important; /* Removes the space between tags */
+}
+
+.tt-menu {
+    display: block; /* Always show the menu */
+}
+
+.tt-suggestion {
+    padding: 8px; /* Add padding for better click targets */
+    cursor: pointer; /* Indicate it's clickable */
+}
+
+.tt-suggestion:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+}
+</style>
+
   <!-- tab pane -->
   <div class="tab-pane fade {{ ((request()->tab_category == 'personal')?'show active':'') }}" id="personal" role="tabpanel">
 
@@ -36,6 +62,7 @@
                   <div class="mb-3">
                     <label for="salutation_id" class="form-label">Salutation</label>
                     <input type="text" class="form-control" id="salutation_id" name="salutation_id" placeholder="" value="" {{ $data['input']['status'] }}>
+
                   </div>
                   <!-- end salutation -->
 
@@ -129,18 +156,22 @@
       </div>
       <!-- end card -->
 
-      <!-- control -->
-      <div class="d-flex gap-2 justify-content-end">
-        <input type="hidden" name="tab_category" value="personal">
+      <!-- form control -->
+      <div class="row text-end pt-3">
 
-        {{-- Check Authorization User Status Stop Submit --}}
-        @if(!in_array(Auth::user()->employee->status->name,array('pending')))
-          <button type="submit" class="btn btn-primary">Save</button>
-        @endif
-        {{-- End Check Authorization User Status Stop Submit --}}
+        <!-- control -->
+        <div class="col-md-12">
+
+          <input type="hidden" name="tab_category" value="personal">
+          <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
+          <button type="submit" class="btn btn-danger text-white"><i class="mdi mdi-plus"></i>Update</button>
+
+        </div>
+        <!-- end control -->
 
       </div>
-      <!-- end control -->
+      <!-- end form control -->
+
 
     </form>
     <!-- end form -->
@@ -157,6 +188,20 @@
   Document On Load
 **************************************************************************************/
 $(document).ready(function($){
+
+  const $input = $('.tt-input');
+ const $dropdown = $('.tt-menu');
+
+ $input.on('focus', function() {
+     $dropdown.show();
+ }).on('blur', function() {
+     $dropdown.hide();
+ });
+
+ $dropdown.on('click', '.tt-suggestion', function() {
+     $input.val($(this).text());
+     $dropdown.hide();
+ });
 
   /**************************************************************************************
     Document On Key Up

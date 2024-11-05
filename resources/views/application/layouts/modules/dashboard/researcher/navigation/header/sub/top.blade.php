@@ -28,7 +28,7 @@
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                 <a href="{{ route($hyperlink['navigation']['authorization']['researcher']['header']['account']['profile']) }}" class="dropdown-item">
                   <i class="mdi mdi-settings text-primary"></i>
-                  Settings
+                  Edit Profile
                 </a>
                 <a class="dropdown-item" href="{{ route($hyperlink['navigation']['authorization']['researcher']['header']['account']['logout']) }}">
                   <i class="mdi mdi-logout text-primary"></i>

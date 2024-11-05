@@ -28,6 +28,8 @@ use App\Models\UCSI_V2_Main\MSSQL\Table\EmployeeSalutation;
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\ResearcherScopus AS ResearcherScopusProcedure;
+use App\Models\UCSI_V2_Main\MSSQL\Procedure\EmployeeProfile AS EmployeeProfileProcedure;
+use App\Models\UCSI_V2_Main\MSSQL\Procedure\EmployeeSalutation AS EmployeeSalutationProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -395,69 +397,121 @@ class ProfileController extends Controller{
                   // Personal
                   case 'personal':
                       // Check Request Validation
-                      $validate = $request->validate(
-                          [
-                              'salutation_id' => ['nullable'],
-                              'full_name' => ['required'],
-                              'first_name' => ['required'],
-                              'middle_name' => ['nullable'],
-                              'last_name' => ['required'],
-                              'nickname' => ['nullable'],
-                              'dob' => ['required'],
-                          ],
-                          [
-                              'full_name.required' => 'Full Name Required',
-                              'first_name.required' => 'First Name Required',
-                              'last_name.required' => 'Last Name Required',
-                              'dob.required' => 'Date of Birth Required',
+                      // $validate = $request->validate(
+                      //     [
+                      //         'salutation_id' => ['nullable'],
+                      //         'full_name' => ['required'],
+                      //         'first_name' => ['required'],
+                      //         'middle_name' => ['nullable'],
+                      //         'last_name' => ['required'],
+                      //         'nickname' => ['nullable'],
+                      //         'dob' => ['required'],
+                      //     ],
+                      //     [
+                      //         'full_name.required' => 'Full Name Required',
+                      //         'first_name.required' => 'First Name Required',
+                      //         'last_name.required' => 'Last Name Required',
+                      //         'dob.required' => 'Date of Birth Required',
+                      //     ]
+                      // );
+                      //
+                      // // Set Model
+                      // $model['employee']['profile'] = new EmployeeProfile();
+                      //
+                      // // Check Exist
+                      // $data['main'] = $model['employee']['profile']::find(Auth::id());
+                      //
+                      // // If Query Not found
+                      // if (!$data['main']) {
+                      //     // Return Failed
+                      //     return back()->with('alert_type', 'error')
+                      //                  ->with('message', 'Data Not Exist');
+                      // }
+                      //
+                      // $data['main']->full_name = $request->full_name;
+                      // $data['main']->first_name = $request->first_name;
+                      // $data['main']->middle_name = $request->middle_name;
+                      // $data['main']->last_name = $request->last_name;
+                      // $data['main']->nickname = $request->nickname;
+                      // $data['main']->dob = $request->dob;
+                      // $data['main']->save();
+                      //
+                      // $salutation = explode(',', $request->salutation_id);
+                      //
+                      // if (count($salutation) >= 1) {
+                      //     // Set Model
+                      //     $model['employee']['salutation'] = new EmployeeSalutation();
+                      //
+                      //     // Delete Data
+                      //     $model['employee']['salutation']::where('employee_id', Auth::id())
+                      //                                     ->delete();
+                      //
+                      //     foreach ($salutation as $key => $value) {
+                      //         // Set Model
+                      //         $model['employee']['salutation'] = new EmployeeSalutation();
+                      //
+                      //         // Set Data
+                      //         $model['employee']['salutation']->employee_id = Auth::id();
+                      //         $model['employee']['salutation']->salutation_id = $value;
+                      //         $model['employee']['salutation']->ordering = $key;
+                      //         $model['employee']['salutation']->created_by = Auth::id();
+                      //         $model['employee']['salutation']->created_at = Carbon::now();
+                      //         $model['employee']['salutation']->save();
+                      //     }
+                      // }
+
+                      //Set Model
+                      $model['employee']['profile'] = new EmployeeProfileProcedure();
+
+                      //Update Main
+                      $result['employee']['profile'] = $model['employee']['profile']->updateRecord(
+                        [
+                          'column'=>[
+                            'employee_id'=>Auth::id(),
+                            'first_name'=>($request->has('first_name')?$request->first_name:null),
+                            'last_name'=>($request->has('last_name')?$request->last_name:null),
+                            'full_name'=>($request->has('full_name')?$request->full_name:null),
+                            'middle_name'=>($request->has('middle_name')?$request->middle_name:null),
+                            'dob'=>($request->has('dob')?$request->dob:null),
+                            'nickname'=>($request->has('nickname')?$request->nickname:null),
+                            'remark'=>($request->has('remark')?$request->remark:null),
+                            'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
+                            'updated_by'=>Auth::id()
                           ]
+                        ]
                       );
 
-                      // Set Model
-                      $model['employee']['profile'] = new EmployeeProfile();
-
-                      // Check Exist
-                      $data['main'] = $model['employee']['profile']::find(Auth::id());
-
-                      // If Query Not found
-                      if (!$data['main']) {
-                          // Return Failed
-                          return back()->with('alert_type', 'error')
-                                       ->with('message', 'Data Not Exist');
-                      }
-
-                      $data['main']->full_name = $request->full_name;
-                      $data['main']->first_name = $request->first_name;
-                      $data['main']->middle_name = $request->middle_name;
-                      $data['main']->last_name = $request->last_name;
-                      $data['main']->nickname = $request->nickname;
-                      $data['main']->dob = $request->dob;
-                      $data['main']->save();
+                      //Set Model
+                      $model['employee']['salutation'] = new EmployeeSalutationProcedure();
 
                       $salutation = explode(',', $request->salutation_id);
 
                       if (count($salutation) >= 1) {
-                          // Set Model
-                          $model['employee']['salutation'] = new EmployeeSalutation();
 
                           // Delete Data
                           $model['employee']['salutation']::where('employee_id', Auth::id())
                                                           ->delete();
 
                           foreach ($salutation as $key => $value) {
-                              // Set Model
-                              $model['employee']['salutation'] = new EmployeeSalutation();
 
-                              // Set Data
-                              $model['employee']['salutation']->employee_id = Auth::id();
-                              $model['employee']['salutation']->salutation_id = $value;
-                              $model['employee']['salutation']->ordering = $key;
-                              $model['employee']['salutation']->created_by = Auth::id();
-                              $model['employee']['salutation']->created_at = Carbon::now();
-                              $model['employee']['salutation']->save();
+                            //Update Main
+                            $result['employee']['salutation'] = $model['employee']['salutation']->createRecord(
+                              [
+                                'column'=>[
+                                  'employee_id'=>Auth::id(),
+                                  'salutation_id'=>($value?$request->salutation_id:null),
+                                  'ordering'=>$key+1,
+                                  'remark'=>($request->has('remark')?$request->remark:null),
+                                  'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
+                                  'created_by'=>Auth::id()
+                                ]
+                              ]
+                            );
+
                           }
                       }
-                      break;
+
+                  break;
 
                   // Profile
                   case 'profile':
@@ -484,7 +538,7 @@ class ProfileController extends Controller{
 
                   if($request->has('researcher_scopus_id') && $request->researcher_scopus_id != null){
 
-                    //Create Main
+                    //Update Main
                     $result['researcher']['scopus'] = $model['researcher']['scopus']->updateRecord(
                       [
                         'column'=>[
@@ -526,15 +580,6 @@ class ProfileController extends Controller{
 
                   // Contact
                   case 'contact':
-                      // Check Request Validation
-                      $validate = $request->validate(
-                          [
-                              'name' => ['required'],
-                          ],
-                          [
-                              'name.required' => 'Contact Required'
-                          ]
-                      );
 
                       // Check Contact Category ID Exist
                       if ($request->has('contact_category_id') && $request->has('name')) {
@@ -562,45 +607,6 @@ class ProfileController extends Controller{
                       }
                       break;
 
-                  // Setting
-                  case 'setting':
-                      // Get Tab Sub Category
-                      switch ($request->tab_sub_category) {
-                          // Virtual Card
-                          case 'virtual_card':
-                              // Merge Array Into String
-                              $company_id = implode(',', $request->company_id);
-
-                              // Set Model
-                              $model['employee']['virtual_card'] = new EmployeeVirtualCard();
-
-                              // Check Exist
-                              $check['exist'] = $model['employee']['virtual_card']->checkExist(
-                                  [
-                                      'column' => [
-                                          'id' => Auth::id()
-                                      ]
-                                  ]
-                              );
-
-                              // IF Not Exist
-                              if ($check['exist']) {
-                                  // Check Exist
-                                  $data['main'] = $model['employee']['virtual_card']::find(Auth::id());
-                                  $data['main']->logo_header = $company_id;
-                                  $data['main']->created_by = Auth::id();
-                                  $data['main']->created_at = Carbon::now();
-                                  $data['main']->save();
-                              } else {
-                                  $model['employee']['virtual_card']->logo_header = $company_id;
-                                  $model['employee']['virtual_card']->employee_id = Auth::id();
-                                  $model['employee']['virtual_card']->created_by = Auth::id();
-                                  $model['employee']['virtual_card']->created_at = Carbon::now();
-                                  $model['employee']['virtual_card']->save();
-                              }
-                              break;
-                      }
-                      break;
               }
               break;
       }
@@ -623,7 +629,32 @@ class ProfileController extends Controller{
       //Get Publication Type
       switch($request->tab_category){
 
-        //Article
+        //Personal
+        case 'personal':
+
+          //Define Validation Rules
+          $rules = [
+            'salutation_id' => ['required'],
+            'full_name' => ['required'],
+            'first_name' => ['required'],
+            'middle_name' => ['nullable'],
+            'last_name' => ['required'],
+            'nickname' => ['nullable'],
+            'dob' => ['required'],
+          ];
+
+          //Custom Validation Messages
+          $messages = [
+            'salutation_id.required' => 'Salutation Required',
+            'full_name.required' => 'Full Name Required',
+            'first_name.required' => 'First Name Required',
+            'last_name.required' => 'Last Name Required',
+            'dob.required' => 'Date of Birth Required',
+          ];
+
+        break;
+
+        //Profile
         case 'profile':
 
           //Define Validation Rules
@@ -642,7 +673,7 @@ class ProfileController extends Controller{
 
         break;
 
-        //Article
+        //Avatar
         case 'avatar':
 
         // Avatar
@@ -661,6 +692,21 @@ class ProfileController extends Controller{
         // Check Request Validation
         $validate = $request->validate($rules, $messages);
 
+
+        break;
+
+        //Contact
+        case 'contact':
+
+          //Define Validation Rules
+          $rules = [
+            'name' => ['required'],
+          ];
+
+          //Custom Validation Messages
+          $messages = [
+            'name.required' => 'Details Required',
+          ];
 
         break;
 

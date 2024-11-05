@@ -8,11 +8,20 @@
     <!-- row 1 -->
     <div class="row">
 
+      {{-- Statistic --}}
+      @include($page['sub'].'.statistic')
+
+    </div>
+    <!-- end row 1 -->
+
+    <!-- row 2 -->
+    <div class="row">
+
       {{-- Publication --}}
       @include($page['sub'].'.publication')
 
     </div>
-    <!-- end row 1 -->
+    <!-- end row 2 -->
 
   </div>
   <!-- end content -->
