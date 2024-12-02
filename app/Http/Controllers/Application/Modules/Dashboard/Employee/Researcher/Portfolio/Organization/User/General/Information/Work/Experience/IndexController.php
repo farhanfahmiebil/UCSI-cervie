@@ -32,6 +32,7 @@ use App\Models\UCSI_V2_Education\MSSQL\View\Organization;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherWorkExperience AS CervieResearcherWorkExperienceProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -768,6 +769,41 @@ class IndexController extends Controller{
         ]
       ]
     );
+
+
+    if($data['main']->need_verification){
+
+      //Set Model Researcher - Employee Profile
+      $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['work']['experience'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_work_experience',
+            'auditable_id' => $request->id,
+            'category' => 'main'
+          ]
+        ]
+      );
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['evidence'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'main_table_name'=>'cervie_researcher_work_experience',
+            'table_name'=>'cervie_researcher_evidence',
+            'auditable_id' => $request->id,
+            'category' => 'evidence',
+            'event' => 'create'
+
+          ]
+        ]
+      );
+
+    }
 
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [

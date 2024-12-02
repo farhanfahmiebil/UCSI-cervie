@@ -149,7 +149,7 @@ class CervieResearcherPosition extends Model{
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,
                                     ?,?,?,?,?,
                                     ?,?,?;';
-// dd($data);
+
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
         $data['column']['position_id'],

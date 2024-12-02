@@ -614,77 +614,94 @@ class IndexController extends Controller{
       ]
     );
 
-    // $data['graph']['type'] = [
-    //     'label' => [], // Populate this with appropriate labels
-    //     'value' => []  // Populate this with values from $result
-    // ];
-    //
-    // $data['graph']['indexing']['body'] = [
-    //     'label' => [], // Populate this with appropriate labels
-    //     'value' => []  // Populate this with values from $result
-    // ];
+    // Initialize the necessary arrays
+    $data['graph']['publication']['type']['year'] = [];
+    $data['graph']['publication']['type']['data'] = [];  // This will hold the data grouped by year
+    $allPublicationTypes = [];  // This will store all unique publication types across years
 
-    // foreach ($data['cervie']['researcher']['publication']['graph']['type'] as $row) {
-    //     // Assuming your result has 'label' and 'value' fields
-    //     $data['graph']['type']['label'][] = $row->publication_type_name; // Replace 'label' with the actual field name
-    //     $data['graph']['type']['value'][] = $row->total; // Replace 'value' with the actual field name
-    //     $data['graph']['type']['year'][$row->year] = $row->year; // Replace 'value' with the actual field name
-    //
-    // }
-
-    $data['graph']['type'] = []; // Initialize the structure
-
+    // Collecting data dynamically
     foreach ($data['cervie']['researcher']['publication']['graph']['type'] as $row) {
-        $year = $row->year;
-
-        // Initialize the year entry if it doesn't exist
-        if (!isset($data['graph']['type'][$year])) {
-            $data['graph']['type'][$year] = [
-                'label' => [], // Ensure this is an array
-                'value' => []  // Ensure this is an array
-            ];
+        // Add year to the 'year' array if it's not already added
+        if (!in_array($row->year, $data['graph']['publication']['type']['year'])) {
+            $data['graph']['publication']['type']['year'][] = $row->year;
         }
 
-        // Append the label and value to the corresponding year
-        $data['graph']['type'][$year]['label'][] = $row->publication_type_name; // Always an array
-        $data['graph']['type'][$year]['value'][] = $row->total; // Always an array
-    }
+        // Collect all unique publication types
+        $allPublicationTypes[$row->publication_type_name] = true;
 
-    // Prepare the series for the chart
-    $publicationSeries = [];
-
-    // Check the data structure before processing
-    foreach ($data['graph']['type'] as $year => $info) {
-        if (!is_array($info['label']) || !is_array($info['value'])) {
-            continue; // Skip if labels or values are not arrays
-        }
-
-        foreach ($info['label'] as $index => $label) {
-            if (!isset($publicationSeries[$index])) {
-                $publicationSeries[$index] = [
-                    'name' => $label,
-                    'data' => array_fill(0, count($data['graph']['type']), 0) // Initialize data array for all years
-                ];
+        // Store data for the year and publication type
+        if ($row->total !== null && $row->total !== 0) {
+            $data['graph']['publication']['type']['data'][$row->year][$row->publication_type_name] = $row->total;
+        } else {
+            // Ensure that we add 0 for years where no data exists for this publication type
+            if (!isset($data['graph']['publication']['type']['data'][$row->year][$row->publication_type_name])) {
+                $data['graph']['publication']['type']['data'][$row->year][$row->publication_type_name] = 0;
             }
-            $publicationSeries[$index]['data'][$year] = $info['value'][$index] ?? 0; // Set data
         }
     }
 
-    // Now $publicationSeries should be ready to pass to JavaScript
+    // Now, ensure the 'label' array contains all unique publication types
+    $data['graph']['publication']['type']['label'] = array_keys($allPublicationTypes);
 
+    // Ensure each publication type has data for every year
+    foreach ($data['graph']['publication']['type']['year'] as $year) {
+        foreach ($data['graph']['publication']['type']['label'] as $type) {
+            if (!isset($data['graph']['publication']['type']['data'][$year][$type])) {
+                // Set missing data for the year-publication type combination to 0
+                $data['graph']['publication']['type']['data'][$year][$type] = 0;
+            }
+        }
+    }
 
+    // Initialize the necessary arrays for indexing body
+    $data['graph']['indexing']['body']['year'] = [];
+    $data['graph']['indexing']['body']['data'] = [];  // This will hold the data grouped by year and indexing body type
+    $allIndexingBodies = [];  // This will store all unique indexing body types across years
+
+    // Collecting data dynamically for indexing body
     foreach ($data['cervie']['researcher']['publication']['graph']['indexing']['body'] as $row) {
-        // Assuming your result has 'label' and 'value' fields
-        $data['graph']['indexing']['body']['label'][] = $row->indexing_body_type_name; // Replace 'label' with the actual field name
-        $data['graph']['indexing']['body']['value'][] = $row->total; // Replace 'value' with the actual field name
+        // Skip if publication_year is null
+        if ($row->publication_year === null || empty($row->publication_year)) {
+            continue;
+        }
 
+        // Add year to the 'year' array if it's not already added
+        if (!in_array($row->publication_year, $data['graph']['indexing']['body']['year'])) {
+            $data['graph']['indexing']['body']['year'][] = $row->publication_year;
+        }
+
+        // Collect all unique indexing body types
+        $allIndexingBodies[$row->indexing_body_type_name] = true;
+
+        // Store data for the year and indexing body type
+        if ($row->total !== null && $row->total !== 0) {
+            $data['graph']['indexing']['body']['data'][$row->publication_year][$row->indexing_body_type_name] = $row->total;
+        } else {
+            // Ensure that we add 0 for years where no data exists for this indexing body type
+            if (!isset($data['graph']['indexing']['body']['data'][$row->publication_year][$row->indexing_body_type_name])) {
+                $data['graph']['indexing']['body']['data'][$row->publication_year][$row->indexing_body_type_name] = 0;
+            }
+        }
+    }
+
+    // Now, ensure the 'label' array contains all unique indexing body types
+    $data['graph']['indexing']['body']['label'] = array_keys($allIndexingBodies);
+
+    // Ensure each indexing body type has data for every year
+    foreach ($data['graph']['indexing']['body']['year'] as $year) {
+        foreach ($data['graph']['indexing']['body']['label'] as $type) {
+            if (!isset($data['graph']['indexing']['body']['data'][$year][$type])) {
+                // Set missing data for the year-indexing body type combination to 0
+                $data['graph']['indexing']['body']['data'][$year][$type] = 0;
+            }
+        }
     }
 
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
 
 		//Return View
-		return view($this->route['view'].'list.index',compact('publicationSeries','data','form_token','page','hyperlink'));
+		return view($this->route['view'].'list.index',compact('data','form_token','page','hyperlink'));
 
   }
 

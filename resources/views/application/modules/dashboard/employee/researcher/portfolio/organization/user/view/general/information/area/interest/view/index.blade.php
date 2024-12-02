@@ -35,6 +35,33 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['area']['interest'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        @if(!empty($data['cervie']['researcher']['log']['area']['interest']) && isset($data['cervie']['researcher']['log']['area']['interest']->updated_at) && $data['cervie']['researcher']['log']['area']['interest']->updated_at != null)
+        <div class="alert alert-warning" role="alert">
+            <h4 class="card-title text-white">Old Values</h4>
+            <ol class="list-group list-group-numbered">
+                <!-- Area Interest Name -->
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">Area Interest</div>
+                        {{$data['cervie']['researcher']['log']['area']['interest']->name}}
+                    </div>
+                </li>
+            </ol>
+        </div>
+        @endif
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -96,8 +123,8 @@
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->area_interest_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->

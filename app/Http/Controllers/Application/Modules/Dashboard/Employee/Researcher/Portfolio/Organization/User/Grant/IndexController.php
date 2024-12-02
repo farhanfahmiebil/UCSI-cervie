@@ -24,6 +24,8 @@ use App\Models\UCSI_V2_General\MSSQL\View\CurrencyCode AS CurrencyCodeView;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherGrant AS CervieResearcherGrantView;
 use App\Models\UCSI_V2_General\MSSQL\View\SustainableDevelopmentGoal AS SustainableDevelopmentGoalView;
 use App\Models\UCSI_V2_Education\MSSQL\View\Status AS StatusView;
+use App\Models\UCSI_V2_Education\MSSQL\View\Report AS ReportView;
+
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
@@ -37,6 +39,8 @@ use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherGrant AS CervieResearcherGrantProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTeamMember AS CervieResearcherTeamMemberProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\Report AS ReportProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -91,6 +95,9 @@ class IndexController extends Controller{
 
     //Set Navigation
 		$this->hyperlink['navigation'] = $this->navigation['hyperlink'];
+
+    //Set Navigation
+    $this->page['sub'] = $this->route['view'];
 
     //Set Navigation
 		$this->page['main'] = $this->route['link'].'view.';
@@ -429,6 +436,7 @@ class IndexController extends Controller{
                   'file_raw_name'=>$file['name']['raw']['without']['extension'],
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_grant',
+                  'need_verification'=>0,
                   'table_id'=>$result['main']['create']->last_insert_id,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -459,7 +467,8 @@ class IndexController extends Controller{
                   'representation_role_id'=>(isset($request->representation_role_id[$key]) ? $request->representation_role_id[$key]:null),
                   'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_grant',
-                  'table_id'=>$request->id,
+                  'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -499,6 +508,7 @@ class IndexController extends Controller{
 
     //Set Breadcrumb Title
     $data['breadcrumb']['title'] = [$this->header['category'], $this->header['module'],'Home'];
+
 
     //Set Model Navigation Category
     $model['navigation']['category']['main'] = new NavigationCategoryView();
@@ -560,6 +570,52 @@ class IndexController extends Controller{
       ]
     );
 
+    $model['report']['view'] = new ReportView();
+
+    //Get Report
+    $data['report']['view'] = $model['report']['view']->viewReport(
+      [
+        'column'=>[
+          'code'=>'0000000000001'
+        ]
+      ]
+    );
+
+    //Set Model Report
+    $model['report']['procedure'] = new ReportProcedure();
+
+    //Get Report
+    $data['report']['by']['grant']['progress'] = $model['report']['procedure']->readReport(
+      [
+        'code'=>$data['report']['view']->code,
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+
+    //Set Model Publication
+    $model['cervie']['researcher']['grant']['procedure'] = new CervieResearcherGrantProcedure();
+
+    //Get Graph
+    $data['cervie']['researcher']['grant']['graph']['type']['by']['year'] = $model['cervie']['researcher']['grant']['procedure']->readGraphTypeByYear(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+
+    //Get Graph
+    $data['cervie']['researcher']['grant']['graph']['type']['by']['quantum'] = $model['cervie']['researcher']['grant']['procedure']->readGraphTypeByQuantum(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+
+
     //If Type Exist
 		if($request->has('form_token')){
 // dd($request->form_token,$this->encrypter->decrypt($request->form_token));
@@ -609,6 +665,7 @@ class IndexController extends Controller{
 
     //Set Page Pointer
     $page['navigation']['tab']['pointer'] =  $page['navigation']['tab']['content']['list'];
+    $page['sub'] .= 'list.sub';
 
     //Get Form Token
     $form_token = $this->encrypt_token_form;
@@ -878,6 +935,53 @@ class IndexController extends Controller{
       ]
     );
 
+    if($data['main']->need_verification){
+
+      //Set Model Researcher - Employee Profile
+      $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['grant'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_grant',
+            'auditable_id' => $request->id,
+            'category' => 'main'
+          ]
+        ]
+      );
+
+      //Get Log Evidence
+      $data['cervie']['researcher']['log']['evidence'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'main_table_name'=>'cervie_researcher_grant',
+            'table_name'=>'cervie_researcher_evidence',
+            'auditable_id' => $request->id,
+            'category' => 'evidence',
+            'event' => 'create'
+          ]
+        ]
+      );
+
+      //Get Log Evidence
+      $data['cervie']['researcher']['log']['team']['member'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'main_table_name'=>'cervie_researcher_grant',
+            'table_name'=>'cervie_researcher_team_member',
+            'auditable_id' => $request->id,
+            'category' => 'team_member',
+            'event' => 'create'
+          ]
+        ]
+      );
+
+    }
+
     //Set Model General - Representation Category
     $model['general']['representation']['category'] = new RepresentationCategoryView();
 
@@ -1081,6 +1185,41 @@ class IndexController extends Controller{
         ]
       );
 
+      //Set Model Evidence
+      $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+      //Create Evidence
+      $result['evidence']['update'] = $model['cervie']['researcher']['evidence']->updateRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_grant',
+            'table_id'=>$request->id,
+            'need_verification'=>0,
+            'remark'=>(($request->remark)?$request->remark:null),
+            'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+            'updated_by'=>Auth::id(),
+          ]
+        ]
+      );
+
+      //Set Model Evidence
+      $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+      //Create Evidence
+      $result['evidence']['team']['member']  = $model['cervie']['researcher']['team']['member'] ->updateRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_grant',
+            'table_id'=>$request->id,
+            'need_verification'=>0,
+            'remark'=>(($request->remark)?$request->remark:null),
+            'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+            'updated_by'=>Auth::id(),
+          ]
+        ]
+      );
 
         //If files Exist
         if($request->has('document')){
@@ -1151,6 +1290,7 @@ class IndexController extends Controller{
                   'file_extension' => $file['extension'],
                   'table_name' => 'cervie_researcher_grant',
                   'table_id' => $request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by' => Auth::id(),
@@ -1181,6 +1321,7 @@ class IndexController extends Controller{
                   'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),

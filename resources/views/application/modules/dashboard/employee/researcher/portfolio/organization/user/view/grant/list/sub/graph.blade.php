@@ -2,7 +2,7 @@
 <div class="row">
 
   <!-- stretch card -->
-  <div class="col-sm-12 grid-margin d-flex stretch-card">
+  <div class="col-sm-12 grid-margin stretch-card">
 
     <!-- card -->
     <div class="card">
@@ -11,8 +11,8 @@
       <div class="card-body">
 
         <!-- title -->
-        <div class="d-flex align-items-center justify-content-between">
-          <h4 class="card-title mb-2">Insight</h4>
+        <div class="align-items-center justify-content-between">
+          <h4 class="card-title">Insight</h4>
         </div>
         <!-- end title -->
 

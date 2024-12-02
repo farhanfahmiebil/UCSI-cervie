@@ -35,6 +35,84 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['work']['experience'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check Data Log --}}
+        @if(!empty($data['cervie']['researcher']['log']['work']['experience']) && isset($data['cervie']['researcher']['log']['work']['experience']->updated_at) && $data['cervie']['researcher']['log']['work']['experience']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if company_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['work']['experience']->company_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Position</div>
+                                {{ $data['cervie']['researcher']['log']['work']['experience']->company_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if designation is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['work']['experience']->designation))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Designation</div>
+                                {{ $data['cervie']['researcher']['log']['work']['experience']->designation }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if year_start is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['work']['experience']->year_start))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Date Start to Date End</div>
+                                {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['work']['experience']->year_start)->format('d-m-Y') }}
+                                to
+                                {{-- Check if currently working --}}
+                                @if(isset($data['cervie']['researcher']['log']['work']['experience']->is_working_here) && $data['cervie']['researcher']['log']['work']['experience']->is_working_here)
+                                    Currently Working Here
+                                @elseif(isset($data['cervie']['researcher']['log']['work']['experience']->year_end))
+                                    {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['work']['experience']->year_end)->format('d-m-Y') }}
+                                @endif
+                            </div>
+                        </li>
+                    @endif
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1)
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -392,7 +470,7 @@
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->work_experience_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                 <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->

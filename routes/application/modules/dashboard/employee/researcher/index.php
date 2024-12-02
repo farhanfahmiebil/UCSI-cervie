@@ -817,6 +817,17 @@ Route::prefix('researcher')->group(function(){
 
                 }); //End Avatar
 
+                /* Dashboard
+                **************************************************************************************/
+                Route::prefix('dashboard')->group(function(){
+
+                  /*  List
+                  **************************************************************************************/
+                  Route::get('/list', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Dashboard\IndexController@list')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.dashboard.list');
+
+                }); //End Avatar
+
+
               }); //End Tab
 
             }); //End Employee ID

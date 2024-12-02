@@ -35,6 +35,84 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['recognition'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check if 'membership' is set and not null --}}
+        @if(!empty($data['cervie']['researcher']['log']['recognition']) && isset($data['cervie']['researcher']['log']['recognition']->updated_at) && $data['cervie']['researcher']['log']['recognition']->updated_at != null)
+              <div class="alert alert-warning" role="alert">
+                  <h4 class="card-title text-white">Old Values</h4>
+                  <ol class="list-group list-group-numbered">
+                      @if(isset($data['cervie']['researcher']['log']['recognition']->representation_category_name))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Recognition Type</div>
+                                  {{ $data['cervie']['researcher']['log']['recognition']->representation_category_name }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['recognition']->conferring_body))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Conferring Body</div>
+                                  {{ $data['cervie']['researcher']['log']['recognition']->conferring_body }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['recognition']->title))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Recognition Title</div>
+                                  {{ $data['cervie']['researcher']['log']['recognition']->title }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['recognition']->date_award))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Date Award</div>
+                                  {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['recognition']->date_award)->format('d-m-Y') }}
+                              </div>
+                          </li>
+                      @endif
+                  </ol>
+              </div>
+          @endif
+          {{-- End Check Data Log --}}
+
+          {{-- Check Data Evidence --}}
+          @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+          <div class="alert alert-warning" role="alert">
+            <h4 class="card-title text-white">New Evidence</h4>
+            <ol class="list-group list-group-numbered">
+              @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">File Name</div>
+                  {{$value->file_name . '.' . $value->file_extension}}
+                </div>
+              </li>
+              @endforeach
+            </ol>
+          </div>
+
+          @endif
+          {{-- End Check Data Evidence --}}
+
+
+          @else
+          <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle me-2"></i> Record Verified
+          </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -51,7 +129,7 @@
           <div class="card-body">
 
             <!-- card title -->
-            <h4 class="card-title">Grant Information</h4>
+            <h4 class="card-title">Recognition Information</h4>
             <!-- end card title -->
 
             <hr>
@@ -69,7 +147,7 @@
             <!-- end error -->
 
             <!-- row 1 -->
-            <div class="row">
+            <div class="row pt-3">
 
               <!-- representation category id -->
               <div class="col-md-6">
@@ -108,7 +186,7 @@
             <!-- end row 1 -->
 
             <!-- row 2 -->
-            <div class="row">
+            <div class="row pt-3">
 
               <!-- conferring body -->
               <div class="col-md-6">
@@ -230,7 +308,7 @@
                               <!-- end hyperlink -->
 
                               <!-- remove file -->
-                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->grant_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->recognition_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                 <i class="bi bi-trash"></i>
                               </a>
                               <!-- end remove file -->
@@ -437,7 +515,7 @@
                                           </a>
                                       @endif
                                       <!-- remove file -->
-                                      <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->grant_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                                      <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->recognition_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
                                         <i class="bi bi-trash"></i>
                                       </a>
                                       <!-- end remove file -->
@@ -594,10 +672,10 @@
 
               <div class="col-md-12">
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
-                <input type="hidden" id="id" name="id" value="{{ $data['main']->grant_id }}">
+                <input type="hidden" id="id" name="id" value="{{ $data['main']->recognition_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->

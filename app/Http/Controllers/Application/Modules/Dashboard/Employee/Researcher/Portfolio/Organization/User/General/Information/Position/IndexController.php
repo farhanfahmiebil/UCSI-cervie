@@ -32,6 +32,7 @@ use App\Models\UCSI_V2_Education\MSSQL\View\Organization;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherPosition AS CervieResearcherPositionProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -721,7 +722,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd($data['main']['data']);
+
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
 
@@ -771,6 +772,39 @@ class IndexController extends Controller{
         ]
       ]
     );
+
+    if($data['main']->need_verification){
+
+      //Set Model Researcher - Employee Profile
+      $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['position'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_position',
+            'auditable_id' => $request->id,
+            'category' => 'main'
+          ]
+        ]
+      );
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['evidence'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'main_table_name'=>'cervie_researcher_position',
+            'table_name'=>'cervie_researcher_evidence',
+            'auditable_id' => $request->id,
+            'category' => 'evidence',
+            'event' => 'create'
+          ]
+        ]
+      );
+
+    }
 
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
@@ -842,7 +876,7 @@ class IndexController extends Controller{
         $data['main'] = $model['cervie']['researcher']['position']->updateRecord(
           [
             'column'=>[
-              'position_id'=>$request->position_id,
+              'position_id'=>$request->id,
               'employee_id'=>$request->employee_id,
               'name'=>$request->name,
               'organization_id'=>$request->organization_id,

@@ -378,6 +378,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>1,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -404,10 +405,11 @@ class IndexController extends Controller{
                'column'=>[
                  'employee_id'=>Auth::id(),
                  'name'=>$value,
-                 'representation_role_id'=>$request->representation_role_id[$key],
+                 'representation_role_id'=>$request->representation_role_id,
                  'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                  'table_name'=>'cervie_researcher_grant',
                  'table_id'=>$result['main']['create']->last_insert_id,
+                 'need_verification'=>1,
                  'remark'=>(($request->remark)?$request->remark:null),
                  'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                  'created_by'=>Auth::id(),
@@ -504,84 +506,27 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd($data['report']['by']['grant']['progress']);
-      // $report['grant']['by']['progress'] =
 
+    //Set Model Publication
+    $model['cervie']['researcher']['grant']['procedure'] = new CervieResearcherGrantProcedure();
 
-      // // Calculate Progress for Ongoing Grants
-      // $data['main']['cervie']['researcher']['ongoing'] = [];
-      // foreach ($ongoingGrants as $grant) {
-      //     $startDate = Carbon::parse($grant->date_start);
-      //     $endDate = Carbon::parse($grant->date_end);
-      //     $currentDate = Carbon::now();
-      //
-      //     // Calculate total duration
-      //     $totalDays = $endDate->diffInDays($startDate);
-      //
-      //     // Calculate days passed since the start date
-      //     $daysPassed = max(0, $currentDate->diffInDays($startDate));
-      //
-      //     // Initialize progress percentage
-      //     $progressPercentage = 0;
-      //
-      //     if ($currentDate < $startDate) {
-      //         // Before start date: 0%
-      //         $progressPercentage = 0;
-      //     } elseif ($currentDate >= $startDate && $currentDate <= $endDate) {
-      //         // Between start and end date: calculate progress
-      //         $progressPercentage = ($daysPassed / $totalDays) * 100;
-      //     } else {
-      //         // After end date: 100%
-      //         $progressPercentage = 100;
-      //     }
-      //
-      //     // Ensure progress does not go below 0 or above 100
-      //     $progressPercentage = max(0, min(100, round($progressPercentage)));
-      //
-      //     // Store grant progress data
-      //     $data['main']['cervie']['researcher']['ongoing'][] = [
-      //         'grant_id'=>$grant->grant_id,
-      //         'grant_title'=>$grant->title,
-      //         'progress'=>$progressPercentage,
-      //         'date_start'=>$grant->date_start,
-      //         'date_end'=>$grant->date_end,
-      //     ];
-      // }
+    //Get Graph
+    $data['cervie']['researcher']['grant']['graph']['type']['by']['year'] = $model['cervie']['researcher']['grant']['procedure']->readGraphTypeByYear(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
 
-//       $data['main']['cervie']['researcher']['ongoing'] = [];
-// foreach ($ongoingGrants as $grant) {
-//     $startDate = Carbon::parse($grant->date_start);
-//     $currentDate = Carbon::now();
-//
-//     // Initialize progress percentage
-//     $progressPercentage = 0;
-//
-//     if ($currentDate < $startDate) {
-//         // Before start date: 0%
-//         $progressPercentage = 0;
-//     } else {
-//         // After start date: calculate progress
-//         // Assume a total duration (for example, 1 year or 365 days)
-//         $totalDays = 365; // You can adjust this based on your requirements
-//
-//         // Calculate days passed since the start date
-//         $daysPassed = $currentDate->diffInDays($startDate);
-//
-//         // Calculate progress as a percentage of total duration
-//         $progressPercentage = ($daysPassed / $totalDays) * 100;
-//
-//         // Ensure progress does not go below 0 or above 100
-//         $progressPercentage = max(0, min(100, round($progressPercentage)));
-//     }
-//
-//     // Store grant progress data
-//     $data['main']['cervie']['researcher']['ongoing'][] = [
-//         'grant_id' => $grant->grant_id,
-//         'grant_title' => $grant->title,
-//         'progress' => $progressPercentage,
-//         'date_start' => $grant->date_start,
-//     ];
-// }
+    //Get Graph
+    $data['cervie']['researcher']['grant']['graph']['type']['by']['quantum'] = $model['cervie']['researcher']['grant']['procedure']->readGraphTypeByQuantum(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
 
       // Get Form Token
       $form_token = $this->encrypt_token_form;
@@ -1129,6 +1074,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$request->id,
+                  'need_verification'=>1,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -1155,10 +1101,11 @@ class IndexController extends Controller{
                 'column'=>[
                   'employee_id'=>Auth::id(),
                   'name'=>$value,
-                  'representation_role_id'=>$request->representation_role_id[$key],
+                  'representation_role_id'=>$request->representation_role_id,
                   'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_grant',
                   'table_id'=>$request->id,
+                  'need_verification'=>1,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),

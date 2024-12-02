@@ -345,11 +345,13 @@
                                 </a>
                                 <!-- end hyperlink -->
 
+                                @if(!$data['main']->need_verification)
                                 <!-- remove file -->
                                 <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->postgraduate_supervision_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                                 </a>
                                 <!-- end remove file -->
+                                @endif
 
                               @else
                               <p>-</p>
@@ -503,8 +505,10 @@
                   <input type="hidden" id="id" name="id" value="{{ $data['main']->postgraduate_supervision_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                  @if(!$data['main']->need_verification)
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>
-                </div>
+                  @endif
+              </div>
 
               </div>
               <!-- end form control -->

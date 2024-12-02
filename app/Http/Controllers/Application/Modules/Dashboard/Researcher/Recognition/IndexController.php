@@ -299,6 +299,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_recognition',
                   'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>1,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -608,7 +609,14 @@ class IndexController extends Controller{
     $model['general']['representation']['category'] = new RepresentationCategoryView();
 
     //Get General Award Type
-    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox();
+    $data['general']['representation']['category'] = $model['general']['representation']['category']->selectBox(
+      [
+        'column'=>[
+          'category'=>'RECOGNITION'
+        ]
+      ]
+    );
+
 
     //Set Model
     $model['cervie']['researcher']['recognition'] = new CervieResearcherRecognitionProcedure();
@@ -636,7 +644,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd(    $data['evidence']);
+
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
       0=>[
@@ -779,6 +787,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_recognition',
                   'table_id'=>$request->id,
+                  'need_verification'=>1,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),

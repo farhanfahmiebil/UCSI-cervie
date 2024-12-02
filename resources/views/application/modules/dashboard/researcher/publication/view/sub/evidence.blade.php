@@ -94,12 +94,14 @@
                   </a>
                   <!-- end hyperlink -->
 
+                  @if(!$data['main']->need_verification)
                   <!-- remove file -->
                   <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->publication_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                     <i class="mdi mdi-trash-can"></i>
                   </a>
                   <!-- end remove file -->
-
+                  @endif
+                  
                 @else
                 <p>-</p>
                 @endif

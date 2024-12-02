@@ -340,8 +340,10 @@
                   <input type="hidden" id="id" name="id" value="{{ $data['main']->area_interest_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                  @if(!$data['main']->need_verification)
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>
-                </div>
+                  @endif
+              </div>
               </div>
               <!-- end form control -->
 

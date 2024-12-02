@@ -35,6 +35,163 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['postgraduate']['supervision'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check Data Log --}}
+        @if(!empty($data['cervie']['researcher']['log']['postgraduate']['supervision']) && isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->updated_at) && $data['cervie']['researcher']['log']['postgraduate']['supervision']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if project_title is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->project_title))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Project Title</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->project_title }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if student_id is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->student_id))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Student ID</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->student_id }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if student_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->student_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Student Name</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->student_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if institution_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->institution_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Institution Name</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->institution_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if qualification_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->qualification_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Qualification Name</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->qualification_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if field_study is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->field_study))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Field Study</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->field_study }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if study_mode_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->study_mode_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Study Mode</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->study_mode_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if sponsorship_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->sponsorship_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Sponsorship Name</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->sponsorship_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if status_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->status_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Status</div>
+                                {{ $data['cervie']['researcher']['log']['postgraduate']['supervision']->status_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if date_start or date_end is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->date_start) || isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->date_end))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Date Start to Date End</div>
+
+                                {{-- Use date_start from supervision or fallback to main if not set --}}
+                                {{ \Carbon\Carbon::parse(
+                                    isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->date_start)
+                                    ? $data['cervie']['researcher']['log']['postgraduate']['supervision']->date_start
+                                    : $data['main']->date_start
+                                )->format('d-m-Y') }}
+
+                                to
+
+                                {{-- Check if the supervision has date_end, or if ongoing --}}
+                                @if(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->is_ongoing) && $data['cervie']['researcher']['log']['postgraduate']['supervision']->is_ongoing)
+                                    On Going
+                                @elseif(isset($data['cervie']['researcher']['log']['postgraduate']['supervision']->date_end))
+                                    {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['postgraduate']['supervision']->date_end)->format('d-m-Y') }}
+                                @endif
+                            </div>
+                        </li>
+                    @endif
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+
+        @endif
+        {{-- End Check Data Evidence --}}
+
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -745,9 +902,8 @@
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->postgraduate_supervision_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
-              </div>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
             </div>
             <!-- end form control -->
 

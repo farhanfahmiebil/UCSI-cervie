@@ -333,11 +333,13 @@
                                 </a>
                                 <!-- end hyperlink -->
 
+                                @if(!$data['main']->need_verification)
                                 <!-- remove file -->
                                 <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->grant_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                                 </a>
                                 <!-- end remove file -->
+                                @endif
 
                               @else
                               <p>-</p>
@@ -527,29 +529,24 @@
                           <!-- end thead -->
 
                           {{-- Check Data Team Members Exist --}}
-                          @if($data['team_member'])
-
-                            {{-- Get Data Team Members --}}
-                            @foreach($data['team_member'] as $key => $value)
-                                <tr id="{{ $value->team_member_id }}">
-                                    <td>{{ ($key + 1) }}</td>
-                                    <td>{{ $value->name }}</td>
-                                    <td>{{ $value->representation_role_name }}</td>
-                                    <td>
-                                        @if($key != 0)
-                                            <a href="#" class="btn btn-warning remove-team-member">
-                                                <i class="mdi mdi-alpha-x text-white"></i>
-                                            </a>
-                                        @endif
-                                        <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->grant_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
-                                            <i class="mdi mdi-trash-can"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            {{-- End Get Data Team Members --}}
-
-                          @else
+                        @if($data['team_member'])
+                          {{-- Get Data Team Members --}}
+                          @foreach($data['team_member'] as $key => $value)
+                              <tr id="{{ $value->team_member_id }}">
+                                  <td>{{ ($key + 1) }}</td>
+                                  <td>{{ $value->name }}</td>
+                                  <td>{{ $value->role }}</td>
+                                  <td>
+                                    <!-- remove file -->
+                                    <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['team_member_id' => $value->team_member_id,'organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->grant_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
+                                      <i class="mdi mdi-trash-can"></i>
+                                    </a>
+                                    <!-- end remove file -->
+                                  </td>
+                              </tr>
+                          @endforeach
+                          {{-- End Get Data Team Members --}}
+                        @else
                             <tr>
                                 <td class="row-number">1</td>
                                 <td colspan="2">
@@ -558,21 +555,14 @@
                                         <input type="text" class="form-control" name="team_member_name[]">
                                     </div>
                                     <div class="form-group">
-                                        <label for="representation_role_id">Role</label>
-                                        <select class="form-control select2" name="representation_role_id[]">
-                                            <option value="">-- Please Select --</option>
-                                            @if(count($data['general']['representation']['role']) > 0)
-                                                @foreach($data['general']['representation']['role'] as $role)
-                                                    <option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
+                                        <label for="role">Role</label>
+                                        <input type="text" class="form-control" name="role[]">
                                     </div>
                                 </td>
                                 <td>&nbsp;</td>
                             </tr>
-                          @endif
-                          {{-- End Check Data Team Members Exist --}}
+                        @endif
+                        {{-- End Check Data Team Members Exist --}}
 
 
 
@@ -580,11 +570,11 @@
                       <!-- end table -->
 
                       <div class="row text-center pt-3">
-                        <div class="col-12">
-                          <button type="button" class="btn btn-primary add-new-team-member">
-                            <i class="mdi mdi-plus"></i> Add New Team Member
-                          </button>
-                        </div>
+                          <div class="col-12">
+                              <button type="button" class="btn btn-primary add-new-team-member">
+                                  <i class="mdi mdi-plus"></i> Add New Team Member
+                              </button>
+                          </div>
                       </div>
 
                   </div>
@@ -595,11 +585,9 @@
 
               <!-- script for dynamic row numbering and team member operations -->
               <script type="text/javascript">
-
-                $(document).ready(function(){
-
-                  /* Add New Team Member Row */
-                  $('.add-new-team-member').click(function(){
+                  $(document).ready(function() {
+                    /* Add New Team Member Row */
+                  $('.add-new-team-member').click(function() {
                       var new_row = '';
                       new_row += '<tr>';
                       new_row += '<td class="row-number"></td>';
@@ -609,22 +597,14 @@
                       new_row += '<input type="text" class="form-control" name="team_member_name[]">';
                       new_row += '</div>';
                       new_row += '<div class="form-group">';
-                      new_row += '<label for="representation_role_id">Role</label>';
-                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
-                      new_row += '<option value="">-- Please Select --</option>';
-                      @if(count($data['general']['representation']['role']) > 0)
-                          @foreach($data['general']['representation']['role'] as $role)
-                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
-                          @endforeach
-                      @endif
-                      new_row += '</select>';
+                      new_row += '<label for="role">Role</label>';
+                      new_row += '<input type="text" class="form-control" name="role[]">';
                       new_row += '</div>';
                       new_row += '</td>';
                       new_row += '<td>';
-                      new_row += '<a href="#" class="btn btn-danger remove-team-member">';
-                      new_row += '<i class="mdi mdi-trash-can text-white"></i>';
+                      new_row += '<a href="#" class="btn btn-warning remove-team-member">';
+                      new_row += '<i class="mdi mdi-close text-white"></i>';
                       new_row += '</a>';
-
                       new_row += '</td>';
                       new_row += '</tr>';
 
@@ -634,51 +614,50 @@
                       initializeSelect2();
                   });
 
-                  /* Remove Team Member Row */
-                  $(document).on('click', '.remove-team-member', function(e) {
-                      e.preventDefault();
-                      $(this).closest('tr').remove();
+                      /* Remove Team Member Row */
+                      $(document).on('click', '.remove-team-member', function(e) {
+                          e.preventDefault();
+                          $(this).closest('tr').remove();
+                          recalculateRowNumbers();
+                          checkTeamMemberCount();
+
+                      });
+
+                      /* Recalculate Row Numbers */
+                      function recalculateRowNumbers() {
+                          $('#team-member-table tbody tr').each(function(index) {
+                              $(this).find('.row-number').text(index + 1);
+                          });
+                      }
+
+                      /* Initialize Select2 */
+                      function initializeSelect2() {
+                          $('.select2').select2({
+                              width: '100%', // Adjust width as needed
+                              placeholder: '-- Please Select --',
+                              allowClear: true
+                          });
+                      }
+
+                      /* Check File Count and Hide/Show Add Button */
+                      function checkTeamMemberCount() {
+                          var team_member_count = $('#team-member-table tbody tr').length;
+                          var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
+
+                          if (team_member_count >= limit) {
+                              $('.add-new-team-member').hide();
+                          } else {
+                              $('.add-new-team-member').show();
+                          }
+                      }
+
+                      // Initial Select2 Initialization
+                      initializeSelect2();
+                      // Initial recalculation in case of pre-existing rows
                       recalculateRowNumbers();
                       checkTeamMemberCount();
 
                   });
-
-                  /* Recalculate Row Numbers */
-                  function recalculateRowNumbers() {
-                      $('#team-member-table tbody tr').each(function(index) {
-                          $(this).find('.row-number').text(index + 1);
-                      });
-                  }
-
-                  /* Initialize Select2 */
-                  function initializeSelect2() {
-                      $('.select2').select2({
-                          width: '100%', // Adjust width as needed
-                          placeholder: '-- Please Select --',
-                          allowClear: true
-                      });
-                  }
-
-                  /* Check File Count and Hide/Show Add Button */
-                  function checkTeamMemberCount() {
-                      var team_member_count = $('#team-member-table tbody tr').length;
-                      var limit = '{{ $data['cervie']['researcher']['table']['control']->team_member_count }}';
-
-                      if (team_member_count >= limit) {
-                          $('.add-new-team-member').hide();
-                      } else {
-                          $('.add-new-team-member').show();
-                      }
-                  }
-
-                  // Initial Select2 Initialization
-                  initializeSelect2();
-                  // Initial recalculation in case of pre-existing rows
-                  recalculateRowNumbers();
-                  checkTeamMemberCount();
-
-                });
-
               </script>
               <!-- end script for dynamic row numbering and team member operations -->
 
@@ -700,8 +679,10 @@
                   <input type="hidden" id="id" name="id" value="{{ $data['main']->grant_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                  @if(!$data['main']->need_verification)
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>
-                </div>
+                  @endif
+              </div>
 
               </div>
               <!-- end form control -->

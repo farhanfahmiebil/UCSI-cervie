@@ -32,13 +32,13 @@ class CervieResearcherEvidence extends Model{
     Create
   **************************************************************************************/
   public function createRecord($data){
-
+// DD($data);
     //Set Table
     $table = 'create_cervie_researcher_evidence';
 
     //Set Query
     $this->query = 'DECLARE @id INT;
-              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
+              EXEC '.$table.' ?,?,?,?,?,?,?,?,?,?,?, @id OUTPUT;
               SELECT @id AS id;';
 // dd($data);
     //Get Result
@@ -50,6 +50,7 @@ class CervieResearcherEvidence extends Model{
         $data['column']['file_extension'],
         $data['column']['table_name'],
         $data['column']['table_id'],
+        $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
         $data['column']['created_by']
@@ -280,5 +281,75 @@ class CervieResearcherEvidence extends Model{
     );
 
   }
+
+  /**************************************************************************************
+    Update
+  **************************************************************************************/
+  public function updateRecord($data){
+
+    //Set Table
+    $table = 'update_cervie_researcher_evidence';
+
+    //Read Record
+    $item['old'] = $this->readRecordByResearcherTable(
+      [
+        'column'=>[
+          'employee_id'=>$data['column']['employee_id'],
+          'table_name'=>$data['column']['table_name'],
+          'table_id'=>$data['column']['table_id']
+        ]
+      ]
+    );
+
+    //Set Query
+    $this->query = 'EXEC '.$table.' ?,?,?,?,?,
+                                    ?,?;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->statement($this->query,[
+        $data['column']['employee_id'],
+        $data['column']['table_name'],
+        $data['column']['table_id'],
+        $data['column']['need_verification'],
+        $data['column']['remark'],
+        $data['column']['remark_user'],
+        $data['column']['updated_by']
+      ]
+    );
+
+    //Read Record
+    $item['new'] = $this->readRecordByResearcherTable(
+      [
+        'column'=>[
+          'employee_id'=>$data['column']['employee_id'],
+          'table_name'=>$data['column']['table_name'],
+          'table_id'=>$data['column']['table_id']
+        ]
+      ]
+    );
+
+    //Create Log
+      foreach($item['new'] as $key=>$value){
+
+        $this->createLog(
+          [
+            'employee_id'=>$data['column']['employee_id'],
+            'table_name'=>$this->table,
+            'event'=>'update',
+            'auditable_id'=>$value->evidence_id,
+            'old_value'=>json_encode($item['old'][$key]),
+            'new_value'=>json_encode($value),
+            'created_by'=>$data['column']['updated_by'],
+          ]
+        );
+    }
+
+
+
+    //Get Result
+    return $result;
+
+  }
+
 
 }

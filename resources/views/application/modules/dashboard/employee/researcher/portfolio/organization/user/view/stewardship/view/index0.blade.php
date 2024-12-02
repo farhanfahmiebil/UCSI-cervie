@@ -35,63 +35,83 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
-        @if(count(get_object_vars($data['cervie']['researcher']['log']['position'])) === 0)
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['award'])) === 0)
         <div class="alert alert-warning" role="alert">
           <i class="bi bi-check-circle me-2"></i> This record is new entry
         </div>
         @endif
 
 
-            {{-- Check Data Log --}}
-            @if(!empty($data['cervie']['researcher']['log']['position']) && isset($data['cervie']['researcher']['log']['position']->updated_at) && $data['cervie']['researcher']['log']['position']->updated_at != null)
+        {{-- Check if 'membership' is set and not null --}}
+        @if(!empty($data['cervie']['researcher']['log']['award']) && isset($data['cervie']['researcher']['log']['award']->updated_at) && $data['cervie']['researcher']['log']['award']->updated_at != null)
               <div class="alert alert-warning" role="alert">
-                <h4 class="card-title text-white">Old Values</h4>
-                <ol class="list-group list-group-numbered">
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="fw-bold">Position</div>
-                      {{$data['cervie']['researcher']['log']['position']->name}}
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="fw-bold">Faculty/Department/Institution</div>
-                      {{$data['cervie']['researcher']['log']['position']->organization_name}}
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="fw-bold">Date Start to Date End</div>
-                      {{\Carbon\Carbon::parse( $data['cervie']['researcher']['log']['position']->date_start)->format('d-m-Y') }} to {{\Carbon\Carbon::parse( $data['cervie']['researcher']['log']['position']->date_end)->format('d-m-Y') }}
-                    </div>
-                  </li>
-                </ol>
+                  <h4 class="card-title text-white">Old Values</h4>
+                  <ol class="list-group list-group-numbered">
+                      @if(isset($data['cervie']['researcher']['log']['award']->representation_category_name))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Award Type</div>
+                                  {{ $data['cervie']['researcher']['log']['award']->representation_category_name }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['award']->conferring_body))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Conferring Body</div>
+                                  {{ $data['cervie']['researcher']['log']['award']->conferring_body }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['award']->title))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Award Title</div>
+                                  {{ $data['cervie']['researcher']['log']['award']->title }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['award']->date_award))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Date Award</div>
+                                  {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['award']->date_award)->format('d-m-Y') }}
+                              </div>
+                          </li>
+                      @endif
+                  </ol>
               </div>
-            @endif
-            {{-- End Check Data Log --}}
+          @endif
+          {{-- End Check Data Log --}}
 
-            {{-- Check Data Evidence --}}
-            @if(count($data['cervie']['researcher']['log']['evidence']) >= 1)
-            <div class="alert alert-warning" role="alert">
-              <h4 class="card-title text-white">New Evidence</h4>
-              <ol class="list-group list-group-numbered">
-                @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                  <div class="ms-2 me-auto">
-                    <div class="fw-bold">File Name</div>
-                    {{$value->file_name . '.' . $value->file_extension}}
-                  </div>
-                </li>
-                @endforeach
-              </ol>
-            </div>
-            @endif
-            {{-- End Check Data Evidence --}}
+          {{-- Check Data Evidence --}}
+          @if(count($data['cervie']['researcher']['log']['evidence']) >= 1)
+          <div class="alert alert-warning" role="alert">
+            <h4 class="card-title text-white">New Evidence</h4>
+            <ol class="list-group list-group-numbered">
+              @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">File Name</div>
+                  {{$value->file_name . '.' . $value->file_extension}}
+                </div>
+              </li>
+              @endforeach
+            </ol>
+          </div>
 
-        @else
-        <div class="alert alert-success" role="alert">
-          <i class="bi bi-check-circle me-2"></i> Record Verified
-        </div>
+          @endif
+          {{-- End Check Data Evidence --}}
+
+
+          @else
+          <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle me-2"></i> Record Verified
+          </div>
+
 
         @endif
         {{-- End Check Data Main --}}
@@ -109,7 +129,7 @@
           <div class="card-body">
 
             <!-- card title -->
-            <h4 class="card-title">Position Information</h4>
+            <h4 class="card-title">Award Information</h4>
             <!-- end card title -->
 
             <hr>
@@ -129,73 +149,62 @@
             <!-- row 1 -->
             <div class="row pt-3">
 
-              <!-- position -->
+              <!-- representation category id -->
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="name">Position</label>
-                  <input type="text" class="form-control" id="name" name="name" value="{{ $data['main']->name }}" placeholder="Name">
-                </div>
-              </div>
-              <!-- end position -->
-
-              <!-- organization -->
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="organization_id">Faculty/Department/Institution</label>
-                  <select class="form-control select2" id="organization_id" name="organization_id">
+                  <label for="representation_category_id">Award Type</label>
+                  <select class="form-control select2" id="representation_category_id" name="representation_category_id">
                     <option value="">-- Please Select --</option>
 
-                    {{-- Check General Organization Exist --}}
-                    @if(count($data['general']['organization'])>0)
+                    {{-- Check General Representation Category Exist --}}
+                    @if(count($data['general']['representation']['category']) > 0)
 
-                      {{-- Get General Organization Data --}}
-                      @foreach($data['general']['organization'] as $key=>$value)
-                        <option value="{{ $value->organization_id }}" {{ (($data['main']->organization_id == $value->organization_id)?'selected':'') }}>{{ $value->name }}</option>
+                      {{-- Get General Representation Category Data --}}
+                      @foreach($data['general']['representation']['category'] as $key=>$value)
+                        <option value="{{ $value->representation_category_id }}" {{ (($data['main']->representation_category_id == $value->representation_category_id)?'selected':'') }}>{{ $value->name }}</option>
                       @endforeach
-                      {{-- End Get General Organization Data --}}
+                      {{-- End Get General Representation Category Level Data --}}
 
                     @endif
-                    {{-- End Check General Organization Exist --}}
+                    {{-- End Check General Representation Category Level Exist --}}
 
                   </select>
                 </div>
               </div>
-              <!-- end organization -->
+              <!-- end representation category id -->
+
+              <!-- date award -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="date_award">Date Award</label>
+                  <input type="date" class="form-control" id="date_award" name="date_award" value="{{ \Carbon\Carbon::parse($data['main']->date_award)->format('Y-m-d') }}" placeholder="">
+                </div>
+              </div>
+              <!-- end date award -->
 
             </div>
             <!-- end row 1 -->
 
             <!-- row 2 -->
-            <div class="row py-3">
+            <div class="row pt-3">
 
-              <!-- date start -->
+              <!-- conferring body -->
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="date_start">Date Start</label>
-                  <input type="date" class="form-control" id="date_start" name="date_start" value="{{ \Carbon\Carbon::parse($data['main']->date_start)->format('Y-m-d') }}" placeholder="">
+                  <label for="conferring_body">Conferring Body</label>
+                  <input type="text" class="form-control" id="conferring_body" name="conferring_body" value="{{ $data['main']->conferring_body }}" placeholder="">
                 </div>
               </div>
-              <!-- end date start -->
+              <!-- end conferring body -->
 
-              <!-- date end -->
+              <!-- title -->
               <div class="col-md-6">
                 <div class="form-group">
-                  <div class="d-flex bd-highlight">
-                    <div class="flex-grow-1 bd-highlight">
-                      <label for="date_end">Date End</label>
-                    </div>
-                    <div class="bd-highlight">
-                      <label for="is_current_position" class="form-check-label">
-                        <input type="checkbox" class="form-check-input" id="is_current_position" name="is_current_position" value="1" {{ (($data['main']->is_current_position) ?'checked':'') }}>
-                        Is Current Position
-                        <i class="input-helper"></i>
-                      </label>
-                    </div>
-                  </div>
-                  <input type="date" class="form-control" id="date_end" name="date_end" value="{{ (!empty($data['main']->date_end)?\Carbon\Carbon::parse($data['main']->date_end)->format('Y-m-d'):'') }}" placeholder="">
+                  <label for="title">Award Title</label>
+                  <input type="text" class="form-control" id="title" name="title" value="{{ $data['main']->title }}" placeholder="Award Title">
                 </div>
               </div>
-              <!-- end date end -->
+              <!-- end title -->
 
             </div>
             <!-- end row 2 -->
@@ -299,7 +308,7 @@
                               <!-- end hyperlink -->
 
                               <!-- remove file -->
-                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->position_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
+                              <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->award_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                 <i class="bi bi-trash"></i>
                               </a>
                               <!-- end remove file -->
@@ -452,7 +461,7 @@
 
               <div class="col-md-12">
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
-                <input type="hidden" id="id" name="id" value="{{ $data['main']->position_id }}">
+                <input type="hidden" id="id" name="id" value="{{ $data['main']->award_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                 <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i></i>Delete Record</a>
                 <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>

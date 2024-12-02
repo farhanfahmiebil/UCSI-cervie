@@ -34,6 +34,7 @@ use App\Models\UCSI_V2_Education\MSSQL\View\Organization;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherPublication AS CervieResearcherPublicationProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -716,7 +717,9 @@ class IndexController extends Controller{
         [
           'eloquent'=>'pagination',
           'column'=>[
-            'employee_id'=>$request->employee_id
+            'employee_id'=>$request->employee_id,
+            'publication_type_id'=>$value->publication_type_id
+
           ],
           'category'=>'publication'
         ]
@@ -730,6 +733,111 @@ class IndexController extends Controller{
 
 
     }
+
+    //Set Model Publication
+    $model['cervie']['researcher']['publication']['procedure'] = new CervieResearcherPublicationProcedure();
+
+    //Get Graph
+    $data['cervie']['researcher']['publication']['graph']['type'] = $model['cervie']['researcher']['publication']['procedure']->readGraphbyType(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+
+    //Get Graph
+    $data['cervie']['researcher']['publication']['graph']['indexing']['body'] = $model['cervie']['researcher']['publication']['procedure']->readGraphbyIndexingBody(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id()
+        ]
+      ]
+    );
+
+    // Initialize the necessary arrays
+    $data['graph']['publication']['type']['year'] = [];
+    $data['graph']['publication']['type']['data'] = [];  // This will hold the data grouped by year
+    $allPublicationTypes = [];  // This will store all unique publication types across years
+
+    // Collecting data dynamically
+    foreach ($data['cervie']['researcher']['publication']['graph']['type'] as $row) {
+        // Add year to the 'year' array if it's not already added
+        if (!in_array($row->year, $data['graph']['publication']['type']['year'])) {
+            $data['graph']['publication']['type']['year'][] = $row->year;
+        }
+
+        // Collect all unique publication types
+        $allPublicationTypes[$row->publication_type_name] = true;
+
+        // Store data for the year and publication type
+        if ($row->total !== null && $row->total !== 0) {
+            $data['graph']['publication']['type']['data'][$row->year][$row->publication_type_name] = $row->total;
+        } else {
+            // Ensure that we add 0 for years where no data exists for this publication type
+            if (!isset($data['graph']['publication']['type']['data'][$row->year][$row->publication_type_name])) {
+                $data['graph']['publication']['type']['data'][$row->year][$row->publication_type_name] = 0;
+            }
+        }
+    }
+
+    // Now, ensure the 'label' array contains all unique publication types
+    $data['graph']['publication']['type']['label'] = array_keys($allPublicationTypes);
+
+    // Ensure each publication type has data for every year
+    foreach ($data['graph']['publication']['type']['year'] as $year) {
+        foreach ($data['graph']['publication']['type']['label'] as $type) {
+            if (!isset($data['graph']['publication']['type']['data'][$year][$type])) {
+                // Set missing data for the year-publication type combination to 0
+                $data['graph']['publication']['type']['data'][$year][$type] = 0;
+            }
+        }
+    }
+
+    // Initialize the necessary arrays for indexing body
+    $data['graph']['indexing']['body']['year'] = [];
+    $data['graph']['indexing']['body']['data'] = [];  // This will hold the data grouped by year and indexing body type
+    $allIndexingBodies = [];  // This will store all unique indexing body types across years
+
+    // Collecting data dynamically for indexing body
+    foreach ($data['cervie']['researcher']['publication']['graph']['indexing']['body'] as $row) {
+        // Skip if publication_year is null
+        if ($row->publication_year === null || empty($row->publication_year)) {
+            continue;
+        }
+
+        // Add year to the 'year' array if it's not already added
+        if (!in_array($row->publication_year, $data['graph']['indexing']['body']['year'])) {
+            $data['graph']['indexing']['body']['year'][] = $row->publication_year;
+        }
+
+        // Collect all unique indexing body types
+        $allIndexingBodies[$row->indexing_body_type_name] = true;
+
+        // Store data for the year and indexing body type
+        if ($row->total !== null && $row->total !== 0) {
+            $data['graph']['indexing']['body']['data'][$row->publication_year][$row->indexing_body_type_name] = $row->total;
+        } else {
+            // Ensure that we add 0 for years where no data exists for this indexing body type
+            if (!isset($data['graph']['indexing']['body']['data'][$row->publication_year][$row->indexing_body_type_name])) {
+                $data['graph']['indexing']['body']['data'][$row->publication_year][$row->indexing_body_type_name] = 0;
+            }
+        }
+    }
+
+    // Now, ensure the 'label' array contains all unique indexing body types
+    $data['graph']['indexing']['body']['label'] = array_keys($allIndexingBodies);
+
+    // Ensure each indexing body type has data for every year
+    foreach ($data['graph']['indexing']['body']['year'] as $year) {
+        foreach ($data['graph']['indexing']['body']['label'] as $type) {
+            if (!isset($data['graph']['indexing']['body']['data'][$year][$type])) {
+                // Set missing data for the year-indexing body type combination to 0
+                $data['graph']['indexing']['body']['data'][$year][$type] = 0;
+            }
+        }
+    }
+
 
     //If Type Exist
 		if($request->has('form_token')){
@@ -1114,6 +1222,41 @@ class IndexController extends Controller{
         ]
       ]
     );
+
+    if($data['main']->need_verification){
+
+      //Set Model Researcher - Employee Profile
+      $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['publication'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_publication',
+            'auditable_id' => $request->id,
+            'category' => 'main'
+          ]
+        ]
+      );
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['evidence'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'main_table_name'=>'cervie_researcher_publication',
+            'table_name'=>'cervie_researcher_evidence',
+            'auditable_id' => $request->id,
+            'category' => 'evidence',
+            'event' => 'create'
+
+          ]
+        ]
+      );
+
+    }
+
 
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [

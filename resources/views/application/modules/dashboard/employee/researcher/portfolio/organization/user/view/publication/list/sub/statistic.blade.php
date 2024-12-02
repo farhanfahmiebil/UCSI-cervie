@@ -1,9 +1,9 @@
 <!-- publication -->
 <div class="row">
-  <div class="col-sm-12 grid-margin d-flex stretch-card">
+  <div class="col-sm-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <div class="d-flex align-items-center justify-content-between py-4">
+        <div class="align-items-center justify-content-between py-4">
           <h4 class="card-title mb-2">Statistic</h4>
         </div>
         <div>
@@ -171,7 +171,7 @@ var indexingData = @json($data['graph']['indexing']['body']);
 
 // Check if indexing data exists and is in the correct format
 if (indexingData && indexingData.year && indexingData.label && indexingData.data) {
-    // 
+    //
     // var years = indexingData.year; // Array of years
     // var labels = indexingData.label; // Array of indexing body types
     // var dataByYear = indexingData.data; // Data grouped by year and indexing body type

@@ -8,6 +8,264 @@
     <!-- row -->
     <div class="row">
 
+      <!-- alert -->
+      <div class="col-12">
+
+        {{-- Check Table Control Evidence Need Exist --}}
+        @if($data['cervie']['researcher']['table']['control']->evidence_need)
+
+          {{-- Check Data Evidence Exist --}}
+          @if(!$data['evidence'])
+
+          <div class="alert alert-warning" role="alert">
+            There is no Evidence to be displayed as Public, This Record will be mark as Pending
+          </div>
+
+          @endif
+          {{-- End Check Data Evidence Exist --}}
+
+        @endif
+        {{-- End Check Table Control Evidence Need Exist --}}
+
+
+        {{-- Check Data Main --}}
+        @if($data['main']->need_verification)
+
+        <div class="alert alert-warning" role="alert">
+          This Record is still Pending for Administrator to make Verification
+        </div>
+
+        {{-- Check Data Log --}}
+        @if(!empty($data['cervie']['researcher']['log']['publication']) && isset($data['cervie']['researcher']['log']['publication']->updated_at) && $data['cervie']['researcher']['log']['publication']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if publication_type_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->publication_type_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Publication Type</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->publication_type_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if author is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->author))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Author</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->author }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if title is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->title))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Title</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->title }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Name</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if publisher is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->publisher))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Publisher</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->publisher }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if day is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->day))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Day</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->day }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if month is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->month))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Month</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->month }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if year is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->year))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Year</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->year }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if volume is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->volume))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Volume</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->volume }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if issue is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->issue))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Issue</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->issue }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if doi is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->doi))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">DOI</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->doi }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if edition is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->edition))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Edition</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->edition }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if quartile is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->quartile_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Quartile</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->quartile_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if indexing body is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->academic_indexing_body_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Quartile</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->academic_indexing_body_name . (($data['cervie']['researcher']['log']['publication']->academic_indexing_body_id == 18)?$data['cervie']['researcher']['log']['publication']->academic_indexing_body_other:'') }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if isbn is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->isbn))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">ISBN</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->isbn }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if ISSN is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->issn))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">ISSN</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->issn }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if page no is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->page_no))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Page No</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->page_no }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if chapter_no is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->chapter_no))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Chapter No</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->chapter_no }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if sustainable_development_goal is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['publication']->sustainable_development_goal))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Sustainable Development Goal</div>
+                                {{ $data['cervie']['researcher']['log']['publication']->sustainable_development_goal }}
+                            </div>
+                        </li>
+                    @endif
+
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1)
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
+
+        @endif
+        {{-- End Check Data Main --}}
+
+      </div>
+      <!-- end alert -->
+
       <!-- col -->
       <div class="col-12 grid-margin stretch-card">
 
@@ -39,8 +297,23 @@
               <!-- publication type id -->
               <div class="col-md-12">
                 <div class="form-group">
-                  <label for="publication_type_name">Publication Type</label>
-                  <input type="text" class="form-control" name="publication_type_name" value="{{ $data['main']->publication_type_name }}">
+                  <label for="publication_type_id">Publication Type</label>
+                  <select class="form-control select2" id="publication_type_id" name="publication_type_id">
+                    <option value="">-- Please Select --</option>
+
+                    {{-- Check General Publication Type Exist --}}
+                    @if(count($data['general']['publication']['type']) > 0)
+
+                      {{-- Get General Publication Type Data --}}
+                      @foreach($data['general']['publication']['type'] as $key=>$value)
+                        <option value="{{ $value->publication_type_id }}" {{ (($data['main']->publication_type_id == $value->publication_type_id)?'selected':'') }}>{{ $value->name }}</option>
+                      @endforeach
+                      {{-- End Get General Publication Type Data --}}
+
+                    @endif
+                    {{-- End Check General Publication Type Exist --}}
+
+                  </select>
                 </div>
               </div>
               <!-- end publication type id -->

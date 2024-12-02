@@ -291,4 +291,48 @@ class CervieResearcherGrant extends Model{
 
   }
 
+  /**************************************************************************************
+  Read Graph Type by Year
+  **************************************************************************************/
+  public function readGraphTypeByYear($data){
+
+    //Set Table
+    $table = 'read_graph_cervie_researcher_grant_type_by_year';
+
+    //Set Query
+    $this->query = 'EXEC '.$table.' ?;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->select($this->query,[
+        $data['column']['employee_id'],
+      ]
+    );
+
+    //Return Result
+    return $result;
+
+  }
+
+  /**************************************************************************************
+  Read Graph Type by Quantum
+  **************************************************************************************/
+  public function readGraphTypeByQuantum($data){
+
+    //Set Table
+    $table = 'read_graph_cervie_researcher_grant_type_by_quantum';
+
+    //Set Query
+    $this->query = 'EXEC '.$table.' ?;';
+
+    //Get Result
+    $result = DB::connection($this->connection)->select($this->query,[
+        $data['column']['employee_id'],
+      ]
+    );
+
+    //Return Result
+    return $result;
+
+  }
+
 }

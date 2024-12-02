@@ -35,6 +35,97 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['professional']['membership'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check if 'membership' is set and not null --}}
+        @if(!empty($data['cervie']['researcher']['log']['professional']['membership']) && isset($data['cervie']['researcher']['log']['professional']['membership']->updated_at) && $data['cervie']['researcher']['log']['professional']['membership']->updated_at != null)
+              <div class="alert alert-warning" role="alert">
+                  <h4 class="card-title text-white">Old Values</h4>
+                  <ol class="list-group list-group-numbered">
+                      @if(isset($data['cervie']['researcher']['log']['professional']['membership']->name))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Membership Name</div>
+                                  {{ $data['cervie']['researcher']['log']['professional']['membership']->name }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['professional']['membership']->representation_category_name))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Professional Membership Level</div>
+                                  {{ $data['cervie']['researcher']['log']['professional']['membership']->representation_category_name }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['professional']['membership']->representation_role_name))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Professional Membership Role</div>
+                                  {{ $data['cervie']['researcher']['log']['professional']['membership']->representation_role_name }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['professional']['membership']->professional_membership_type_name))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Professional Membership Type</div>
+                                  {{ $data['cervie']['researcher']['log']['professional']['membership']->professional_membership_type_name }}
+                              </div>
+                          </li>
+                      @endif
+
+                      @if(isset($data['cervie']['researcher']['log']['professional']['membership']->date_start))
+                          <li class="list-group-item d-flex justify-content-between align-items-start">
+                              <div class="ms-2 me-auto">
+                                  <div class="fw-bold">Date Start to Date End</div>
+                                  {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['professional']['membership']->date_start)->format('d-m-Y') }}
+                                  to
+                                  @if(isset($data['cervie']['researcher']['log']['professional']['membership']->is_lifetime) && $data['cervie']['researcher']['log']['professional']['membership']->is_lifetime)
+                                      Is Lifetime
+                                  @elseif(isset($data['cervie']['researcher']['log']['professional']['membership']->date_end))
+                                      {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['professional']['membership']->date_end)->format('d-m-Y') }}
+                                  @endif
+                              </div>
+                          </li>
+                      @endif
+                  </ol>
+              </div>
+          @endif
+          {{-- End Check Data Log --}}
+
+          {{-- Check Data Evidence --}}
+          @if(count($data['cervie']['researcher']['log']['evidence']) >= 1)
+          <div class="alert alert-warning" role="alert">
+            <h4 class="card-title text-white">New Evidence</h4>
+            <ol class="list-group list-group-numbered">
+              @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">File Name</div>
+                  {{$value->file_name . '.' . $value->file_extension}}
+                </div>
+              </li>
+              @endforeach
+            </ol>
+          </div>
+          @endif
+          {{-- End Check Data Evidence --}}
+
+          @else
+          <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle me-2"></i> Record Verified
+          </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -452,8 +543,8 @@
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->professional_membership_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->

@@ -32,6 +32,7 @@ use App\Models\UCSI_V2_Education\MSSQL\View\Organization;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherAreaInterest AS CervieResearcherAreaInterestProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -171,7 +172,6 @@ class IndexController extends Controller{
         ]
       ]
     );
-
 
     //Set Page
     $page = $this->page;
@@ -519,6 +519,21 @@ class IndexController extends Controller{
           'employee_id'=>Auth::id(),
           'table_name'=>'cervie_researcher_area_interest',
           'table_id'=>$request->id
+        ]
+      ]
+    );
+
+    //Set Model Researcher - Employee Profile
+    $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+    //Get Employee Profile
+    $data['cervie']['researcher']['log']['area']['interest'] = $model['cervie']['researcher']['log']->readRecord(
+      [
+        'column'=>[
+          'employee_id'=>$request->employee_id,
+          'table_name'=>'cervie_researcher_area_interest',
+          'auditable_id' => $request->id,
+          'category' => 'main'
         ]
       ]
     );

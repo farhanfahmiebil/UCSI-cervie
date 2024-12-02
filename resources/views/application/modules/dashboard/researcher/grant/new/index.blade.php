@@ -498,17 +498,8 @@
                                           <input type="text" class="form-control" name="team_member_name[]">
                                       </div>
                                       <div class="form-group">
-                                          <label for="representation_role_id">Role</label><br>
-                                          <select style="width:100%;" class="form-control select2" name="representation_role_id[]">
-                                              <option value="">-- Please Select --</option>
-                                              {{-- Check General Representation Category Exist --}}
-                                              @if(count($data['general']['representation']['role']) > 0)
-                                                  {{-- Get General Representation Category Data --}}
-                                                  @foreach($data['general']['representation']['role'] as $key=>$value)
-                                                      <option value="{{ $value->representation_role_id }}">{{ $value->name }}</option>
-                                                  @endforeach
-                                              @endif
-                                          </select>
+                                          <label for="role">Role</label>
+                                          <input type="text" class="form-control" name="role[]">
                                       </div>
                                   </td>
                                   <td>
@@ -547,15 +538,8 @@
                       new_row += '<input type="text" class="form-control" name="team_member_name[]">';
                       new_row += '</div>';
                       new_row += '<div class="form-group">';
-                      new_row += '<label for="representation_role_id">Role</label>';
-                      new_row += '<select class="form-control select2" name="representation_role_id[]">';
-                      new_row += '<option value="">-- Please Select --</option>';
-                      @if(count($data['general']['representation']['role']) > 0)
-                          @foreach($data['general']['representation']['role'] as $role)
-                              new_row += '<option value="{{ $role->representation_role_id }}">{{ $role->name }}</option>';
-                          @endforeach
-                      @endif
-                      new_row += '</select>';
+                      new_row += '<label for="role">Role</label>';
+                      new_row += '<input type="text" class="form-control" name="role[]">';
                       new_row += '</div>';
                       new_row += '</td>';
                       new_row += '<td>';
