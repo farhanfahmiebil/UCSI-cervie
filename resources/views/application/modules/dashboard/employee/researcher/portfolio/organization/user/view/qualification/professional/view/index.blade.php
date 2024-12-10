@@ -35,6 +35,58 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['professional']['qualification'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check Data Log --}}
+        @if(!empty($data['cervie']['researcher']['log']['professional']['qualification']) && isset($data['cervie']['researcher']['log']['professional']['qualification']->updated_at) && $data['cervie']['researcher']['log']['professional']['qualification']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if company_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['professional']['qualification']->qualification))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Qualification</div>
+                                {{ $data['cervie']['researcher']['log']['professional']['qualification']->qualification }}
+                            </div>
+                        </li>
+                    @endif
+
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -338,7 +390,7 @@
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->professional_qualification_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                 <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->

@@ -115,15 +115,18 @@ class IndexController extends Controller{
     $model['general']['qualification'] = new QualificationView();
 
     //Get Qualification
-    $data['general']['qualification'] = $model['general']['qualification']->selectBox(
-      [
-        'column'=>[
-          'in'=>[
-            'qualification_id'=>['Q08','Q09']
-          ]
-        ]
-      ]
-    );
+    // $data['general']['qualification'] = $model['general']['qualification']->selectBox(
+    //   [
+    //     'column'=>[
+    //       'in'=>[
+    //         'qualification_id'=>['Q08','Q09']
+    //       ]
+    //     ]
+    //   ]
+    // );
+
+    $data['general']['qualification'] = $model['general']['qualification']->selectBox();
+
 
     //Set Model
     $model['cervie']['researcher']['table']['control'] = new CervieResearcherTableControlProcedure();
@@ -257,6 +260,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_academic_qualification',
                   'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>1,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -655,6 +659,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_academic_qualification',
                   'table_id'=>$request->id,
+                  'need_verification'=>1,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),

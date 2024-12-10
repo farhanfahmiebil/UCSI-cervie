@@ -25,6 +25,40 @@
               <h4 class="card-title">Community Engagement Information</h4>
               <!-- end card title -->
 
+              <!-- alert -->
+              <div class="col-12">
+
+                {{-- Check Table Control Evidence Need Exist --}}
+                @if($data['cervie']['researcher']['table']['control']->evidence_need)
+
+                  {{-- Check Data Evidence Exist --}}
+                  @if(!$data['evidence'])
+
+                  <div class="alert alert-warning" role="alert">
+                    There is no Evidence to be displayed as Public, This Record will be mark as Pending
+                  </div>
+
+                  @endif
+                  {{-- End Check Data Evidence Exist --}}
+
+                @endif
+                {{-- End Check Table Control Evidence Need Exist --}}
+
+
+                {{-- Check Data Main --}}
+                @if($data['main']->need_verification)
+
+                <div class="alert alert-warning" role="alert">
+                  This Record is still Pending for Administrator to make Verification
+                </div>
+
+                @endif
+                {{-- End Check Data Main --}}
+
+              </div>
+              <!-- end alert -->
+
+
               <!-- error -->
               @if($errors->any())
                 <div class="alert alert-danger">
@@ -259,9 +293,11 @@
                                 <!-- end hyperlink -->
 
                                 <!-- remove file -->
+                                @if(!$data['main']->need_verification)
                                 <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['id'=>$data['main']->consultancies_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                   <i class="mdi mdi-trash-can"></i>
                                 </a>
+                                @endif
                                 <!-- end remove file -->
 
                               @else
@@ -486,11 +522,13 @@
                               <tr id="{{ $value->team_member_id }}">
                                   <td>{{ ($key + 1) }}</td>
                                   <td>{{ $value->name }}</td>
-                                  <td>{{ $value->representation_role_name }}</td>
+                                  <td>{{ $value->role }}</td>
                                   <td>
+                                    @if(!$data['main']->need_verification)
                                       <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'], ['id' => $data['main']->consultancies_id, 'team_member_id' => $value->team_member_id, 'form_token' => $form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
                                           <i class="mdi mdi-trash-can"></i>
                                       </a>
+                                    @endif
                                   </td>
                               </tr>
                           @endforeach
@@ -631,8 +669,10 @@
                   <input type="hidden" id="id" name="id" value="{{ $data['main']->consultancies_id }}">
                   <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                   <a data-href="{{ route($hyperlink['page']['delete']['main']) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                  @if(!$data['main']->need_verification)
                   <button type="submit" class="btn btn-danger text-white me-2"><i class="mdi mdi-content-save"></i>Save</button>
-                </div>
+                  @endif
+                                </div>
 
               </div>
               <!-- end form control -->

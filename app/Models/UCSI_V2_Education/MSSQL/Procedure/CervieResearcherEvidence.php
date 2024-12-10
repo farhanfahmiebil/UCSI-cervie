@@ -32,7 +32,7 @@ class CervieResearcherEvidence extends Model{
     Create
   **************************************************************************************/
   public function createRecord($data){
-// DD($data);
+
     //Set Table
     $table = 'create_cervie_researcher_evidence';
 

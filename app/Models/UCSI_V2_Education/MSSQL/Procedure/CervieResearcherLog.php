@@ -134,6 +134,8 @@ class CervieResearcherLog extends Model{
           // Convert the array to an object
           $result = (object) $differencesArray;
 
+          // dd($collection_old_value, $collection_new_value);
+
       } else if (in_array($data['column']['category'], ['evidence', 'team_member'])) {
 
           // Set Table for evidence and team_member categories (common table name)
@@ -219,7 +221,12 @@ class CervieResearcherLog extends Model{
               // Check if the current item's ID exists in the intersected IDs collection
               return $intersectIds->contains((string) $item->{$intersectField});  // Ensure matching types
           });
-// dd($array_log,$array_evidence);
+
+          // Now filter $result to include only the items where 'need_verification' is "1" (string)
+          $result = $result->filter(function ($item) {
+              return isset($item->need_verification) && $item->need_verification === "1";
+          });
+// dd($array_log,$array_evidence,$result);
 
 // dd($result->pluck('need_verification')->contains(true));
           // Get the first result if necessary

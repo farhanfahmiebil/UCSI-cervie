@@ -334,7 +334,7 @@ class CervieResearcherTeamMember extends Model{
             'employee_id'=>$data['column']['employee_id'],
             'table_name'=>$this->table,
             'event'=>'update',
-            'auditable_id'=>$value->evidence_id,
+            'auditable_id'=>$value->team_member_id,
             'old_value'=>json_encode($item['old'][$key]),
             'new_value'=>json_encode($value),
             'created_by'=>$data['column']['updated_by'],

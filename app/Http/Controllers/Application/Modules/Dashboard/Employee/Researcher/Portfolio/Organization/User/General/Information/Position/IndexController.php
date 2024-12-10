@@ -893,6 +893,24 @@ class IndexController extends Controller{
           ]
         );
 
+        //Set Model Evidence
+        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+        //Create Evidence
+        $result['evidence']['update'] = $model['cervie']['researcher']['evidence']->updateRecord(
+          [
+            'column'=>[
+              'employee_id'=>$request->employee_id,
+              'table_name'=>'cervie_researcher_position',
+              'table_id'=>$request->id,
+              'need_verification'=>0,
+              'remark'=>(($request->remark)?$request->remark:null),
+              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'updated_by'=>Auth::id(),
+            ]
+          ]
+        );
+
         //If files Exist
         if($request->has('document')){
 
@@ -962,6 +980,7 @@ class IndexController extends Controller{
                   'file_extension' => $file['extension'],
                   'table_name' => 'cervie_researcher_position',
                   'table_id' => $request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by' => Auth::id(),

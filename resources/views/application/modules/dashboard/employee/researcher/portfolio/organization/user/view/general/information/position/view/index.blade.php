@@ -42,51 +42,59 @@
         @endif
 
 
-            {{-- Check Data Log --}}
-            @if(!empty($data['cervie']['researcher']['log']['position']) && isset($data['cervie']['researcher']['log']['position']->updated_at) && $data['cervie']['researcher']['log']['position']->updated_at != null)
-              <div class="alert alert-warning" role="alert">
-                <h4 class="card-title text-white">Old Values</h4>
-                <ol class="list-group list-group-numbered">
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="fw-bold">Position</div>
-                      {{$data['cervie']['researcher']['log']['position']->name}}
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="fw-bold">Faculty/Department/Institution</div>
-                      {{$data['cervie']['researcher']['log']['position']->organization_name}}
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="fw-bold">Date Start to Date End</div>
-                      {{\Carbon\Carbon::parse( $data['cervie']['researcher']['log']['position']->date_start)->format('d-m-Y') }} to {{\Carbon\Carbon::parse( $data['cervie']['researcher']['log']['position']->date_end)->format('d-m-Y') }}
-                    </div>
-                  </li>
-                </ol>
-              </div>
-            @endif
-            {{-- End Check Data Log --}}
-
-            {{-- Check Data Evidence --}}
-            @if(count($data['cervie']['researcher']['log']['evidence']) >= 1)
-            <div class="alert alert-warning" role="alert">
-              <h4 class="card-title text-white">New Evidence</h4>
+        {{-- Check if 'position' is set and not null --}}
+        @if(!empty($data['cervie']['researcher']['log']['position']) && isset($data['cervie']['researcher']['log']['position']->updated_at) && $data['cervie']['researcher']['log']['position']->updated_at != null)
+          <div class="alert alert-warning" role="alert">
+              <h4 class="card-title text-white">Old Values</h4>
               <ol class="list-group list-group-numbered">
-                @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                  <div class="ms-2 me-auto">
-                    <div class="fw-bold">File Name</div>
-                    {{$value->file_name . '.' . $value->file_extension}}
-                  </div>
-                </li>
-                @endforeach
+                  @if(isset($data['cervie']['researcher']['log']['position']->name))
+                      <li class="list-group-item d-flex justify-content-between align-items-start">
+                          <div class="ms-2 me-auto">
+                              <div class="fw-bold">Position</div>
+                              {{ $data['cervie']['researcher']['log']['position']->name }}
+                          </div>
+                      </li>
+                  @endif
+
+                  @if(isset($data['cervie']['researcher']['log']['position']->organization_name))
+                      <li class="list-group-item d-flex justify-content-between align-items-start">
+                          <div class="ms-2 me-auto">
+                              <div class="fw-bold">Faculty/Department/Institution</div>
+                              {{ $data['cervie']['researcher']['log']['position']->organization_name }}
+                          </div>
+                      </li>
+                  @endif
+
+                  @if(isset($data['cervie']['researcher']['log']['position']->date_start) && isset($data['cervie']['researcher']['log']['position']->date_end))
+                      <li class="list-group-item d-flex justify-content-between align-items-start">
+                          <div class="ms-2 me-auto">
+                              <div class="fw-bold">Date Start to Date End</div>
+                              {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['position']->date_start)->format('d-m-Y') }} to {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['position']->date_end)->format('d-m-Y') }}
+                          </div>
+                      </li>
+                  @endif
               </ol>
-            </div>
-            @endif
-            {{-- End Check Data Evidence --}}
+          </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
 
         @else
         <div class="alert alert-success" role="alert">
@@ -95,6 +103,7 @@
 
         @endif
         {{-- End Check Data Main --}}
+
 
       </div>
       <!-- end alert -->
@@ -299,9 +308,11 @@
                               <!-- end hyperlink -->
 
                               <!-- remove file -->
+                              @if(!$data['main']->need_verification)
                               <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->position_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                 <i class="bi bi-trash"></i>
                               </a>
+                              @endif
                               <!-- end remove file -->
 
                             @else

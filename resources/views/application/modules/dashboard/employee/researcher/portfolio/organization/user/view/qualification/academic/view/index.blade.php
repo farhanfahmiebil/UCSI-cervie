@@ -35,6 +35,94 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['academic']['qualification'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check Data Log --}}
+        @if(!empty($data['cervie']['researcher']['log']['academic']['qualification']) && isset($data['cervie']['researcher']['log']['academic']['qualification']->updated_at) && $data['cervie']['researcher']['log']['academic']['qualification']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if company_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['academic']['qualification']->qualification_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Qualification</div>
+                                {{ $data['cervie']['researcher']['log']['academic']['qualification']->qualification_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if designation is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['academic']['qualification']->field_study))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Field of Study</div>
+                                {{ $data['cervie']['researcher']['log']['academic']['qualification']->field_study }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if designation is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['academic']['qualification']->institution_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">University/College/Other</div>
+                                {{ $data['cervie']['researcher']['log']['academic']['qualification']->institution_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if year_start is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['academic']['qualification']->year_start))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Date Start to Date End</div>
+                                {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['academic']['qualification']->year_start)->format('d-m-Y') }}
+                                to
+                                {{-- Check if currently working --}}
+                                @if(isset($data['cervie']['researcher']['log']['academic']['qualification']->is_currently_study) && $data['cervie']['researcher']['log']['academic']['qualification']->is_working_here)
+                                    Currently Study Here
+                                @elseif(isset($data['cervie']['researcher']['log']['academic']['qualification']->year_end))
+                                    {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['academic']['qualification']->year_end)->format('d-m-Y') }}
+                                @endif
+                            </div>
+                        </li>
+                    @endif
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -441,8 +529,8 @@
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->academic_qualification_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->
@@ -483,6 +571,100 @@
     //     icon: '{{ strtolower(Session::get('alert_type')) }}'
     //   });
     // @endif
+
+    /**************************************************************************************
+      Is Current Progress
+    **************************************************************************************/
+    $('#is_current_progress').on('click',function(){
+      if($(this).is(':checked')){
+        //If the checkbox is checked, clear the Year End input and disable it
+        $('#year_end').val('').attr('disabled', true);
+      }else {
+        //If the checkbox is unchecked, enable the Year End input
+        $('#year_end').attr('disabled', false);
+      }
+    });
+
+    /**************************************************************************************
+      Date End
+    **************************************************************************************/
+    $('#year_end').on('input',function(){
+      if($(this).val()){
+        // If a Year is entered, uncheck the 'Is Current Progress' checkbox
+        $('#is_current_progress').prop('checked',false);
+      }else{
+        // If Year End is cleared, allow 'Is Current Progress' to be checked
+        $('#is_current_progress').prop('checked',true);
+      }
+    });
+
+
+    @if($data['main']->qualification_id != 'Q15')
+
+      //Slide Up with custom duration and easing
+      $('#group_qualification_other').slideUp(500,'swing',function(){
+        $(this).addClass('d-none');  // Add d-none after sliding up is complete
+      });
+
+    @endif
+
+    /*  Qualification on Change
+    **************************************************************************************/
+    $('#qualification_id').on('change',function(){
+
+      //Check on Change Value
+      switch($(this).val()){
+
+        //Other
+        case 'Q15':
+
+          //Slide Down with custom duration and easing
+          $('#group_qualification_other').removeClass('d-none').slideDown(500, 'swing');  // 500ms duration with 'swing' easing
+
+        break;
+
+        //Default
+        default:
+
+          //Slide Up with custom duration and easing
+          $('#group_qualification_other').slideUp(500,'swing',function(){
+            $(this).addClass('d-none');  // Add d-none after sliding up is complete
+          });
+
+        break;
+
+      }
+
+    });
+
+    /*  Year Start and End Validation
+    **************************************************************************************/
+    $('#year_start,#year_end').on('input',function(){
+      validateYear({
+        'input': {
+          'id': $(this).attr('id'),
+          'year': $(this).val()
+        }
+      });
+    });
+
+    /*  Validate Year
+    **************************************************************************************/
+    function validateYear(data) {
+      var year_pattern = /^\d{0,4}$/; // Allows 0 to 4 digits
+
+      if(!year_pattern.test(data.input.year)){
+        $('#' + data.input.id).val(data.input.year.slice(0,-1));
+      }
+
+      if(data.input.year.length === 4){
+        var year_value = parseInt(data.input.year,10);
+        if(year_value < 1900 || year_value > 2100){
+          alert('Please enter a year between 1900 and 2100.');
+          $('#' + data.input.id).val(''); // Clear the input if it's out of range
+        }
+      }
+    }
 
     /**************************************************************************************
       Modal Delete

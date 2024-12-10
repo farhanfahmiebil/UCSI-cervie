@@ -32,7 +32,7 @@ use App\Models\UCSI_V2_Education\MSSQL\View\Organization;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherProfessionalQualification AS CervieResearcherProfessionalQualificationProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
-use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTeamMember AS CervieResearcherTeamMemberProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -355,6 +355,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_professional_qualification',
                   'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -800,6 +801,41 @@ class IndexController extends Controller{
         ]
       ]
     );
+
+    if($data['main']->need_verification){
+
+      //Set Model Researcher - Employee Profile
+      $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['professional']['qualification'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_professional_qualification',
+            'auditable_id' => $request->id,
+            'category' => 'main'
+          ]
+        ]
+      );
+
+      // dd($data['cervie']['researcher']['log']['professional']['qualification'] );
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['evidence'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'main_table_name'=>'cervie_researcher_professional_qualification',
+            'table_name'=>'cervie_researcher_evidence',
+            'auditable_id' => $request->id,
+            'category' => 'evidence',
+            'event' => 'create'
+          ]
+        ]
+      );
+
+    }
      //Defined Column
      $data['table']['column']['cervie']['researcher']['evidence'] = [
        0=>[
@@ -906,6 +942,24 @@ class IndexController extends Controller{
         ]
       );
 
+      //Set Model Evidence
+      $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+      //Create Evidence
+      $result['evidence']['update'] = $model['cervie']['researcher']['evidence']->updateRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_professional_qualification',
+            'table_id'=>$request->id,
+            'need_verification'=>0,
+            'remark'=>(($request->remark)?$request->remark:null),
+            'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+            'updated_by'=>Auth::id(),
+          ]
+        ]
+      );
+
 
         //If files Exist
         if($request->has('document')){
@@ -976,6 +1030,7 @@ class IndexController extends Controller{
                   'file_extension' => $file['extension'],
                   'table_name' => 'cervie_researcher_professional_qualification',
                   'table_id' => $request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by' => Auth::id(),
@@ -1006,6 +1061,7 @@ class IndexController extends Controller{
                   'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_professional_qualification',
                   'table_id'=>$request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),

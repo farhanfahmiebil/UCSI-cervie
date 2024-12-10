@@ -640,7 +640,7 @@ class IndexController extends Controller{
         ]
       ]
     );
-// dd(    $data['evidence']);
+
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
       0=>[
@@ -663,10 +663,10 @@ class IndexController extends Controller{
 
     //Set Document
     $hyperlink['document'] = $request->root().'/public/storage/resources/researcher/'.trim(Auth::id()).'/document/award/'.$request->id.'/';
-// dd($hyperlink['document'] );
+
     //Get Form Token
 		$form_token = $this->encrypt_token_form;
-// dd($data['main']->title);
+
 		//Return View
 		return view($this->route['view'].'view.index',compact('data','page','asset','form_token','hyperlink'));
 

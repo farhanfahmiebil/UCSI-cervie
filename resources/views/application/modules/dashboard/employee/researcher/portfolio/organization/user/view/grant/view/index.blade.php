@@ -510,9 +510,11 @@
                               <!-- end hyperlink -->
 
                               <!-- remove file -->
+                              @if(!$data['main']->need_verification)
                               <a href="#" data-href="{{ route($hyperlink['page']['delete']['evidence'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->grant_id,'evidence_id'=>$value->evidence_id,'file_id'=>$value->file_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-evidence btn btn-danger text-white">
                                 <i class="bi bi-trash"></i>
                               </a>
+                              @endif
                               <!-- end remove file -->
 
                             @else

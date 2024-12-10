@@ -341,6 +341,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_work_experience',
                   'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -359,7 +360,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id])
                      ->with('alert_type','success')
-                     ->with('message','Researcher Position Added');
+                     ->with('message','Researcher Work Experience Added');
 
   }
 
@@ -574,7 +575,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['list'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id])
                      ->with('alert_type','success')
-                     ->with('message','Research Position Deleted');
+                     ->with('message','Research Work Experience Deleted');
 
   }
 
@@ -875,7 +876,7 @@ class IndexController extends Controller{
         $data['main'] = $model['cervie']['researcher']['work']['experience']->updateRecord(
           [
             'column'=>[
-              'work_experience_id'=>$request->work_experience_id,
+              'work_experience_id'=>$request->id,
               'employee_id'=>Auth::id(),
               'company_name'=>$request->company_name,
               'designation'=>$request->designation,
@@ -889,6 +890,25 @@ class IndexController extends Controller{
             ]
           ]
         );
+
+        //Set Model Evidence
+        $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+        //Create Evidence
+        $result['evidence']['update'] = $model['cervie']['researcher']['evidence']->updateRecord(
+          [
+            'column'=>[
+              'employee_id'=>$request->employee_id,
+              'table_name'=>'cervie_researcher_work_experience',
+              'table_id'=>$request->id,
+              'need_verification'=>0,
+              'remark'=>(($request->remark)?$request->remark:null),
+              'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+              'updated_by'=>Auth::id(),
+            ]
+          ]
+        );
+
 
         //If files Exist
         if($request->has('document')){
@@ -959,6 +979,7 @@ class IndexController extends Controller{
                   'file_extension' => $file['extension'],
                   'table_name' => 'cervie_researcher_work_experience',
                   'table_id' => $request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by' => Auth::id(),
@@ -977,7 +998,7 @@ class IndexController extends Controller{
     //Return to Selected Tab Category Route
     return redirect()->route($hyperlink['page']['view'],['organization_id'=>$request->organization_id,'employee_id'=>$request->employee_id,'id'=>$request->id])
                      ->with('alert_type','success')
-                     ->with('message','Researcher Position Saved');
+                     ->with('message','Researcher Work Experience Saved');
 
   }
 

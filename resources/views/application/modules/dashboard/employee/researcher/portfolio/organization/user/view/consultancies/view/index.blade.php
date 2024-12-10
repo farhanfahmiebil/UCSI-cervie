@@ -35,9 +35,128 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['consultancies'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check if 'consultancies' is set and not null --}}
+        @if(!empty($data['cervie']['researcher']['log']['consultancies']) && isset($data['cervie']['researcher']['log']['consultancies']->updated_at) && $data['cervie']['researcher']['log']['consultancies']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if 'client' is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['consultancies']->client))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Client</div>
+                                {{ $data['cervie']['researcher']['log']['consultancies']->client }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if 'reference_no' is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['consultancies']->reference_no))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Reference No</div>
+                                {{ $data['cervie']['researcher']['log']['consultancies']->reference_no }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if 'date_start' and 'date_end' are set --}}
+                    @if(isset($data['cervie']['researcher']['log']['consultancies']->date_start) && isset($data['cervie']['researcher']['log']['consultancies']->date_end))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Date Start to Date End</div>
+                                {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['consultancies']->date_start)->format('d-m-Y') }} to
+                                {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['consultancies']->date_end)->format('d-m-Y') }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if 'title' is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['consultancies']->title))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Title</div>
+                                {{ $data['cervie']['researcher']['log']['consultancies']->title }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if 'amount' is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['consultancies']->amount))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Gross Amount</div>
+                                {{ $data['cervie']['researcher']['log']['consultancies']->amount }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if 'country' is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['consultancies']->country))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Country</div>
+                                {{ $data['cervie']['researcher']['log']['consultancies']->country }}
+                            </div>
+                        </li>
+                    @endif
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        {{-- Check Data Team Member --}}
+        @if(count($data['cervie']['researcher']['log']['team']['member']) >= 1 && $data['cervie']['researcher']['log']['team']['member']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Team Member(s)</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['team']['member'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Name: {{$value->name}}</div>
+                Role: {{$value->role}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
         @endif
         {{-- End Check Data Main --}}
-
       </div>
       <!-- end alert -->
 
@@ -631,8 +750,8 @@
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->consultancies_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="mdi mdi-trash-can"></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->
