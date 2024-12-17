@@ -1,7 +1,7 @@
 <?php
 
 //Get Controller Path
-namespace App\Http\Controllers\Application\Modules\Dashboard\Employee\Researcher\Portfolio\Organization\User\Avatar;
+namespace App\Http\Controllers\Application\Modules\Dashboard\Employee\Researcher\Portfolio\Organization\User\Profile\Profile;
 
 //Get Authorization
 use Auth;
@@ -26,10 +26,14 @@ use App\Models\UCSI_V2_Main\MSSQL\Table\EmployeeLDAP;
 //Model View
 use App\Models\UCSI_V2_Access\MSSQL\View\NavigationCategory AS NavigationCategoryView;
 use App\Models\UCSI_V2_Access\MSSQL\View\NavigationCategorySub AS NavigationCategorySubView;
+use App\Models\UCSI_V2_General\MSSQL\View\AcademicIndexingBody as AcademicIndexingBodyView;
+use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherIndexingBody as CervieResearcherIndexingBodyView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
 use App\Models\UCSI_V2_Main\MSSQL\Procedure\EmployeeProfile AS EmployeeProfileProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherIndexingBody AS CervieResearcherIndexingBodyProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -49,10 +53,10 @@ class IndexController extends Controller{
 	//Path Header
 	protected $header = [
     'application'=>'Dashboard',
-    'category'=>'Researcher Avatar',
+    'category'=>'Researcher Profile',
 		'module'=>'Organization',
 		'module_sub'=>'User',
-    'item'=>'Avatar',
+    'item'=>'Profile',
 		'gate'=>''
 	];
 
@@ -74,10 +78,10 @@ class IndexController extends Controller{
 	public function routePath(){
 
     //Set Route Name
-		$this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.researcher.portfolio.organization.user.view.avatar.';
+		$this->route['name'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.researcher.portfolio.organization.user.view.profile.profile.';
 
     //Set Route View
-		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.researcher.portfolio.organization.user.view.avatar.';
+		$this->route['view'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.view').'.researcher.portfolio.organization.user.view.profile.profile.';
 
     //Set Route Link
     $this->route['link'] = config('routing.'.$this->application.'.modules.dashboard.'.$this->user.'.name').'.researcher.portfolio.organization.user.';
@@ -143,6 +147,7 @@ class IndexController extends Controller{
       ]
     ]);
 
+
     //Set Model Navigation Category Sub
     $model['navigation']['category']['sub'] = new NavigationCategorySubView();
 
@@ -152,11 +157,12 @@ class IndexController extends Controller{
         'column'=>[
           'category'=>'PORTAL',
           'user_type'=>strtoupper('administrator'),
-          'navigation_category_code'=>'AVATAR',
+          'navigation_category_code'=>'PROFILE',
           'domain_url'=>$request->root()
         ]
       ]
     );
+
 
     //Set Model Researcher - Employee Profile
     $model['employee']['profile'] = new EmployeeProfileProcedure();
@@ -170,18 +176,69 @@ class IndexController extends Controller{
       ]
     );
 
-    //Set Model Researcher - Employee Profile
-    $model['employee']['ldap']['avatar'] = new EmployeeLDAP();
+    $model['researcher'] = new ResearcherProcedure();
+    $model['cervie']['researcher']['indexing']['body'] = new CervieResearcherIndexingBodyView();
+    $model['general']['academic']['indexing']['body'] = new AcademicIndexingBodyView();
 
-    //Get Employee Profile
-    $data['employee']['ldap'] = $model['employee']['ldap']['avatar']->getAvatar();
+    //Get General Salulation
+    $data['general']['academic']['indexing']['body'] = $model['general']['academic']['indexing']['body']->selectBox();
+// dd($data['general']['academic']['indexing']['body']);
+
+    //Read Main
+    $data['researcher'] = $model['researcher']->readRecord(
+      [
+        'column'=>[
+          'employee_id'=>$request->employee_id,
+        ]
+      ]
+    );
+
+    $data['cervie']['researcher']['indexing']['body'] = $model['cervie']['researcher']['indexing']['body']->getList(
+      [
+        'column'=>[
+          'employee_id'=>$request->employee_id,
+        ]
+      ]
+    );
+
+    if($data['researcher']->need_verification_main){
+
+      //Set Model Researcher - Employee Profile
+      $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['researcher'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'researcher',
+            'auditable_id' => $request->employee_id,
+            'category' => 'main'
+          ]
+        ]
+      );
+
+      //Get Employee Profile
+      $data['cervie']['researcher']['log']['indexing']['body'] = $model['cervie']['researcher']['log']->readRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_indexing_body',
+            'auditable_id' => $request->employee_id,
+            'category' => 'main'
+          ]
+        ]
+      );
+
+    }
+
 
     //Set Page
     $page = $this->page;
 
     //Set Page Pointer
     $page['navigation']['tab']['pointer'] =  $page['navigation']['tab']['content']['view'];
-    // dd($page);
+    // dd(  $page['navigation']['tab']['pointer']);
     //Get Form Token
     $form_token = $this->encrypt_token_form;
 
@@ -215,42 +272,91 @@ class IndexController extends Controller{
 
       //Check Validation
       [
-        'avatar'=>['required','image:png','mimetypes:image/png','max:1024'],
+        'description'=>['required']
       ],
       //Error Message
       [
-        'avatar.required'=>'Avatar Required',
-        'avatar.image'=>'File Must Be Image',
-        'avatar.mimetypes'=>'Avatar Must Be PNG',
-        'avatar.max'=>'Avatar Maximum Size is 1MB'
+        'description.required'=>'Description Required'
       ]
     );
 
-    //Get Extension
-    $file['extension'] = $request->avatar->getClientOriginalExtension();
+    //Set Model
+    $model['researcher']['main'] = new ResearcherProcedure();
 
-    //Set Path Folder
-    $path['folder'] = 'public/resources/employee/'.trim(Auth::id()).'/avatar/';
+    //Create Main
+    $result['researcher']['main'] = $model['researcher']['main']->updateRecord(
+      [
+        'column'=>[
+          'employee_id'=>Auth::id(),
+          'description'=>($request->has('description')?$request->description:null),
+          'need_verification'=>0,
+          'table_name'=>'researcher',
+          'remark'=>($request->has('remark')?$request->remark:null),
+          'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
+          'updated_by'=>Auth::id()
+        ]
+      ]
+    );
 
-    //Set File Name
-    $file['name'] = 'index.'.$file['extension'];
+    $count = 0;
 
-    //Set Path to Upload
-    $path['upload'] = $path['folder'].''.$file['name'];
+    // dd($request->hyperlink);
 
-    //Check Exist Storage File
-    $check['exist']['storage'] = Storage::disk()->exists($path['upload']);
+    if($request->has('indexing_body_id')){
 
-    //If Exist
-    if($check['exist']['storage']){
+      foreach($request->indexing_body_id as $key=>$value){
 
-      //Delete File
-      Storage::disk()->delete($path);
+        $model['cervie']['researcher']['indexing']['body'] = new CervieResearcherIndexingBodyProcedure();
+
+        //Create Main
+        $model['cervie']['researcher']['indexing']['body'] = $model['cervie']['researcher']['indexing']['body']->updaterecord(
+          [
+            'column'=>[
+              'indexing_body_id'=>$value,
+              'employee_id'=>Auth::id(),
+              'academic_indexing_body_id'=>$request->academic_indexing_body_id[$key],
+              'hyperlink'=>$request->hyperlink[$key],
+              'need_verification'=>0,
+              'table_name'=>'cervie_researcher_indexing_body',
+              'remark'=>($request->has('remark')?$request->remark:null),
+              'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
+              'updated_by'=>Auth::id()
+            ]
+          ]
+        );
+
+        $count++;
+      }
+
+    }else{
+      // Count of items to loop through
+      $count_index = count($request->academic_indexing_body_id);
+
+      for ($key = 0; $key < $count_index; $key++) {
+
+        $model['cervie']['researcher']['indexing']['body'] = new CervieResearcherIndexingBodyProcedure();
+
+
+          // Create Main
+          $model['cervie']['researcher']['indexing']['body'] = $model['cervie']['researcher']['indexing']['body']->createRecord(
+              [
+                  'column' => [
+                      'employee_id' => Auth::id(),
+                      'academic_indexing_body_id' => $request->academic_indexing_body_id[$count],
+                      'hyperlink' => $request->hyperlink[$count],
+                      'need_verification' => 0,
+                      'table_name'=>'cervie_researcher_indexing_body',
+                      'remark' => ($request->has('remark') ? $request->remark : null),
+                      'remark_user' => ($request->has('remark_user') ? $request->remark_user : null),
+                      'created_by' => Auth::id()
+                  ]
+              ]
+          );
+
+          $count++;  // Increment the count (although this is unnecessary in this case)
+      }
 
     }
-
-    //Store File in FTP Storage
-    Storage::disk()->put($path['upload'],fopen($request->file('avatar'),'r+'));
 
     break;
 

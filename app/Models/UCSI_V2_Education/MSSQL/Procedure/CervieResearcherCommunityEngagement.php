@@ -40,7 +40,7 @@ class CervieResearcherCommunityEngagement extends Model{
     $this->query = 'DECLARE @id INT;
                     EXEC ' . $table . ' ?,?,?,?,?,?,
                                         ?,?,?,?,?,?,
-                                        ?, @id OUTPUT;
+                                        ?,?, @id OUTPUT;
                     SELECT @id AS id;';
 // dd($data);
     // Get Result
@@ -54,6 +54,7 @@ class CervieResearcherCommunityEngagement extends Model{
         $data['column']['sponsor'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['sustainable_development_goal'],
         $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],
@@ -148,7 +149,7 @@ class CervieResearcherCommunityEngagement extends Model{
 // dd($data);
     //Set Query
     $this->query = 'EXEC '.$table.' ?,?,?,?,?,?,?,
-                                    ?,?,?,?,?,?,?';
+                                    ?,?,?,?,?,?,?,?';
 
     //Get Result
     $result = DB::connection($this->connection)->statement($this->query,[
@@ -162,6 +163,7 @@ class CervieResearcherCommunityEngagement extends Model{
         $data['column']['sponsor'],
         $data['column']['date_start'],
         $data['column']['date_end'],
+        $data['column']['sustainable_development_goal'],
         $data['column']['need_verification'],
         $data['column']['remark'],
         $data['column']['remark_user'],

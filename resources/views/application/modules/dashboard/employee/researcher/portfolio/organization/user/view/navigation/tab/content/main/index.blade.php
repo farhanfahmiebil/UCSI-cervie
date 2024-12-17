@@ -1,6 +1,6 @@
 @php
 $value = collect($data['navigation']['category']['main'])->first(function ($item) {
-    return in_array(strtolower($item->navigation_category_code), [request()->segment(11), request()->segment(11).'_'.request()->segment(12)]);
+    return in_array(strtolower($item->navigation_category_code), [request()->segment(11), request()->segment(11).'_'.request()->segment(12),request()->segment(12)]);
 });
 @endphp
 

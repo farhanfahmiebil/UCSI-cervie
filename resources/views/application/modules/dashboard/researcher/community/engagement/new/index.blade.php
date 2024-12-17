@@ -121,6 +121,43 @@
                 </div>
                 <!-- end description -->
 
+                <!-- sustainable development goal -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="sustainable_development_goal">Sustainable Development Goal</label>
+                    <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
+                      <option value="">--Please Select--</option>
+                      {{-- Check if Sustainable Development Goals exist --}}
+                      @if(count($data['general']['sustainable']['development']['goal']) > 0)
+
+                        @php
+                          // Get old values for sustainable development goals (array) if they exist
+                          $selected_sdg = old('sustainable_development_goal_id', []);
+                        @endphp
+
+                        {{-- Get Sustainable Development Goals Data --}}
+                        @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
+                          <option value="{{ $value->sustainable_development_goal_id }}"
+                            {{-- Check if this value was previously selected --}}
+                            {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
+                            {{ $value->code }} - {{ $value->name }}
+                          </option>
+                        @endforeach
+                        {{-- End Get Sustainable Development Goals Data --}}
+
+                      @endif
+                      {{-- End Check if Sustainable Development Goals exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end sustainable development goal -->
+
+              </div>
+              <!-- end row 4 -->
+
+              <!-- row 5 -->
+              <div class="row">
+
                 <!-- Star Rating -->
                 <div class="col-md-6">
                     <div class="form-group">
@@ -138,7 +175,7 @@
                 <!-- end Star Rating -->
 
               </div>
-              <!-- end row 4 -->
+              <!-- end row 5 -->
 
               {{-- Evidence Need --}}
               @if($data['cervie']['researcher']['table']['control']->evidence_need)

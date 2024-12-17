@@ -35,6 +35,145 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['community']['engagement'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check Data Log --}}
+        @if(!empty($data['cervie']['researcher']['log']['community']['engagement']) && isset($data['cervie']['researcher']['log']['community']['engagement']->updated_at) && $data['cervie']['researcher']['log']['community']['engagement']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if organization is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->organization))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Organization</div>
+                                {{ $data['cervie']['researcher']['log']['community']['engagement']->organization }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if project_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->project_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Project Name</div>
+                                {{ $data['cervie']['researcher']['log']['community']['engagement']->project_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if description is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->description))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Description</div>
+                                {{ $data['cervie']['researcher']['log']['community']['engagement']->description }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if star_rating is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->star_rating))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Star Rating</div>
+                                {{ $data['cervie']['researcher']['log']['community']['engagement']->star_rating }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if amount is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->amount))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Amount</div>
+                                {{ $data['cervie']['researcher']['log']['community']['engagement']->amount }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if sponsor is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->sponsor))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Sponsor</div>
+                                {{ $data['cervie']['researcher']['log']['community']['engagement']->sponsor }}
+                            </div>
+                        </li>
+                    @endif
+
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->sustainable_development_goal))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Sustainable Development Goal</div>
+                                {{ $data['cervie']['researcher']['log']['community']['engagement']->sustainable_development_goal }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if 'date_start' and 'date_end' are set --}}
+                    @if(isset($data['cervie']['researcher']['log']['community']['engagement']->date_start) && isset($data['cervie']['researcher']['log']['community']['engagement']->date_end))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Date Start to Date End</div>
+                                {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['community']['engagement']->date_start)->format('d-m-Y') }} to
+                                {{ \Carbon\Carbon::parse($data['cervie']['researcher']['log']['community']['engagement']->date_end)->format('d-m-Y') }}
+                            </div>
+                        </li>
+                    @endif
+
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence(s)</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        {{-- Check Data Team Member --}}
+        @if(count($data['cervie']['researcher']['log']['team']['member']) >= 1 && $data['cervie']['researcher']['log']['team']['member']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Community Involvement(s)</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['team']['member'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                Name: {{$value->name}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -51,7 +190,7 @@
           <div class="card-body">
 
             <!-- card title -->
-            <h4 class="card-title">community_engagement Information</h4>
+            <h4 class="card-title">Community Engagement Information</h4>
             <!-- end card title -->
 
             <hr>
@@ -153,6 +292,43 @@
                 </div>
                 <!-- end description -->
 
+                <!-- sustainable development goal -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="sustainable_development_goal_id">Sustainable Development Goal</label>
+                    <select class="form-control select2" name="sustainable_development_goal_id[]" multiple>
+                      <option value="">--Please Select--</option>
+
+                      {{-- Check General Sustainable Development Goal Exist --}}
+                      @if(count($data['general']['sustainable']['development']['goal']) > 0)
+
+                        @php
+                          // Explode Sustainable Development Goal from the main data (comma-separated string)
+                          $selected_sdg = explode(',',$data['main']->sustainable_development_goal);
+                        @endphp
+
+                        {{-- Get General Sustainable Development Goal Data --}}
+                        @foreach($data['general']['sustainable']['development']['goal'] as $key=>$value)
+                          <option value="{{ $value->sustainable_development_goal_id }}"
+                            {{ in_array($value->sustainable_development_goal_id,$selected_sdg) ? 'selected' : '' }}>
+                            {{ $value->code }} - {{ $value->name }}
+                          </option>
+                        @endforeach
+                        {{-- End Get General Sustainable Development Goal Data --}}
+
+                      @endif
+                      {{-- End Check General Sustainable Development Goal Exist --}}
+                    </select>
+                  </div>
+                </div>
+                <!-- end sustainable development goal -->
+
+              </div>
+              <!-- end row 4 -->
+
+              <!-- row 10 -->
+              <div class="row pt-3">
+
                 <!-- Star Rating -->
                 <div class="col-md-6">
                     <div class="form-group">
@@ -167,9 +343,8 @@
                 </div>
                 <!-- end Star Rating -->
 
-
               </div>
-              <!-- end row 4 -->
+              <!-- end row 10 -->
 
             {{-- Evidence Need --}}
             @if($data['cervie']['researcher']['table']['control']->evidence_need)
@@ -418,7 +593,7 @@
             <hr>
 
             <!-- card title -->
-            <h4 class="card-title">Team Member</h4>
+            <h4 class="card-title">Community Involvement</h4>
             <!-- end card title -->
 
             <!-- row 1 -->
@@ -468,7 +643,6 @@
                             <tr id="{{ $value->team_member_id }}">
                                 <td>{{ ($key + 1) }}</td>
                                 <td>{{ $value->name }}</td>
-                                <td>{{ $value->role }}</td>
                                 <td>
                                   <!-- remove file -->
                                   <a href="#" data-href="{{ route($hyperlink['page']['delete']['team']['member'],['team_member_id' => $value->team_member_id,'organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id,'id'=>$data['main']->community_engagement_id,'form_token'=>$form_token['delete']]) }}" class="btn-delete-team-member btn btn-danger text-white">
@@ -610,7 +784,7 @@
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->community_engagement_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
                 <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->

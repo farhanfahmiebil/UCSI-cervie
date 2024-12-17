@@ -805,17 +805,38 @@ Route::prefix('researcher')->group(function(){
 
                 /* Avatar
                 **************************************************************************************/
-                Route::prefix('avatar')->group(function(){
+                Route::prefix('user')->group(function(){
 
-                    /*  View
-                    **************************************************************************************/
-                    Route::get('/view', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Avatar\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.avatar.view');
+                  /* Avatar
+                  **************************************************************************************/
+                  Route::prefix('avatar')->group(function(){
 
-                    /*  Update
-                    **************************************************************************************/
-                    Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Avatar\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.avatar.update');
+                      /*  View
+                      **************************************************************************************/
+                      Route::get('/view', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Profile\Avatar\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.profile.avatar.view');
 
-                }); //End Avatar
+                      /*  Update
+                      **************************************************************************************/
+                      Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Profile\Avatar\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.profile.avatar.update');
+
+                  }); //End Avatar
+
+                  /* Profile
+                  **************************************************************************************/
+                  Route::prefix('profile')->group(function(){
+
+                      /*  View
+                      **************************************************************************************/
+                      Route::get('/view', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Profile\Profile\IndexController@view')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.profile.profile.view');
+
+                      /*  Update
+                      **************************************************************************************/
+                      Route::post('/update', config('routing.application.modules.dashboard.employee.controller').'\Researcher\Portfolio\Organization\User\Profile\Profile\IndexController@update')->name(config('routing.application.modules.dashboard.employee.name').'.researcher.portfolio.organization.user.view.profile.profile.update');
+
+                  }); //End Profile
+
+              }); //End Profile
+
 
                 /* Dashboard
                 **************************************************************************************/

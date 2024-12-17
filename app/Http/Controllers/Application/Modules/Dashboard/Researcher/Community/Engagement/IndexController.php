@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 //Model View
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherCommunityEngagement AS CervieResearcherCommunityEngagementView;
 use App\Models\UCSI_V2_General\MSSQL\View\RepresentationRole AS RepresentationRoleView;
+use App\Models\UCSI_V2_General\MSSQL\View\SustainableDevelopmentGoal AS SustainableDevelopmentGoalView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS CervieResearcherTableControlProcedure;
@@ -140,6 +141,13 @@ class IndexController extends Controller{
       ]
     );
 
+    //Set Model General Sustainable Development Goal
+    $model['general']['sustainable']['development']['goal'] = new SustainableDevelopmentGoalView();
+
+    //Get General General Sustainable Development Goal
+    $data['general']['sustainable']['development']['goal'] = $model['general']['sustainable']['development']['goal']->selectBox();
+// dd($data['general']['sustainable']['development']['goal']);
+
     //Defined Column
     $data['table']['column']['cervie']['researcher']['evidence'] = [
       0=>[
@@ -256,6 +264,11 @@ class IndexController extends Controller{
       //Create
       case 'create':
 
+      //Convert array to string with commas separating the values
+      $sustainable_development_goal = ($request->sustainable_development_goal_id
+      ? implode(',', $request->sustainable_development_goal_id)
+      : null);
+
         //Set Model
         $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
@@ -272,6 +285,7 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
+              'sustainable_development_goal'=>$sustainable_development_goal,
               'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -774,6 +788,12 @@ class IndexController extends Controller{
         //Get Award Type
         $this->getValidateData($request);
 
+        //Convert array to string with commas separating the values
+        $sustainable_development_goal = ($request->sustainable_development_goal_id
+        ? implode(',', $request->sustainable_development_goal_id)
+        : null);
+
+
         //Set Model
         $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
 
@@ -791,6 +811,7 @@ class IndexController extends Controller{
               'date_start'=>($request->has('date_start')?$request->date_start:null),
               'date_end'=>($request->has('date_end')?$request->date_end:null),
               'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
+              'sustainable_development_goal'=>$sustainable_development_goal,
               'need_verification'=>1,
               'remark'=>(($request->remark)?$request->remark:null),
               'remark_user'=>(($request->remark_user)?$request->remark_user:null),

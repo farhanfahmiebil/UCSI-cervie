@@ -40,7 +40,7 @@
                   </div>
                 @endif
                 {{-- End Check Error --}}
-          
+
                 {{-- Sub Navigation Tab Main --}}
                 @include($page['navigation']['tab']['main'])
 

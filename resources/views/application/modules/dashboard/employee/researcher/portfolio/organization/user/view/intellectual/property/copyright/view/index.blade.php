@@ -35,6 +35,148 @@
           This Record is still Pending for Administrator to make Verification
         </div>
 
+        @if(count(get_object_vars($data['cervie']['researcher']['log']['copyright'])) === 0)
+        <div class="alert alert-warning" role="alert">
+          <i class="bi bi-check-circle me-2"></i> This record is new entry
+        </div>
+        @endif
+
+
+        {{-- Check Data Log --}}
+        @if(!empty($data['cervie']['researcher']['log']['copyright']) && isset($data['cervie']['researcher']['log']['copyright']->updated_at) && $data['cervie']['researcher']['log']['copyright']->updated_at != null)
+            <div class="alert alert-warning" role="alert">
+                <h4 class="card-title text-white">Old Values</h4>
+                <ol class="list-group list-group-numbered">
+                    {{-- Check if registration_no is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->registration_no))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Registration</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->registration_no }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if description is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->description))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Description</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->description }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if date_filing is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->date_filing))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Date Filing</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->date_filing }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if date_approval is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->date_approval))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Date Approval</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->date_approval }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if isbn is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->isbn))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">ISBN</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->isbn }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if issn is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->issn))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">issn</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->issn }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if eissn is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->eissn))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">eissn</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->eissn }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if eissn is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->eissn))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">EISSN</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->eissn }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if title is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->title))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Title</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->title }}
+                            </div>
+                        </li>
+                    @endif
+
+                    {{-- Check if status_name is set --}}
+                    @if(isset($data['cervie']['researcher']['log']['copyright']->status_name))
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Status</div>
+                                {{ $data['cervie']['researcher']['log']['copyright']->status_name }}
+                            </div>
+                        </li>
+                    @endif
+
+                </ol>
+            </div>
+        @endif
+        {{-- End Check Data Log --}}
+
+
+        {{-- Check Data Evidence --}}
+        @if(count($data['cervie']['researcher']['log']['evidence']) >= 1 && $data['cervie']['researcher']['log']['evidence']->pluck('need_verification')->contains(true))
+        <div class="alert alert-warning" role="alert">
+          <h4 class="card-title text-white">New Evidence</h4>
+          <ol class="list-group list-group-numbered">
+            @foreach($data['cervie']['researcher']['log']['evidence'] as $key=>$value)
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">File Name</div>
+                {{$value->file_name . '.' . $value->file_extension}}
+              </div>
+            </li>
+            @endforeach
+          </ol>
+        </div>
+        @endif
+        {{-- End Check Data Evidence --}}
+
+        @else
+        <div class="alert alert-success" role="alert">
+          <i class="bi bi-check-circle me-2"></i> Record Verified
+        </div>
+
+
         @endif
         {{-- End Check Data Main --}}
 
@@ -450,8 +592,8 @@
                 <a href="{{ route($hyperlink['page']['list'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn btn-light"><i class="bi bi-arrow-left"></i>Back</a>
                 <input type="hidden" id="id" name="id" value="{{ $data['main']->copyright_id }}">
                 <input type="hidden" name="form_token" value="{{ $form_token['update'] }}">
-                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i>Delete Record</a>
-                <button type="submit" class="btn btn-danger text-white me-2"><i class="bi bi-content-save"></i>Save</button>
+                <a data-href="{{ route($hyperlink['page']['delete']['main'],['organization_id'=>request()->organization_id,'employee_id'=>request()->employee_id]) }}" class="btn-delete-main btn btn-danger text-white me-2"><i class="bi bi-trash"></i></i>Delete Record</a>
+                <button type="submit" class="btn btn-danger text-white me-2"> <i class="bi bi-check-circle"></i> Save & Verify</button>
               </div>
             </div>
             <!-- end form control -->

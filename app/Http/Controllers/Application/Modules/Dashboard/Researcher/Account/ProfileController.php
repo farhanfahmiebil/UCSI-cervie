@@ -30,6 +30,12 @@ use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedu
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\ResearcherScopus AS ResearcherScopusProcedure;
 use App\Models\UCSI_V2_Main\MSSQL\Procedure\EmployeeProfile AS EmployeeProfileProcedure;
 use App\Models\UCSI_V2_Main\MSSQL\Procedure\EmployeeSalutation AS EmployeeSalutationProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherIndexingBody AS CervieResearcherIndexingBodyProcedure;
+
+//Model View
+use App\Models\UCSI_V2_General\MSSQL\View\Salutation as SalutationView;
+use App\Models\UCSI_V2_General\MSSQL\View\AcademicIndexingBody as AcademicIndexingBodyView;
+use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherIndexingBody as CervieResearcherIndexingBodyView;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -170,9 +176,23 @@ class ProfileController extends Controller{
         //Set Model
         $model['employee']['profile'] = new EmployeeProfile();
         $model['researcher'] = new ResearcherProcedure();
+        $model['cervie']['researcher']['indexing']['body'] = new CervieResearcherIndexingBodyView();
+        $model['general']['academic']['indexing']['body'] = new AcademicIndexingBodyView();
+
+        //Get General Salulation
+        $data['general']['academic']['indexing']['body'] = $model['general']['academic']['indexing']['body']->selectBox();
+// dd($data['general']['academic']['indexing']['body']);
 
         //Read Main
         $data['researcher'] = $model['researcher']->readRecord(
+          [
+            'column'=>[
+              'employee_id'=>Auth::id(),
+            ]
+          ]
+        );
+
+        $data['cervie']['researcher']['indexing']['body'] = $model['cervie']['researcher']['indexing']['body']->getList(
           [
             'column'=>[
               'employee_id'=>Auth::id(),
@@ -192,9 +212,12 @@ class ProfileController extends Controller{
         $model['general']['salutation'] = new Salutation();
         $model['employee']['profile'] = new EmployeeProfile();
         $model['employee']['salutation'] = new EmployeeSalutation();
+        $model['general']['salutation'] = new SalutationView();
+
+        //Get General Salulation
+        $data['general']['salutation'] = $model['general']['salutation']->selectBox();
 
         //Get Data
-        $data['general']['salutation'] = json_encode($model['general']['salutation']->selectBox());
         $data['employee']['profile'] = $model['employee']['profile']::find(Auth::id());
         $data['employee']['salutation'] = $model['employee']['salutation']->getSalutation(
           [
@@ -211,6 +234,8 @@ class ProfileController extends Controller{
             // Add the salutation ID to the $salutations array
             $salutations[] = $item->salutation_id;
         }
+
+        // dd($salutations);
 
         // Convert the array of salutation IDs into a single string separated by commas
         $data['employee']['salutation_id'] = implode(',', $salutations);
@@ -484,22 +509,20 @@ class ProfileController extends Controller{
                       //Set Model
                       $model['employee']['salutation'] = new EmployeeSalutationProcedure();
 
-                      $salutation = explode(',', $request->salutation_id);
-
-                      if (count($salutation) >= 1) {
+                      if (count($request->salutation_id) >= 1) {
 
                           // Delete Data
                           $model['employee']['salutation']::where('employee_id', Auth::id())
                                                           ->delete();
 
-                          foreach ($salutation as $key => $value) {
+                          foreach ($request->salutation_id as $key => $value) {
 
                             //Update Main
                             $result['employee']['salutation'] = $model['employee']['salutation']->createRecord(
                               [
                                 'column'=>[
                                   'employee_id'=>Auth::id(),
-                                  'salutation_id'=>($value?$request->salutation_id:null),
+                                  'salutation_id'=>($value?$value:null),
                                   'ordering'=>$key+1,
                                   'remark'=>($request->has('remark')?$request->remark:null),
                                   'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
@@ -526,6 +549,7 @@ class ProfileController extends Controller{
                         'employee_id'=>Auth::id(),
                         'description'=>($request->has('description')?$request->description:null),
                         'need_verification'=>1,
+                        'table_name'=>'researcher',
                         'remark'=>($request->has('remark')?$request->remark:null),
                         'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
                         'updated_by'=>Auth::id()
@@ -533,46 +557,67 @@ class ProfileController extends Controller{
                     ]
                   );
 
-                  //Set Model
-                  $model['researcher']['scopus'] = new ResearcherScopusProcedure();
+                  $count = 0;
 
-                  if($request->has('researcher_scopus_id') && $request->researcher_scopus_id != null){
+                  // dd($request->hyperlink);
 
-                    //Update Main
-                    $result['researcher']['scopus'] = $model['researcher']['scopus']->updateRecord(
-                      [
-                        'column'=>[
-                          'researcher_scopus_id'=>($request->has('researcher_scopus_id')?$request->researcher_scopus_id:null),
-                          'employee_id'=>Auth::id(),
-                          'scopus_id'=>($request->has('scopus_id')?$request->scopus_id:null),
-                          'hyperlink'=>($request->has('hyperlink')?$request->hyperlink:null),
-                          'need_verification'=>1,
-                          'remark'=>($request->has('remark')?$request->remark:null),
-                          'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
-                          'updated_by'=>Auth::id()
+                  if($request->has('indexing_body_id')){
+
+                    foreach($request->indexing_body_id as $key=>$value){
+
+                      $model['cervie']['researcher']['indexing']['body'] = new CervieResearcherIndexingBodyProcedure();
+
+                      //Create Main
+                      $model['cervie']['researcher']['indexing']['body'] = $model['cervie']['researcher']['indexing']['body']->updaterecord(
+                        [
+                          'column'=>[
+                            'indexing_body_id'=>$value,
+                            'employee_id'=>Auth::id(),
+                            'academic_indexing_body_id'=>$request->academic_indexing_body_id[$key],
+                            'hyperlink'=>$request->hyperlink[$key],
+                            'need_verification'=>1,
+                            'table_name'=>'cervie_researcher_indexing_body',
+                            'remark'=>($request->has('remark')?$request->remark:null),
+                            'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
+                            'updated_by'=>Auth::id()
+                          ]
                         ]
-                      ]
-                    );
+                      );
 
+                      $count++;
+                    }
 
                   }else{
+                    // Count of items to loop through
+                    $count_index = count($request->academic_indexing_body_id);
 
-                    //Create Main
-                    $result['researcher']['scopus'] = $model['researcher']['scopus']->createRecord(
-                      [
-                        'column'=>[
-                          'employee_id'=>Auth::id(),
-                          'scopus_id'=>($request->has('scopus_id')?$request->scopus_id:null),
-                          'hyperlink'=>($request->has('hyperlink')?$request->hyperlink:null),
-                          'need_verification'=>1,
-                          'remark'=>($request->has('remark')?$request->remark:null),
-                          'remark_user'=>($request->has('remark_user')?$request->remark_user:null),
-                          'created_by'=>Auth::id()
-                        ]
-                      ]
-                    );
+                    for ($key = 0; $key < $count_index; $key++) {
+
+                      $model['cervie']['researcher']['indexing']['body'] = new CervieResearcherIndexingBodyProcedure();
+
+
+                        // Create Main
+                        $model['cervie']['researcher']['indexing']['body'] = $model['cervie']['researcher']['indexing']['body']->createRecord(
+                            [
+                                'column' => [
+                                    'employee_id' => Auth::id(),
+                                    'academic_indexing_body_id' => $request->academic_indexing_body_id[$count],
+                                    'hyperlink' => $request->hyperlink[$count],
+                                    'need_verification' => 1,
+                                    'table_name'=>'cervie_researcher_indexing_body',
+                                    'remark' => ($request->has('remark') ? $request->remark : null),
+                                    'remark_user' => ($request->has('remark_user') ? $request->remark_user : null),
+                                    'created_by' => Auth::id()
+                                ]
+                            ]
+                        );
+
+                        $count++;  // Increment the count (although this is unnecessary in this case)
+                    }
+
 
                   }
+
 
 
                   // Get Validate Data
@@ -659,16 +704,16 @@ class ProfileController extends Controller{
 
           //Define Validation Rules
           $rules = [
-            'description'=>['required'],
-            'scopus_id'=>['required'],
-            'hyperlink'=>['required'],
+            'description'=>['required']
+            // 'scopus_id'=>['required'],
+            // 'hyperlink'=>['required'],
           ];
 
           //Custom Validation Messages
           $messages = [
-            'description.required'=>'Description is required',
-            'scopus_id.required'=>'Scopus ID required',
-            'hyperlink.required'=>'Hyperlink Required',
+            'description.required'=>'Description is required'
+            // 'scopus_id.required'=>'Scopus ID required',
+            // 'hyperlink.required'=>'Hyperlink Required',
           ];
 
         break;

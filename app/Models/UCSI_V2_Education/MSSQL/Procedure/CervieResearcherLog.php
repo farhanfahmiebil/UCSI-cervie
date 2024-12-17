@@ -103,7 +103,7 @@ class CervieResearcherLog extends Model{
 
           // Set Table for main category
           $table = 'read_cervie_researcher_log';
-
+// dd($data);
           // Set Query for main category
           $this->query = 'EXEC '.$table.' ?,?,?;';
 

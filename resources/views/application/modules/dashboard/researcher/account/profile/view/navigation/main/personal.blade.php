@@ -59,9 +59,29 @@
                 <div class="col-6">
 
                   <!-- salutation -->
-                  <div class="mb-3">
-                    <label for="salutation_id" class="form-label">Salutation</label>
-                    <input type="text" class="form-control" id="salutation_id" name="salutation_id" placeholder="" value="" {{ $data['input']['status'] }}>
+                    <div class="form-group">
+                      <label for="salutation_id">Salutation</label>
+                      <select class="form-control select2" id="salutation_id" name="salutation_id[]" multiple>
+                        <option value="">--Please Select--</option>
+                        {{-- Check if Country exist --}}
+                        @if(count($data['general']['salutation']) > 0)
+
+                        @php
+                          // Explode Country from the main data (comma-separated string)
+                          $selected_salutation = explode(',',$data['employee']['salutation_id']);
+                        @endphp
+
+                          {{-- Iterate through available Country --}}
+                          @foreach($data['general']['salutation'] as $key=>$value)
+                            <option value="{{ $value->salutation_id }}"
+                              {{-- Check if this value was previously selected --}}
+                              {{ in_array($value->salutation_id,$selected_salutation) ? 'selected' : '' }}>
+                              {{ $value->name }}
+                            </option>
+                          @endforeach
+
+                        @endif
+                      </select>
 
                   </div>
                   <!-- end salutation -->
@@ -211,54 +231,6 @@ $(document).ready(function($){
       e.preventDefault();
       return false;
     }
-  });
-
-  /*  Set Salutation Tags Input
-  **************************************************************************************/
-  var salutation = {!! ($data['general']['salutation']) !!};
-
-  var salutation_source = new Bloodhound({
-   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-   queryTokenizer: Bloodhound.tokenizers.whitespace,
-   local:salutation
-  });
-
-  //Disabled
-  $('#salutation_id').prop('readonly',false);
-// console.log(32);
-  salutation_source.initialize();
-
-  $('#salutation_id').tagsinput({
-    'maxChars':50,
-    'maxTags':10,
-    'trimValue':true,
-    'cancelConfirmKeysOnEmpty':true,
-    'itemValue':'salutation_id',
-    'itemText':'name',
-    'typeaheadjs': {
-      'name':'salutation',
-      'displayKey':'name',
-      'source':salutation_source.ttAdapter()
-    }
-  });
-
-  // $("#salutation_id").prop('disabled', true);
-
-  salutation_exist = '{{ $data['employee']['salutation_id'] }}';
-  salutation_split = salutation_exist.split(',');
-  console.log(salutation_exist);
-
-  $.each(salutation,function(index,value){
-
-    $.each(salutation_split,function(i,v){
-
-      if(v == value.salutation_id){
-        $('#salutation_id').tagsinput('add', {'salutation_id': value.salutation_id,'name': value.name });
-      }
-
-    });
-    //console.log( index + ": " + value.salutation_id );
-    // $('#salutation_id').tagsinput('add', { "salutation_id": 'MR' , "name": "Mister"   });
   });
 
   /*  Set Age on Date of Birth

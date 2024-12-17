@@ -36,6 +36,7 @@ use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTrademark AS CervieResearcherTrademarkProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTeamMember AS CervieResearcherTeamMemberProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -839,6 +840,41 @@ class IndexController extends Controller{
        ]
      );
 
+     if($data['main']->need_verification){
+
+       //Set Model Researcher - Employee Profile
+       $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+       //Get Employee Profile
+       $data['cervie']['researcher']['log']['trademark'] = $model['cervie']['researcher']['log']->readRecord(
+         [
+           'column'=>[
+             'employee_id'=>$request->employee_id,
+             'table_name'=>'cervie_researcher_trademark',
+             'auditable_id' => $request->id,
+             'category' => 'main'
+           ]
+         ]
+       );
+
+       //Get Employee Profile
+       $data['cervie']['researcher']['log']['evidence'] = $model['cervie']['researcher']['log']->readRecord(
+         [
+           'column'=>[
+             'employee_id'=>$request->employee_id,
+             'main_table_name'=>'cervie_researcher_trademark',
+             'table_name'=>'cervie_researcher_evidence',
+             'auditable_id' => $request->id,
+             'category' => 'evidence',
+             'event' => 'create'
+
+           ]
+         ]
+       );
+
+     }
+
+
      //Defined Column
      $data['table']['column']['cervie']['researcher']['evidence'] = [
        0=>[
@@ -946,6 +982,24 @@ class IndexController extends Controller{
             'remark'=>(($request->remark)?$request->remark:null),
             'remark_user'=>(($request->remark_user)?$request->remark_user:null),
             'updated_by'=>Auth::id()
+          ]
+        ]
+      );
+
+      //Set Model Evidence
+      $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+      //Create Evidence
+      $result['evidence']['update'] = $model['cervie']['researcher']['evidence']->updateRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_trademark',
+            'table_id'=>$request->id,
+            'need_verification'=>0,
+            'remark'=>(($request->remark)?$request->remark:null),
+            'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+            'updated_by'=>Auth::id(),
           ]
         ]
       );

@@ -20,6 +20,7 @@ use App\Models\UCSI_V2_Access\MSSQL\View\NavigationCategory AS NavigationCategor
 use App\Models\UCSI_V2_Access\MSSQL\View\NavigationCategorySub AS NavigationCategorySubView;
 use App\Models\UCSI_V2_Education\MSSQL\View\CervieResearcherCommunityEngagement AS CervieResearcherCommunityEngagementView;
 use App\Models\UCSI_V2_General\MSSQL\View\RepresentationRole AS RepresentationRoleView;
+use App\Models\UCSI_V2_General\MSSQL\View\SustainableDevelopmentGoal AS SustainableDevelopmentGoalView;
 
 //Model Procedure
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\Researcher AS ResearcherProcedure;
@@ -33,6 +34,7 @@ use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTableControl AS
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherCommunityEngagement AS CervieResearcherCommunityEngagementProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherEvidence AS CervieResearcherEvidenceProcedure;
 use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherTeamMember AS CervieResearcherTeamMemberProcedure;
+use App\Models\UCSI_V2_Education\MSSQL\Procedure\CervieResearcherLog AS CervieResearcherLogProcedure;
 
 //Get Request
 use Illuminate\Http\Request;
@@ -218,6 +220,12 @@ class IndexController extends Controller{
       ]
     );
 
+    //Set Model General Sustainable Development Goal
+    $model['general']['sustainable']['development']['goal'] = new SustainableDevelopmentGoalView();
+
+    //Get General General Sustainable Development Goal
+    $data['general']['sustainable']['development']['goal'] = $model['general']['sustainable']['development']['goal']->selectBox();
+
     //Set Model General Representation Role
     $model['general']['representation']['role'] = new RepresentationRoleView();
 
@@ -319,6 +327,7 @@ class IndexController extends Controller{
                 'date_start'=>($request->has('date_start')?$request->date_start:null),
                 'date_end'=>($request->has('date_end')?$request->date_end:null),
                 'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
+                'sustainable_development_goal'=>$sustainable_development_goal,
                 'need_verification'=>0,
                 'remark'=>(($request->remark)?$request->remark:null),
                 'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -377,6 +386,7 @@ class IndexController extends Controller{
                   'file_extension'=>$file['extension'],
                   'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -407,6 +417,7 @@ class IndexController extends Controller{
                   'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$result['main']['create']->last_insert_id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
@@ -836,6 +847,11 @@ class IndexController extends Controller{
       ]
     );
 
+    //Set Model General Sustainable Development Goal
+    $model['general']['sustainable']['development']['goal'] = new SustainableDevelopmentGoalView();
+
+    //Get General General Sustainable Development Goal
+    $data['general']['sustainable']['development']['goal'] = $model['general']['sustainable']['development']['goal']->selectBox();
 
     //Set Model
     $model['cervie']['researcher']['community']['engagement'] = new CervieResearcherCommunityEngagementProcedure();
@@ -878,6 +894,59 @@ class IndexController extends Controller{
        ]
      );
 
+     //Set Model General Sustainable Development Goal
+     $model['general']['sustainable']['development']['goal'] = new SustainableDevelopmentGoalView();
+
+     //Get General General Sustainable Development Goal
+     $data['general']['sustainable']['development']['goal'] = $model['general']['sustainable']['development']['goal']->selectBox();
+ // dd($data['general']['sustainable']['development']['goal']);
+
+     if($data['main']->need_verification){
+
+       //Set Model Researcher - Employee Profile
+       $model['cervie']['researcher']['log'] = new CervieResearcherLogProcedure();
+
+       //Get Employee Profile
+       $data['cervie']['researcher']['log']['community']['engagement'] = $model['cervie']['researcher']['log']->readRecord(
+         [
+           'column'=>[
+             'employee_id'=>$request->employee_id,
+             'table_name'=>'cervie_researcher_community_engagement',
+             'auditable_id' => $request->id,
+             'category' => 'main'
+           ]
+         ]
+       );
+
+       //Get Log Evidence
+       $data['cervie']['researcher']['log']['evidence'] = $model['cervie']['researcher']['log']->readRecord(
+         [
+           'column'=>[
+             'employee_id'=>$request->employee_id,
+             'main_table_name'=>'cervie_researcher_community_engagement',
+             'table_name'=>'cervie_researcher_evidence',
+             'auditable_id' => $request->id,
+             'category' => 'evidence',
+             'event' => 'create'
+           ]
+         ]
+       );
+
+       //Get Log Evidence
+       $data['cervie']['researcher']['log']['team']['member'] = $model['cervie']['researcher']['log']->readRecord(
+         [
+           'column'=>[
+             'employee_id'=>$request->employee_id,
+             'main_table_name'=>'cervie_researcher_community_engagement',
+             'table_name'=>'cervie_researcher_team_member',
+             'auditable_id' => $request->id,
+             'category' => 'team_member',
+             'event' => 'create'
+           ]
+         ]
+       );
+
+     }
      //Defined Column
      $data['table']['column']['cervie']['researcher']['evidence'] = [
        0=>[
@@ -902,16 +971,11 @@ class IndexController extends Controller{
          'name'=>'No',
        ],
        1=>[
-         'class'=>'col-4',
+         'class'=>'col-6',
          'icon'=>'<i class="mdi mdi-account-group"></i>',
          'name'=>' Name',
        ],
        2=>[
-         'class'=>'col-4',
-         'icon'=>'<i class="mdi mdi-badge-account"></i>',
-         'name'=>' Role',
-       ],
-       3=>[
          'icon'=>'<i class="mdi mdi-settings"></i>',
          'name'=>' Control',
        ]
@@ -983,6 +1047,7 @@ class IndexController extends Controller{
             'date_start'=>($request->has('date_start')?$request->date_start:null),
             'date_end'=>($request->has('date_end')?$request->date_end:null),
             'star_rating'=>($request->has('star_rating')?$request->star_rating:null),
+            'sustainable_development_goal'=>$sustainable_development_goal,
             'need_verification'=>0,
             'remark'=>(($request->remark)?$request->remark:null),
             'remark_user'=>(($request->remark_user)?$request->remark_user:null),
@@ -991,6 +1056,41 @@ class IndexController extends Controller{
         ]
       );
 
+      //Set Model Evidence
+      $model['cervie']['researcher']['evidence'] = new CervieResearcherEvidenceProcedure();
+
+      //Create Evidence
+      $result['evidence']['update'] = $model['cervie']['researcher']['evidence']->updateRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_community_engagement',
+            'table_id'=>$request->id,
+            'need_verification'=>0,
+            'remark'=>(($request->remark)?$request->remark:null),
+            'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+            'updated_by'=>Auth::id(),
+          ]
+        ]
+      );
+
+      //Set Model Evidence
+      $model['cervie']['researcher']['team']['member'] = new CervieResearcherTeamMemberProcedure();
+
+      //Create Evidence
+      $result['evidence']['team']['member']  = $model['cervie']['researcher']['team']['member'] ->updateRecord(
+        [
+          'column'=>[
+            'employee_id'=>$request->employee_id,
+            'table_name'=>'cervie_researcher_community_engagement',
+            'table_id'=>$request->id,
+            'need_verification'=>0,
+            'remark'=>(($request->remark)?$request->remark:null),
+            'remark_user'=>(($request->remark_user)?$request->remark_user:null),
+            'updated_by'=>Auth::id(),
+          ]
+        ]
+      );
 
         //If files Exist
         if($request->has('document')){
@@ -1061,6 +1161,7 @@ class IndexController extends Controller{
                   'file_extension' => $file['extension'],
                   'table_name' => 'cervie_researcher_community_engagement',
                   'table_id' => $request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by' => Auth::id(),
@@ -1091,6 +1192,7 @@ class IndexController extends Controller{
                   'role'=>(isset($request->role[$key]) ? $request->role[$key]:null),
                   'table_name'=>'cervie_researcher_community_engagement',
                   'table_id'=>$request->id,
+                  'need_verification'=>0,
                   'remark'=>(($request->remark)?$request->remark:null),
                   'remark_user'=>(($request->remark_user)?$request->remark_user:null),
                   'created_by'=>Auth::id(),
